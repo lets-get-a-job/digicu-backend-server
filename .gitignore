@@ -1,4 +1,10 @@
-*.idea
-*.DS_Store
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
-/**/.gitignore
+### VS Code ###
+.vscode/
+
+*.DS_Store
