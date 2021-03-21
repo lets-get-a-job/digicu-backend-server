@@ -1,25 +1,3 @@
-# User Service
-
-## Commitlint 사용
-
----
-
-현재 프로젝트에서는 Commitlint를 적용해보려고 합니다.
-
-한번 사용해보고 사용해볼만하면 말씀드리겠습니다.
-
-### 요구사항
-
-```bash
-$ npm install -g @commitlint/cli @commitlint/config-conventional
-```
-
-### 명령어
-
-```bash
-npm run commit
-```
-
 ## DB 인증 관련
 
 ---
