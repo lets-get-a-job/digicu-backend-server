@@ -17,7 +17,7 @@
     <modules>
         <module>auth-server</module>
         <module>eureka-server</module>
-        <module>pos-service</module>
+<!--        <module>pos-service</module>-->
         <module>zuul-server</module>
     </modules>
     <build>
