@@ -70,6 +70,7 @@ async function registerUser(email, plainPassword, nick, type, letterOK) {
 }
 
 /**
+ * FIXME token 검사하고 삭제해야 함.
  * 이메일로 유저 삭제
  * @param {string} email
  * @returns {Promise<boolean>} 성공 여부
