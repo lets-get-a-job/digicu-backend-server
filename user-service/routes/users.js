@@ -8,6 +8,8 @@ const {
   findUserByEmail,
   findUserByNick,
   confirmEmailAuth,
+  changePassword,
+  createChangePasswordToken,
 } = require('../lib/query-defintion');
 
 router.get('/:email/auth', (req, res) => {
@@ -21,17 +23,47 @@ router.get('/:email/auth', (req, res) => {
   }
 });
 
-router.put('/:email/auth', async (req, res) => {
-  try {
-    const isAuthOk = await confirmEmailAuth(
+router.post('/:email/auth', async (req, res) => {
+  if (req.query.type === 'pwd') {
+    const token = await createChangePasswordToken(
       req.params.email,
-      'reg',
-      req.body.token,
+      req.body.old_encpwd,
     );
-    if (isAuthOk) {
-      res.sendStatus(200);
+    if (token) {
+      res.json({ token });
     } else {
       res.sendStatus(400);
+    }
+  } else {
+    res.sendStatus(400);
+  }
+});
+
+router.put('/:email/auth', async (req, res) => {
+  try {
+    if (req.query.type === 'reg') {
+      const isAuthOk = await confirmEmailAuth(
+        req.params.email,
+        req.query.type,
+        req.body.token,
+      );
+      if (isAuthOk) {
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(400);
+      }
+    } else if (req.query.type === 'pwd') {
+      const isPasswordChanged = await changePassword(
+        req.params.email,
+        req.body.new_encpwd,
+        'pwd',
+        req.body.token,
+      );
+      if (isPasswordChanged) {
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(400);
+      }
     }
   } catch (error) {
     res.status(400);
@@ -41,6 +73,12 @@ router.put('/:email/auth', async (req, res) => {
       res.send('인증 실패');
     }
   }
+});
+
+router.get('/change_password_test', async (req, res) => {
+  res.render('change-password-test', {
+    email: 'formail0001@naver.com',
+  });
 });
 
 router.get('/register_test', async (req, res) => {

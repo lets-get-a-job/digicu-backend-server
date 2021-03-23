@@ -30,7 +30,7 @@
           loaderElement.classList.toggle('loader-5');
         }
       };
-      request.open('PUT', '/users/<%- email -%>/auth');
+      request.open('PUT', '/users/<%- email %>/auth?type=reg');
       request.setRequestHeader('Content-Type', 'application/json');
       request.send(
         JSON.stringify({
