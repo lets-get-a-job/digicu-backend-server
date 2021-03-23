@@ -23,7 +23,7 @@ const pool = mysql.createPool({
 });
 
 /**
- * 기본적인 query 함수. 여러개의 쿼리를 한번에 실행 가능. 에러 발생시 롤백
+ * 기본적인 query 함수. 트랜잭션 적용 (sqlActions에 있는 쿼리가 모두 성공해야함)
  * @param {SQLActions} sqlActions
  * @param {any[]} values
  * @returns { Promise<SQLResponse[]> } { rows, fields }
@@ -33,14 +33,16 @@ async function query(sqlActions) {
   const sqlResponse = [];
   try {
     connection = await pool.getConnection();
+    await connection.beginTransaction();
     for (let action of sqlActions) {
       const [rows, fields] = await connection.query(action.sql, action.values);
       sqlResponse.push({ rows, fields });
     }
+    await connection.commit();
     connection.release();
     return sqlResponse;
   } catch (error) {
-    connection?.rollback();
+    await connection?.rollback(); // 요청한 쿼리 중 하나라도 실패하면 rollback
     connection?.release();
     throw error;
   }

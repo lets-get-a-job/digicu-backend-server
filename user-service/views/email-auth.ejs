@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/loader.css" />
+    <title>이메일 인증</title>
+  </head>
+  <body>
+    <div class="main-content space-top wrapper" role="main" id="mainContent">
+      <p id="message">인증하고 있습니다.</p>
+      <div id="loader" class="loader loader-black loader-3"></div>
+    </div>
+    <script>
+      const token = '<%- token %>'; // from ejs template
+      const request = new XMLHttpRequest();
+      const messageElement = document.querySelector('#message');
+      const loaderElement = document.querySelector('#loader');
+      request.onload = () => {
+        if (request.status === 200) {
+          messageElement.textContent = '인증이 완료되었습니다.';
+          loaderElement.classList.remove('loader-3', 'loader-black');
+          loaderElement.classList.toggle('loader-green');
+          loaderElement.classList.toggle('loader-5');
+        } else {
+          messageElement.textContent = '인증에 실패했습니다.';
+          loaderElement.classList.remove('loader-3', 'loader-black');
+          loaderElement.classList.toggle('loader-red');
+          loaderElement.classList.toggle('loader-5');
+        }
+      };
+      request.open('PUT', '/users/<%- email -%>/auth');
+      request.setRequestHeader('Content-Type', 'application/json');
+      request.send(
+        JSON.stringify({
+          token: '<%- token %>',
+        }),
+      );
+    </script>
+  </body>
+</html>

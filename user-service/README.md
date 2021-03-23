@@ -42,6 +42,25 @@ if (process.env.NODE_ENV === 'production') {
 }
 ```
 
+## Nodemailer
+
+이메일 인증 관련하여 노드메일러를 사용하고 있습니다.
+
+서버가 화이트 도메인 인증이 되어 있지 않기 때문에, SMTP를 사용해서 메일을 보냅니다.
+
+네이버 SMTP 계정을 사용하시면 됩니다.
+
+.env파일에 STMP 정보를 입력해주세요.
+
+```
+SMTP_USER = your_user_id
+SMTP_PASS = your_mail_password
+SMTP_HOST = your_mail_host
+SMTP_PORT = your_smtp_port
+SMTP_SSL = true or false
+SMTP_ORIGIN = 어디서 요청했는지 (예] http://localhost:3000)
+```
+
 ## TODO
 
 ---
