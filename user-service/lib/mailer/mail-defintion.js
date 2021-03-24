@@ -1,4 +1,4 @@
-const { sendMail } = require('../lib/mailer');
+const { sendMail } = require('./index');
 
 /**
  *
