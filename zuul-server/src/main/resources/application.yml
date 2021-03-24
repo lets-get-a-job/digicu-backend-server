@@ -25,3 +25,4 @@ zuul:
     prefix: /api
     routes:
         authserver: /auth/**
+        demoserver: /demo/**
