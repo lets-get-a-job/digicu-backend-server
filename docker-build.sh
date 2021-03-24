@@ -12,20 +12,11 @@ fi
 if [ "${service}" == "all" ] || [ "${service}" == "zuulserver" ]
 then
   echo "zuulserver build..."
-  mvn -pl eureka-server clean
-  mvn -pl eureka-server package -DskipTests
+  mvn -pl zuul-server clean
+  mvn -pl zuul-server package -DskipTests
   docker build -t ${group}/zuulserver zuul-server/.
   echo "zuulserver done..."
 fi
-if [ "${service}" == "all" ] || [ "${service}" == "authserver" ]
-then
-  echo "authserver build..."
-  mvn -pl eureka-server clean
-  mvn -pl eureka-server package -DskipTests
-  docker build -t ${group}/authserver auth-server/.
-  echo "authserver done..."
-fi
-
 
 ##################
 if [ $# -eq 2 ]; then

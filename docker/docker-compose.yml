@@ -1,4 +1,4 @@
-version: '2'
+version: "3.3"
 services:
   eurekaserver:
     image: digicu/eurekaserver
@@ -8,9 +8,6 @@ services:
   zuulserver:
     image: digicu/zuulserver
     ports:
-      - "8089:8089"
-
-  authserver:
-    image: digicu/authserver
-    ports:
-      - "8090:8090"
+      - "5555:5555"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://eurekaserver:8761/eureka/
