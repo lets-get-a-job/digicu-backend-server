@@ -1,0 +1,16 @@
+version: '2'
+services:
+  eurekaserver:
+    image: digicu/eurekaserver
+    ports:
+      - "8761:8761"
+
+  zuulserver:
+    image: digicu/zuulserver
+    ports:
+      - "8089:8089"
+
+  authserver:
+    image: digicu/authserver
+    ports:
+      - "8090:8090"
