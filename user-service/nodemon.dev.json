@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "watch": ["routes/", "lib/"],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js, json, yml",
+  "exec": "node bin/www"
+}
