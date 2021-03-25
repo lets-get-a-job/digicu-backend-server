@@ -5,17 +5,30 @@ module.exports = {
    * @param {number} status
    * @param {any} errorMessage
    * @param {any} debugMessage
-   * @param {any} headers
+   * @param {object} headers
    */
   sendError(res, status, errorMessage, debugMessage, headers) {
     res.status(status);
     if (process.env.NODE_ENV === 'development') {
       res.send(`error message: ${debugMessage}`);
     } else {
-      if (headers) {
-        res.set(headers);
-      }
+      res.set;
       res.send(errorMessage);
+    }
+  },
+  /**
+   *
+   * @param {Response} res
+   * @param {number} status
+   * @param {any} errorMessage
+   * @param {any} debugMessage
+   */
+  sendErrorJSON(res, status, errorMessage, debugMessage) {
+    res.status(status);
+    if (process.env.NODE_ENV === 'development') {
+      res.send(`error message: ${debugMessage}`);
+    } else {
+      res.json(errorMessage);
     }
   },
 };

@@ -17,7 +17,7 @@
     "mysql2": "^2.2.5",
     "nodemailer": "^6.5.0",
     "randomstring": "^1.1.5",
-    "swagger-jsdoc": "^7.0.0-rc.6",
+    "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6",
     "validator": "^13.5.2"
   },
