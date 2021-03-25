@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "nodemon --config nodemon.dev.json",
-    "prod": "cross-env NODE_ENV=production node ./bin/www"
+    "prod": "cross-env NODE_ENV=production node ./bin/www",
+    "api-docs": "nodemon --watch lib/swagger --ext js,yml lib/swagger/index.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

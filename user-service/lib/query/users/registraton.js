@@ -29,20 +29,20 @@ function isFormValid(
  * 기본 가입 정보
  * @typedef {{
  * email: string
- * plainPassword: string
- * letterOK: boolean
+ * plain_password: string
+ * letter_ok: boolean
  * }} RegistratonInformation
  */
 
 /**
  * 업체 가입 정보
  * @typedef {{
- * companyNumber: string
- * companyName: string
- * companyPhone: string
- * companyAddress: string
- * companyOwner: string
- * companyHomepage: string
+ * company_number: string
+ * company_name: string
+ * company_phone: string
+ * company_address: string
+ * company_owner: string
+ * company_homepage: string
  * }} CompanyInformation
  */
 
@@ -64,72 +64,76 @@ function isFormValid(
  * @returns {Promise<boolean>} 회원가입 성공 여부
  */
 async function registerCompany(regInfo, companyInfo) {
-  // 회사 정보
-  const {
-    companyNumber,
-    companyName,
-    companyPhone,
-    companyAddress,
-    companyOwner,
-    companyHomepage,
-  } = companyInfo;
-  // 입력된 폼이 유효한지 검사합니다.
-  if (
-    isFormValid(
-      regInfo.email,
-      regInfo.letterOK,
-      companyNumber,
-      companyPhone,
-      companyHomepage,
-    )
-  ) {
-    const saltRounds = 10;
-    // 평문 패스워드를 해시값으로 바꿉니다.
-    const hash_string = await bcrypt.hash(regInfo.plainPassword, saltRounds);
-    // 이메일 인증을 위한 토큰을 생성합니다.
-    const token = randomstring.generate(30);
+  try {
+    // 회사 정보
+    const {
+      company_number,
+      company_name,
+      company_phone,
+      company_address,
+      company_owner,
+      company_homepage,
+    } = companyInfo;
+    // 입력된 폼이 유효한지 검사합니다.
+    if (
+      isFormValid(
+        regInfo.email,
+        regInfo.letter_ok,
+        company_number,
+        company_phone,
+        company_homepage,
+      )
+    ) {
+      const saltRounds = 10;
+      // 평문 패스워드를 해시값으로 바꿉니다.
+      const hash_string = await bcrypt.hash(regInfo.plain_password, saltRounds);
+      // 이메일 인증을 위한 토큰을 생성합니다.
+      const token = randomstring.generate(30);
 
-    // 회원 가입
-    await query([
-      // 업주 등록 쿼리
-      {
-        sql: 'INSERT INTO registration VALUES (?, ?, ?, ?, ?)',
-        values: [
-          regInfo.email,
-          hash_string,
-          null,
-          'company',
-          regInfo.letterOK ? new Date() : null,
-        ],
-      },
-      // 업주 프로필 생성 쿼리
-      {
-        sql: 'INSERT INTO company_profile VALUES (?, ?, ?, ?, ?, ?, ?)',
-        values: [
-          regInfo.email,
-          companyNumber,
-          companyName,
-          companyPhone,
-          companyAddress,
-          companyOwner,
-          companyHomepage,
-        ],
-      },
-      // 이메일 인증 토큰 생성 쿼리
-      {
-        sql: 'INSERT INTO authentication VALUES(?, ?, ?, ?)',
-        values: [regInfo.email, token, 'reg', null], // 이메일 인증 토큰은 만료기간이 없습니다.
-      },
-    ]);
-    // SMTP로 인증 메일을 보냅니다.
-    await sendAuthEmail(
-      'formail0001@naver.com',
-      '"Digicu" <formail0001@naver.com>',
-      token,
-    );
-    return true;
-  } else {
-    return false;
+      // 회원 가입
+      await query([
+        // 업주 등록 쿼리
+        {
+          sql: 'INSERT INTO registration VALUES (?, ?, ?, ?, ?)',
+          values: [
+            regInfo.email,
+            hash_string,
+            null,
+            'company',
+            regInfo.letter_ok ? new Date() : null,
+          ],
+        },
+        // 업주 프로필 생성 쿼리
+        {
+          sql: 'INSERT INTO company_profile VALUES (?, ?, ?, ?, ?, ?, ?)',
+          values: [
+            regInfo.email,
+            company_number,
+            company_name,
+            company_phone,
+            company_address,
+            company_owner,
+            company_homepage,
+          ],
+        },
+        // 이메일 인증 토큰 생성 쿼리
+        {
+          sql: 'INSERT INTO authentication VALUES(?, ?, ?, ?)',
+          values: [regInfo.email, token, 'reg', null], // 이메일 인증 토큰은 만료기간이 없습니다.
+        },
+      ]);
+      // SMTP로 인증 메일을 보냅니다.
+      await sendAuthEmail(
+        regInfo.email,
+        '"Digicu" <formail0001@naver.com>',
+        token,
+      );
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw error;
   }
 }
 

@@ -63,3 +63,5 @@ router.put('/:email', async (req, res) => {
     errorHandling.sendError(res, 500, '에러가 발생했습니다.', error);
   }
 });
+
+module.exports = router;

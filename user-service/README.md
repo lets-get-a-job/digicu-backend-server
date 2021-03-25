@@ -21,6 +21,7 @@ DB_PASS = your_db_password
 
 ```
 PORT = 3000
+API_DOCS_PORT = 3001
 ```
 
 ## 개발 모드, 배포 모드
@@ -72,8 +73,9 @@ SMTP_ORIGIN = 어디서 요청했는지 (예] http://localhost:3000)
   - 이메일 인증
 - [v] 유저 조회
 - [v] 비밀번호 변경
+- [v] swagger 기반으로 API 작성
+- [ ] jwt 토큰 기반 로그인 서비스
 - [ ] 회원탈퇴
 - [ ] 유저 프로필 변경
-- [ ] swagger 기반으로 API 작성
 
 > 이메일 인증은 화이트 도메인 문제로 우선 네이버 SMTP를 사용하도록 하겠습니다.

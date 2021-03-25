@@ -3,10 +3,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-const { usersAPIDocument } = require('./lib/swagger');
-const swaggerUI = require('swagger-ui-express');
-
+var testsRouter = require('./routes/tests');
 var usersRouter = require('./routes/users');
+var authRouter = require('./routes/authentication');
 
 var app = express();
 
@@ -20,7 +19,10 @@ app.set('views', './views');
 app.set('view engine', 'ejs');
 
 app.use('/users', usersRouter);
+app.use('/authentication', authRouter);
 
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(usersAPIDocument));
+if (process.env.NODE_ENV === 'development') {
+  app.use('/tests', testsRouter);
+}
 
 module.exports = app;
