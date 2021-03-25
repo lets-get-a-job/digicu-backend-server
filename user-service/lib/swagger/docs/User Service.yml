@@ -289,7 +289,7 @@ paths:
                   company_homepage: "https://samsung.com/"
       responses:
         "200":
-          description: "등록 성공"
+          description: "등록 성공. 반드시 유저에게 이메일 확인을 요청하세요."
         "400":
           description: "등록 실패"
         "500":
