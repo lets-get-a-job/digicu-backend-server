@@ -1,6 +1,7 @@
 const { query } = require('../index');
 const randomstring = require('randomstring');
 const bcrypt = require('bcrypt');
+const { errorHandling } = require('../../routing');
 
 /**
  * 이메일 인증을 완료합니다.
@@ -118,8 +119,35 @@ async function changePassword(email, plainPassword, token) {
   }
 }
 
+/**
+ * 이메일 인증이 완료된 계정인지 검사합니다.
+ * @param {string} email
+ * @returns {Promise<boolean>}
+ */
+async function isEmailChecked(email) {
+  try {
+    const responses = await query([
+      {
+        sql: 'SELECT registration_date FROM registration WHERE email = ?',
+        values: [email],
+      },
+    ]);
+    const rows = responses[0].rows;
+    if (rows.length > 0) {
+      const { registration_date } = rows[0];
+      // 이메일 인증과 동시에 가입일이 기록되기 때문에 null이 아니면 인증이 된 것
+      return registration_date !== null;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   confirmEmailAuth,
   changePassword,
   createChangePasswordToken,
+  isEmailChecked,
 };

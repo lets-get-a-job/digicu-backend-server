@@ -16,18 +16,22 @@ router.get('/:email', (req, res) => {
 });
 
 router.post('/:email', async (req, res) => {
-  if (req.query.type === 'pwd') {
-    const token = await authentication.createChangePasswordToken(
-      req.params.email,
-      req.body.old_encpwd,
-    );
-    if (token) {
-      res.json({ token });
+  try {
+    if (req.query.type === 'pwd') {
+      const token = await authentication.createChangePasswordToken(
+        req.params.email,
+        req.body.old_encpwd,
+      );
+      if (token) {
+        res.json({ token });
+      } else {
+        res.sendStatus(400);
+      }
     } else {
       res.sendStatus(400);
     }
-  } else {
-    res.sendStatus(400);
+  } catch (error) {
+    errorHandling.sendError(res, 500, '에러가 발생했습니다.', error);
   }
 });
 
@@ -56,6 +60,6 @@ router.put('/:email', async (req, res) => {
       }
     }
   } catch (error) {
-    errorHandling.sendError(res, 400, '인증 실패', error);
+    errorHandling.sendError(res, 500, '에러가 발생했습니다.', error);
   }
 });

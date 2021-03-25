@@ -1,87 +1,93 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
-  title: 'User Service'
-  version: '1.0.0'
+  title: "User Service"
+  version: "1.0.0"
 servers:
-  - url: 'https://localhost:3000'
+  - url: "https://localhost:3000"
 tags:
-  - name: 'Authentication'
-    description: 'description: 유저 회원가입/비밀번호 변경 인증 API'
+  - name: "Authentication"
+    description: "description: 유저 회원가입/비밀번호 변경 인증 API"
 paths:
   /authentication/:email':
     get:
       tags:
-        - 'Authentication'
-      description: '이메일 인증 페이지를 요청합니다.'
+        - "Authentication"
+      description: "이메일 인증 페이지를 요청합니다."
       parameters:
-        - name: 'email'
+        - name: "email"
           required: true
-          description: '유저 이메일'
+          description: "유저 이메일"
           in: path
           schema:
             type: string
-        - name: 'type'
+        - name: "type"
           required: true
-          description: 'reg'
+          description: "reg"
           in: query
           schema:
             type: string
       responses:
-        200:
+        "200":
           description: 요청이 완료되었습니다. 페이지를 렌더링 합니다.
-        400:
+        "400":
           description: 요청 파라미터가 잘못되었습니다.
+        "500":
+          description: 서버 에러
     post:
       tags:
-        - 'Authentication'
-      description: '패스워드 변경 요청을 합니다.'
+        - "Authentication"
+      description: "패스워드 변경 요청을 합니다."
       parameters:
-        - name: 'email'
+        - name: "email"
           required: true
-          description: '유저 이메일'
+          description: "유저 이메일"
           in: path
           schema:
             type: string
-        - name: 'type'
+        - name: "type"
           required: true
-          description: 'pwd'
+          description: "pwd"
           in: query
           schema:
             type: string
       responses:
-        '200':
-          description: '토큰을 반환합니다.'
+        "200":
+          description: "토큰을 반환합니다."
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   token:
-                    description: '비밀번호 변경에 사용되는 토큰'
+                    description: "비밀번호 변경에 사용되는 토큰"
                     type: string
                 example:
-                  token: 'BmNjzq3ntqLdqKn9wVQtib8bnqjmIz'
-        '400':
-          description: '요청에 실패했습니다.'
+                  token: "BmNjzq3ntqLdqKn9wVQtib8bnqjmIz"
+        "400":
+          description: "요청에 실패했습니다."
+        "500":
+          description: "서버 에러"
     put:
       tags:
-        - 'Authentication'
-      description: '이메일 인증 또는 패스워드 변경을 진행합니다.'
+        - "Authentication"
+      description: "이메일 인증 또는 패스워드 변경을 진행합니다."
       parameters:
-        - name: 'email'
+        - name: "email"
           required: true
-          description: '유저 이메일'
+          description: "유저 이메일"
           in: path
           schema:
             type: string
-        - name: 'type'
+        - name: "type"
           required: true
-          description: 'reg | pwd'
+          description: "reg | pwd"
           in: query
           schema:
             type: string
       responses:
-        '200':
-          description: '요청이 완료되었습니다.'
-        '400':
-          description: '요청에 실패했습니다.'
+        "200":
+          description: "요청이 완료되었습니다."
+        "400":
+          description: "요청에 실패했습니다."
+        "500":
+          description: "서버 에러"

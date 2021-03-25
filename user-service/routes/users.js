@@ -4,6 +4,55 @@ const router = express.Router();
 const { registraton, search, authentication } = require('../lib/query/users');
 const { errorHandling } = require('../lib/routing');
 
+/** 이메일로 회사 조회 */
+router.get('/company/:email', async (req, res) => {
+  try {
+    const user = await search.findCompanyByEmail(req.params.email);
+    res.json(user);
+  } catch (error) {
+    errorHandling.sendError(res, 500, '오류가 발생했습니다.', error);
+  }
+});
+
+/** 사업자등록번호로 회사 조회 */
+router.get('/company/:companyNumber', async (req, res) => {
+  try {
+    const user = await search.findCompanyByEmail(req.params.email);
+    res.json(user);
+  } catch (error) {
+    errorHandling.sendError(res, 500, '오류가 발생했습니다.', error);
+  }
+});
+
+/** 회사 등록 */
+router.post('/company/', async (req, res) => {
+  try {
+    const { regInfo, companyInfo } = req.body;
+    const isRegisterd = await registraton.registerCompany(regInfo, companyInfo);
+    if (isRegisterd) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(400);
+    }
+  } catch (error) {
+    errorHandling.sendError(res, 500, '오류가 발생했습니다.', error);
+  }
+});
+
+/** 가입 인증이 되었는지 확인 */
+router.get('/:email/checked', async (req, res) => {
+  try {
+    const isChecked = await authentication.isEmailChecked(
+      'formail0001@naver.com',
+    );
+    res.json({
+      isChecked,
+    });
+  } catch (error) {
+    errorHandling.sendError(res, 500, '에러가 발생했습니다.', error);
+  }
+});
+
 // router.get('/change_password_test', async (req, res) => {
 //   res.render('change-password-test', {
 //     email: 'formail0001@naver.com',
