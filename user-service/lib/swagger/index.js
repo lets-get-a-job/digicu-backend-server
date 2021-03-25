@@ -1,16 +1,9 @@
 const path = require('path');
-const swaggerJSDoc = require('swagger-jsdoc');
-const definition = {
-  info: {
-    title: 'User Service',
-    version: '1.0.0',
-    description: 'User service for Digicu Application',
-  },
-};
-const usersRoutePath = path.resolve('..', '..', 'routes', 'users.js');
-const options = {
-  definition,
-  apis: [usersRoutePath],
-};
+const YAML = require('yamljs');
+const usersAPIDocument = YAML.load(
+  path.resolve(__dirname, 'docs', 'users.yml'),
+);
 
-module.exports = swaggerJSDoc(options);
+module.exports = {
+  usersAPIDocument,
+};

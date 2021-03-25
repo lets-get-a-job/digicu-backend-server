@@ -3,7 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-const swaggerSpec = require('./lib/swagger');
+const { usersAPIDocument } = require('./lib/swagger');
 const swaggerUI = require('swagger-ui-express');
 
 var usersRouter = require('./routes/users');
@@ -21,6 +21,6 @@ app.set('view engine', 'ejs');
 
 app.use('/users', usersRouter);
 
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(usersAPIDocument));
 
 module.exports = app;
