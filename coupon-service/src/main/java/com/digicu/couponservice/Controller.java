@@ -1,4 +1,4 @@
-package com.digicu.demo;
+package com.digicu.couponservice;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

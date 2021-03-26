@@ -17,7 +17,7 @@
     <modules>
         <module>eureka-server</module>
         <module>zuul-server</module>
-        <module>demo</module>
+        <module>coupon-service</module>
     </modules>
     <build>
         <plugins>

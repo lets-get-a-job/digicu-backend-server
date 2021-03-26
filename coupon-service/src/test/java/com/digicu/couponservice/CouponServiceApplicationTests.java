@@ -1,10 +1,10 @@
-package com.digicu.demo;
+package com.digicu.couponservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoApplicationTests {
+class CouponServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
