@@ -17,10 +17,11 @@ then
   docker build -t ${group}/zuulserver zuul-server/.
   echo "zuulserver done..."
 fi
-
-##################
-if [ $# -eq 2 ]; then
-  if [ "${2}" == "up"]; then
-    docker-compose -f docker/docker-compose.yml up
-  fi
+if [ "${service}" == "all" ] || [ "${service}" == "couponservice" ]
+then
+  echo "couponservice build..."
+  mvn -pl coupon-service clean
+  mvn -pl coupon-service package -DskipTests
+  docker build -t ${group}/couponservice coupon-service/.
+  echo "couponservice done..."
 fi
