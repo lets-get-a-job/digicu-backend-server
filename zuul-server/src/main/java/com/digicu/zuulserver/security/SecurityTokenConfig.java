@@ -21,15 +21,15 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .exceptionHandling().authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .exceptionHandling().authenticationEntryPoint((req, rsp, error) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED, error.getMessage()))
                 .and()
-                    .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                     .antMatchers(jwtConfig.getUri()).permitAll()
                     .antMatchers("/actuator/**").permitAll()
-                    .anyRequest().permitAll();
+                    .anyRequest().authenticated();
     }
 
     @Bean

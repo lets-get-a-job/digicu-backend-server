@@ -32,13 +32,12 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = header.replace(jwtConfig.getPrefix(), "");
+        String token = header.substring(jwtConfig.getPrefix().length());
         try {
             Claims claims = Jwts.parser()
                             .setSigningKey(jwtConfig.getSecret().getBytes())
                             .parseClaimsJws(token)
                             .getBody();
-
             String username = claims.getSubject();
             if(username != null) {
                 @SuppressWarnings("unchecked")
