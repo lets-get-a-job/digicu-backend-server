@@ -19,5 +19,9 @@ services:
     environment:
       - eureka.client.serviceUrl.defaultZone=http://eurekaserver:8761/eureka/
 
-
-
+  userservice:
+    image: digicu/userservice
+    ports:
+      - "3000:3000"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=eurekaserver
