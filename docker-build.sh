@@ -12,24 +12,16 @@ fi
 if [ "${service}" == "all" ] || [ "${service}" == "zuulserver" ]
 then
   echo "zuulserver build..."
-  mvn -pl eureka-server clean
-  mvn -pl eureka-server package -DskipTests
+  mvn -pl zuul-server clean
+  mvn -pl zuul-server package -DskipTests
   docker build -t ${group}/zuulserver zuul-server/.
   echo "zuulserver done..."
 fi
-if [ "${service}" == "all" ] || [ "${service}" == "authserver" ]
+if [ "${service}" == "all" ] || [ "${service}" == "couponservice" ]
 then
-  echo "authserver build..."
-  mvn -pl eureka-server clean
-  mvn -pl eureka-server package -DskipTests
-  docker build -t ${group}/authserver auth-server/.
-  echo "authserver done..."
-fi
-
-
-##################
-if [ $# -eq 2 ]; then
-  if [ "${2}" == "up"]; then
-    docker-compose -f docker/docker-compose.yml up
-  fi
+  echo "couponservice build..."
+  mvn -pl coupon-service clean
+  mvn -pl coupon-service package -DskipTests
+  docker build -t ${group}/couponservice coupon-service/.
+  echo "couponservice done..."
 fi

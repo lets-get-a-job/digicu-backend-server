@@ -15,10 +15,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>auth-server</module>
         <module>eureka-server</module>
-<!--        <module>pos-service</module>-->
         <module>zuul-server</module>
+        <module>coupon-service</module>
     </modules>
     <build>
         <plugins>
