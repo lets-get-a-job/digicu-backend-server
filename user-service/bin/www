@@ -12,6 +12,7 @@ require('dotenv').config();
 var app = require('../app');
 var debug = require('debug')('user-service:server');
 var http = require('http');
+const eurekaHelper = require('../lib/eureka/eureka-helper');
 
 /**
  * Get port from environment and store in Express.
@@ -32,6 +33,7 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+eurekaHelper.registerWithEureka('userservice', port);
 
 /**
  * Normalize a port into a number, string, or false.
