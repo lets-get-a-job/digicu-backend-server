@@ -1,37 +1,52 @@
 spring:
-    application:
-        name: zuulserver
-    profiles:
-        active:
-            default
-    cloud:
-        config:
-            enabled: true
+  application:
+    name: zuulserver
+  profiles:
+    active: default
+  cloud:
+    config:
+      enabled: true
 
 server:
-    port: 5555
+  port: 5555
 
 management:
-    security:
-        enabled: false
-    endpoints:
-        web:
-            exposure:
-                include: '*'
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 eureka:
-    instance:
-        preferIpAddress: true
-    client:
-        registerWithEureka: true
-        fetchRegistry: true
-        serviceUrl:
-            defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
 
 zuul:
-    sensitive-headers: Cookie,Set-Cookie
-    ignored-services: '*'
-    prefix: /api
-    routes:
-        authserver: /auth/**
-        couponservice: /coupon/**
+  sensitive-headers: Cookie,Set-Cookie
+  ignored-services: "coupon"
+  routes:
+    # authforward:
+    #   path: /api/authentication/**
+    #   url: forward:/authentication/authentication
+    authserver:
+      path: /authentication/**
+      service: userservice
+      stripPrefix: false
 
+    # userforward:
+    #   path: /users/**
+    #   url: forward:/users/users
+    userservice:
+      path: /users/**
+      serviceId: userservice
+      stripPrefix: false
+
+    couponservice:
+      path: /coupon/**
+      service: couponservice
+      stripPrefix: true
