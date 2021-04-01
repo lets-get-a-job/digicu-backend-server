@@ -25,3 +25,9 @@ then
   docker build -t ${group}/couponservice coupon-service/.
   echo "couponservice done..."
 fi
+if [ "${service}" == "all" ] || [ "${service}" == "userservice" ]
+then
+  echo "userservice build..."
+  docker build -t ${group}/userservice user-service/.
+  echo "userservice done..."
+fi

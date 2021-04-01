@@ -19,5 +19,25 @@ services:
     environment:
       - eureka.client.serviceUrl.defaultZone=http://eurekaserver:8761/eureka/
 
+  userservice:
+    image: digicu/userservice
+    ports:
+      - "3000:3000"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=eurekaserver
+      - DB_HOST=givven.cyucihz6valb.ap-northeast-2.rds.amazonaws.com
+      - DB_USER=admin
+      - DB_PASS=givven123
+    # depends_on:
+    #   - userdb
 
-
+  # userdb:
+  #   image: mysql:5.7
+  #   restart: always
+  #   ports:
+  #     - "3307:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=digicu123!@#
+  #     - MYSQL_USER=root
+  #     - MYSQL_PASSWORD=digicu123!@#
+  #     - MYSQL_DATABASE=user_db
