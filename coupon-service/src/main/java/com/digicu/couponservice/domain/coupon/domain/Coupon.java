@@ -1,5 +1,7 @@
-package coupon.domain;
+package com.digicu.couponservice.domain.coupon.domain;
 
+import com.digicu.couponservice.domain.coupon.exception.CouponExpireException;
+import com.digicu.couponservice.domain.coupon.exception.CouponUsedException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,12 +58,12 @@ public class Coupon {
 
     public void verifyExpiration(){
        if(LocalDate.now().isAfter(expirationDate)){
-           // throw new CouponExpireException;
+           throw new CouponExpireException();
        }
     }
 
     public void verifyUsed(){
-        if(used) throw new CouponUsedException;
+        if(used) throw new CouponUsedException();
     }
     public void use(){
         verifyExpiration();
