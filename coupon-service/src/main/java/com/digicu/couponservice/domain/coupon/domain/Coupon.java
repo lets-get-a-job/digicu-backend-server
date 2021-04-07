@@ -2,27 +2,25 @@ package com.digicu.couponservice.domain.coupon.domain;
 
 import com.digicu.couponservice.domain.coupon.exception.CouponExpireException;
 import com.digicu.couponservice.domain.coupon.exception.CouponUsedException;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "coupons")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 
-    @Column(name="owner", nullable = false)
+    @Column(name="name", nullable = false)
     private String name;
 
     @Column(name="owner", nullable = false)
@@ -38,21 +36,19 @@ public class Coupon {
     private boolean used;
 
     @Column(name="expire_at", nullable = true)
-    private Timestamp expirationDate;
+    private LocalDate expirationDate;
 
     @Column(name="created_at", nullable = false)
     @CreationTimestamp
-    private Timestamp createdDate;
+    private LocalDateTime createdDate;
 
     @Builder
-    public Coupon(Long id, String name, String owner, String type, int value, Timestamp expirationDate, Timestamp createdDate) {
-        this.id = id;
+    public Coupon(String name, String owner, String type, int value, LocalDate expirationDate) {
         this.name = name;
         this.owner = owner;
         this.type = type;
         this.value = value;
         this.expirationDate = expirationDate;
-        this.createdDate = createdDate;
         this.used = false;
     }
 
@@ -63,7 +59,9 @@ public class Coupon {
     }
 
     public void verifyUsed(){
-        if(used) throw new CouponUsedException();
+        if(used) {
+            throw new CouponUsedException();
+        }
     }
     public void use(){
         verifyExpiration();
