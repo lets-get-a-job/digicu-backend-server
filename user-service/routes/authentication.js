@@ -1,8 +1,90 @@
 const express = require('express');
 const router = express.Router();
 
-const { authentication } = require('../lib/query/users');
+const { authentication, search } = require('../lib/query/users');
 const { errorHandling } = require('../lib/routing');
+const { isLoggedIn } = require('../lib/middleware');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+
+router.post('/login', async (req, res) => {
+  const { email, plain_password } = req.body;
+  const jwtSecret = process.env.JWT_SECRET;
+  try {
+    const { type, hash_string } = await search.findRegistrationByEmail(
+      email,
+      true,
+    );
+    if (bcrypt.compareSync(plain_password, hash_string)) {
+      jwt.sign(
+        {
+          email,
+          admin: type === 'admin',
+        },
+        jwtSecret,
+        {
+          expiresIn: '2h',
+          issuer: 'digicu',
+          subject: 'userLogin',
+        },
+        (err, token) => {
+          if (err) {
+            errorHandling.sendError(res, 500, '토큰 발급 실패', error);
+          }
+          res.send({
+            token,
+            type,
+            expires_in: 7200000, // 2h
+          });
+        },
+      );
+    } else {
+      errorHandling.sendError(
+        res,
+        403,
+        '아이디 또는 패스워드가 다릅니다.',
+        '아이디 또는 패스워드가 다릅니다.',
+      );
+    }
+  } catch (error) {
+    if (error instanceof TypeError) {
+      errorHandling.sendError(
+        res,
+        403,
+        '아이디 또는 패스워드가 다릅니다.',
+        '아이디 또는 패스워드가 다릅니다.',
+      );
+    } else {
+      errorHandling.sendError(res, 500, '에러가 발생했습니다.', error);
+    }
+  }
+});
+
+router.post('/login/refresh', isLoggedIn, (req, res) => {
+  jwt.sign(
+    {
+      email,
+      admin: type === 'admin',
+    },
+    jwtSecret,
+    {
+      expiresIn: '2h',
+      issuer: 'digicu',
+      subject: 'userLogin',
+    },
+    (err, token) => {
+      if (err) {
+        errorHandling.sendError(res, 500, '토큰 발급 실패', error);
+      }
+      res.send({
+        token,
+        type,
+        expires_in: 7200000, // 2h
+      });
+    },
+  );
+});
 
 router.get('/:email', (req, res) => {
   if (req.query.type === 'reg' && req.query.token) {

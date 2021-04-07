@@ -62,6 +62,16 @@ SMTP_SSL = true or false
 SMTP_ORIGIN = 어디서 요청했는지 (예] http://localhost:3000)
 ```
 
+## JWT_SECRET
+
+알려진 JWT_SECRET 값이 필요합니다.
+
+.env 파일에 추가해주세요.
+
+```
+JWT_SECRET = ...
+```
+
 ## TODO
 
 ---
@@ -74,7 +84,7 @@ SMTP_ORIGIN = 어디서 요청했는지 (예] http://localhost:3000)
 - [v] 유저 조회
 - [v] 비밀번호 변경
 - [v] swagger 기반으로 API 작성
-- [ ] jwt 토큰 기반 로그인 서비스
+- [v] jwt 토큰 기반 로그인 서비스
 - [ ] 회원탈퇴
 - [ ] 유저 프로필 변경
 

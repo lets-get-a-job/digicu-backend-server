@@ -12,8 +12,118 @@ tags:
   - name: "Company"
     description: "업체 유저 API"
   - name: "Authentication"
-    description: "유저 이메일 인증 & 비밀번호 변경 인증 API"
+    description: "인증 관련 API"
+  - name: "Test"
+    description: "테스트용 API (개발 모드에서만 라우팅 됨)"
 paths:
+  /tests/isLoggedIn:
+    post:
+      tags:
+        - "Test"
+      summary: 로그인 여부 확인 (테스트 용)
+      description: 로그인 여부 확인
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: jwt 토큰
+              example:
+                token: "jwt token 값"
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: 인증 실패
+  /authentication/login:
+    post:
+      tags:
+        - "Authentication"
+      summary: "로그인"
+      description: hello
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                plain_password:
+                  type: string
+              example:
+                email: "sample@example.com"
+                plain_password: "abcd1234"
+      responses:
+        "200":
+          description: 토큰, 회원 등급, 토큰 만료일(ms) (만료전에 refresh 요청을 보내야 함)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: jwt 토큰
+                  type:
+                    type: string
+                    description: "user | company | admin"
+                  expiresIn:
+                    type: number
+                    description: 만료시간 (7200000ms = 2h, expiresIn 이내로 refresh 요청을 보내주세요)
+                example:
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiLvv71z77-9cEd8Z--_vW5tIiwiZW1haWwiOiJmb3JtYWlsMDAwMUBnbWFpbC5jb20iLCJhZG1pbiI6ZmFsc2UsImlhdCI6MTYxNzc5NDUzOCwiZXhwIjoxNjE3ODAxNzM4LCJpc3MiOiJkaWdpY3UiLCJzdWIiOiJ1c2VyTG9naW4ifQ.iHyBG0JeuaBMTdPNbx_XdRQBHYeXH30PzTUp0ZFLP4A"
+                  type: "company"
+                  expiresIn: 7200000
+        "403":
+          description: 아이디 또는 패스워드가 다릅니다.
+        "500":
+          description: 서버 에러
+  /authentication/login/refresh:
+    post:
+      tags:
+        - "Authentication"
+      summary: "로그인 갱신 요청"
+      description: 새롭게 토큰을 발급합니다. 기존 토큰은 클라이언트에서 지워주세요.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: jwt 토큰
+              example:
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiLvv71z77-9cEd8Z--_vW5tIiwiZW1haWwiOiJmb3JtYWlsMDAwMUBnbWFpbC5jb20iLCJhZG1pbiI6ZmFsc2UsImlhdCI6MTYxNzc5NDUzOCwiZXhwIjoxNjE3ODAxNzM4LCJpc3MiOiJkaWdpY3UiLCJzdWIiOiJ1c2VyTG9naW4ifQ.iHyBG0JeuaBMTdPNbx_XdRQBHYeXH30PzTUp0ZFLP4A"
+      responses:
+        "200":
+          description: 토큰, 회원 등급, 토큰 만료일(ms) (만료전에 refresh 요청을 보내야 함)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: jwt 토큰
+                  type:
+                    type: string
+                    description: "user | company | admin"
+                  expiresIn:
+                    type: number
+                    description: 만료시간 (7200000ms = 2h, expiresIn 이내로 refresh 요청을 보내주세요)
+                example:
+                  token: "새로운 토큰 번호"
+                  type: "company"
+                  expiresIn: 7200000
+        "403":
+          description: 인증에 실패했습니다.
+        "500":
+          description: 서버 에러
   /users/:email:
     get:
       tags:
