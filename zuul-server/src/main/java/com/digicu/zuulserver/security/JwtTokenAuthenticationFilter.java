@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.plaf.SeparatorUI;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,8 +41,12 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                             .getBody();
             String username = claims.getSubject();
             if(username != null) {
+                //List<String> authorities = (List<String>)claims.get("type");
                 @SuppressWarnings("unchecked")
-                List<String> authorities = (List<String>)claims.get("authorities");
+                String authority = (String)claims.get("type");
+                authority = "ROLE_" + authority.toUpperCase();
+                System.out.println(">>>> " + authority);
+                List<String> authorities = Arrays.asList(authority);
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())

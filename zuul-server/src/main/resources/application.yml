@@ -27,20 +27,13 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 zuul:
-  sensitive-headers: Cookie,Set-Cookie
-  ignored-services: "coupon"
+  sensitive-headers: Set-Cookie, Cookie
   routes:
-    # authforward:
-    #   path: /api/authentication/**
-    #   url: forward:/authentication/authentication
     authserver:
       path: /authentication/**
-      service: userservice
+      serviceId: userservice
       stripPrefix: false
 
-    # userforward:
-    #   path: /users/**
-    #   url: forward:/users/users
     userservice:
       path: /users/**
       serviceId: userservice
@@ -48,5 +41,5 @@ zuul:
 
     couponservice:
       path: /coupon/**
-      service: couponservice
-      stripPrefix: true
+      serviceId: couponservice
+      stripPrefix: false

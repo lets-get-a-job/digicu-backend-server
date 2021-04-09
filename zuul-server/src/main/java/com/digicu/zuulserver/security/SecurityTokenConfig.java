@@ -19,17 +19,19 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        (req, rsp, error) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED, error.getMessage()))
                 .and()
-                .exceptionHandling().authenticationEntryPoint((req, rsp, error) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED, error.getMessage()))
-                .and()
-                .addFilterBefore(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenAuthenticationFilter(jwtConfig),
+                        UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                    .antMatchers(jwtConfig.getUri()).permitAll()
-                    .antMatchers("/actuator/**").permitAll()
-                    .anyRequest().authenticated();
+                .antMatchers("/actuator/**").permitAll()
+                .antMatchers("/authentication/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/**").permitAll()
+                .antMatchers("/coupon/**").hasAnyRole("ADMIN", "COMPANY") // TEST위해 COMAPY함 나중에 COUSTOMER등으로 바꿔야함
+                .anyRequest().authenticated();
     }
 
     @Bean

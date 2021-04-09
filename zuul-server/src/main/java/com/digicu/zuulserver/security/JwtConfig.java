@@ -3,9 +3,6 @@ package com.digicu.zuulserver.security;
 import org.springframework.beans.factory.annotation.Value;
 
 public class JwtConfig {
-    @Value("${security.jwt.uri:/api/auth/**}")
-    private String Uri;
-
     @Value("${security.jwt.header:Authorization}")
     private String header;
 
@@ -17,10 +14,6 @@ public class JwtConfig {
 
     @Value("${security.jwt.secret:JwtSecretKey}")
     private String secret;
-
-    public String getUri() {
-        return Uri;
-    }
 
     public String getHeader() {
         return header;
