@@ -17,28 +17,37 @@ router.post('/login', async (req, res) => {
       true,
     );
     if (bcrypt.compareSync(plain_password, hash_string)) {
-      jwt.sign(
-        {
-          email,
-          admin: type === 'admin',
-        },
-        jwtSecret,
-        {
-          expiresIn: '2h',
-          issuer: 'digicu',
-          subject: 'userLogin',
-        },
-        (err, token) => {
-          if (err) {
-            errorHandling.sendError(res, 500, '토큰 발급 실패', error);
-          }
-          res.send({
-            token,
-            type,
-            expires_in: 7200000, // 2h
-          });
-        },
-      );
+      if (await authentication.isEmailChecked(email)) {
+        jwt.sign(
+          {
+            email,
+            admin: type === 'admin',
+          },
+          jwtSecret,
+          {
+            expiresIn: '2h',
+            issuer: 'digicu',
+            subject: 'userLogin',
+          },
+          (err, token) => {
+            if (err) {
+              errorHandling.sendError(res, 500, '토큰 발급 실패', error);
+            }
+            res.send({
+              token,
+              type,
+              expires_in: 7200000, // 2h
+            });
+          },
+        );
+      } else {
+        errorHandling.sendError(
+          res,
+          401,
+          '이메일 인증되지 않은 아이디 입니다.',
+          '이메일 인증되지 않은 아이디 입니다.',
+        );
+      }
     } else {
       errorHandling.sendError(
         res,
@@ -66,6 +75,7 @@ router.post('/login/refresh', isLoggedIn, (req, res) => {
     {
       email,
       admin: type === 'admin',
+      type,
     },
     jwtSecret,
     {

@@ -78,6 +78,8 @@ paths:
                   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiLvv71z77-9cEd8Z--_vW5tIiwiZW1haWwiOiJmb3JtYWlsMDAwMUBnbWFpbC5jb20iLCJhZG1pbiI6ZmFsc2UsImlhdCI6MTYxNzc5NDUzOCwiZXhwIjoxNjE3ODAxNzM4LCJpc3MiOiJkaWdpY3UiLCJzdWIiOiJ1c2VyTG9naW4ifQ.iHyBG0JeuaBMTdPNbx_XdRQBHYeXH30PzTUp0ZFLP4A"
                   type: "company"
                   expiresIn: 7200000
+        "401":
+          description: 이메일 인증되지 않은 아이디 입니다.
         "403":
           description: 아이디 또는 패스워드가 다릅니다.
         "500":

@@ -125,7 +125,7 @@ async function registerCompany(regInfo, companyInfo) {
       // SMTP로 인증 메일을 보냅니다.
       await sendAuthEmail(
         regInfo.email,
-        '"Digicu" <formail0001@naver.com>',
+        `"Digicu" <${process.env.SMTP_FROM}>`,
         token,
       );
       return true;

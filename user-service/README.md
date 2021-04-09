@@ -53,6 +53,8 @@ if (process.env.NODE_ENV === 'production') {
 
 .env파일에 STMP 정보를 입력해주세요.
 
+SMTP_USER에 맞는 SMTP_FROM을 작성해주세요.
+
 ```
 SMTP_USER = your_user_id
 SMTP_PASS = your_mail_password
@@ -60,6 +62,7 @@ SMTP_HOST = your_mail_host
 SMTP_PORT = your_smtp_port
 SMTP_SSL = true or false
 SMTP_ORIGIN = 어디서 요청했는지 (예] http://localhost:3000)
+SMTP_FROM = your_user_id@domain
 ```
 
 ## JWT_SECRET
