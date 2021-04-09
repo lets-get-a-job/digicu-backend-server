@@ -10,6 +10,7 @@ module.exports = {
   sendError(res, status, errorMessage, debugMessage, headers) {
     res.status(status);
     if (process.env.NODE_ENV === 'development') {
+      console.log(`error message: ${debugMessage}`);
       res.send(`error message: ${debugMessage}`);
     } else {
       res.set;
@@ -26,6 +27,7 @@ module.exports = {
   sendErrorJSON(res, status, errorMessage, debugMessage) {
     res.status(status);
     if (process.env.NODE_ENV === 'development') {
+      console.log(`error message: ${debugMessage}`);
       res.send(`error message: ${debugMessage}`);
     } else {
       res.json(errorMessage);

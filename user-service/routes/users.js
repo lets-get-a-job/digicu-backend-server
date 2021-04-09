@@ -61,7 +61,11 @@ router.post('/company', async (req, res) => {
       res.sendStatus(400);
     }
   } catch (error) {
-    errorHandling.sendError(res, 500, '오류가 발생했습니다.', error);
+    if (error.errno === 1062) {
+      errorHandling.sendError(res, 400, '이미 존재하는 메일입니다.', error);
+    } else {
+      errorHandling.sendError(res, 500, '오류가 발생했습니다.', error);
+    }
   }
 });
 

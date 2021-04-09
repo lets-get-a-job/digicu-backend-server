@@ -53,6 +53,8 @@ if (process.env.NODE_ENV === 'production') {
 
 .env파일에 STMP 정보를 입력해주세요.
 
+SMTP_USER에 맞는 SMTP_FROM을 작성해주세요.
+
 ```
 SMTP_USER = your_user_id
 SMTP_PASS = your_mail_password
@@ -60,6 +62,17 @@ SMTP_HOST = your_mail_host
 SMTP_PORT = your_smtp_port
 SMTP_SSL = true or false
 SMTP_ORIGIN = 어디서 요청했는지 (예] http://localhost:3000)
+SMTP_FROM = your_user_id@domain
+```
+
+## JWT_SECRET
+
+알려진 JWT_SECRET 값이 필요합니다.
+
+.env 파일에 추가해주세요.
+
+```
+JWT_SECRET = ...
 ```
 
 ## TODO
@@ -74,7 +87,7 @@ SMTP_ORIGIN = 어디서 요청했는지 (예] http://localhost:3000)
 - [v] 유저 조회
 - [v] 비밀번호 변경
 - [v] swagger 기반으로 API 작성
-- [ ] jwt 토큰 기반 로그인 서비스
+- [v] jwt 토큰 기반 로그인 서비스
 - [ ] 회원탈퇴
 - [ ] 유저 프로필 변경
 
