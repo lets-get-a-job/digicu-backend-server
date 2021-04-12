@@ -11,7 +11,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.plaf.SeparatorUI;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -19,9 +18,11 @@ import java.util.stream.Collectors;
 
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     private final JwtConfig jwtConfig;
+    private final JwtUtil jwtUtil;
 
-    public JwtTokenAuthenticationFilter(JwtConfig jwtConfig) {
+    public JwtTokenAuthenticationFilter(JwtConfig jwtConfig, JwtUtil jwtUtil) {
         this.jwtConfig = jwtConfig;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -40,6 +41,8 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                             .parseClaimsJws(token)
                             .getBody();
             String username = claims.getSubject();
+            jwtUtil.setEmail(username);
+
             if(username != null) {
                 //List<String> authorities = (List<String>)claims.get("type");
                 @SuppressWarnings("unchecked")

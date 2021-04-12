@@ -35,6 +35,9 @@ public class Coupon {
     @Column(name="used", nullable = false)
     private boolean used;
 
+    @Column(name="count", nullable = false)
+    private int count;
+
     @Column(name="expire_at", nullable = true)
     private LocalDate expirationDate;
 
@@ -43,11 +46,12 @@ public class Coupon {
     private LocalDateTime createdDate;
 
     @Builder
-    public Coupon(String name, String owner, String type, int value, LocalDate expirationDate) {
+    public Coupon(String name, String owner, String type, int value, int count, LocalDate expirationDate) {
         this.name = name;
         this.owner = owner;
         this.type = type;
         this.value = value;
+        this.count = 1;
         this.expirationDate = expirationDate;
         this.used = false;
     }

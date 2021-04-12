@@ -13,7 +13,7 @@ var app = require("../app");
 var debug = require("debug")("user-service:server");
 var http = require("http");
 // docker로 다른 서비스들이랑 한번에 띄울 땐 주석 풀어주어야 합니다.
-// const eurekaHelper = require("../lib/eureka/eureka-helper");
+const eurekaHelper = require("../lib/eureka/eureka-helper");
 
 /**
  * Get port from environment and store in Express.

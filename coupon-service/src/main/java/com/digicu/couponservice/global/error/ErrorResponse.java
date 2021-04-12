@@ -12,7 +12,6 @@ import java.util.List;
 public class ErrorResponse {
     private String message;
     private int status;
-    private List<FieldError> errors;
 
     public ErrorResponse(final ErrorCode errorCode) {
         this.message = errorCode.getMessage();

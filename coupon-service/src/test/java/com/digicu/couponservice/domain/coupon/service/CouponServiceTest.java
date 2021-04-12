@@ -1,8 +1,8 @@
 package com.digicu.couponservice.domain.coupon.service;
 
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
-import com.digicu.couponservice.domain.coupon.domain.CouponSpec;
 import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
+import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
 import com.digicu.couponservice.test.IntergrationTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class CouponServiceTest extends IntergrationTest{
         spec = CouponSpec.builder()
                 .name("용후커피 10장 쿠폰")
                 .type("PRODUCT")
-                .validPeriod(60)
+                .period(60)
                 .value(4500)
                 .build();
     }

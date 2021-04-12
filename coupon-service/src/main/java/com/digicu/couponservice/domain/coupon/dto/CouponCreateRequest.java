@@ -1,18 +1,17 @@
 package com.digicu.couponservice.domain.coupon.dto;
 
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
-import com.digicu.couponservice.domain.coupon.domain.CouponSpec;
+import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+
+;
 
 @Getter
 @Builder
 public class CouponCreateRequest {
-    private Long couponSpecId;
     private String owner;
 
 
@@ -20,7 +19,7 @@ public class CouponCreateRequest {
         return Coupon.builder()
                 .name(spec.getName())
                 .type(spec.getType())
-                .expirationDate(calculateExpirationDate(spec.getValidPeriod()))
+                .expirationDate(calculateExpirationDate(spec.getPeriod()))
                 .owner(owner)
                 .value(spec.getValue())
                 .build();

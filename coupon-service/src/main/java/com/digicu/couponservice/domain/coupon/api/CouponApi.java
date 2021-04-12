@@ -1,11 +1,7 @@
 package com.digicu.couponservice.domain.coupon.api;
 
-import com.digicu.couponservice.domain.coupon.domain.Coupon;
-import com.digicu.couponservice.domain.coupon.domain.CouponSpec;
-import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
 import com.digicu.couponservice.domain.coupon.service.CouponService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +13,7 @@ public class CouponApi {
     private CouponService couponService;
 
     /*
-    ResponseEntity createCoupon(CouponCreateRequest dto) {
+    ResponseEntity createCoupon(Long couponSpecId, CouponCreateRequest dto) {
         // dto.getCouponSpecId()로 spec 정보 받아오기
         CouponSpec spec = new CouponSpec();
         final Coupon coupon = couponService.create(dto, spec);
