@@ -16,10 +16,6 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtConfig jwtConfig;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -41,7 +37,4 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
     public JwtConfig jwtConfig() {
         return new JwtConfig();
     }
-
-    @Bean
-    public JwtUtil jwtUtil() { return new JwtUtil();}
 }

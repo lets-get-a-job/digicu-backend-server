@@ -20,7 +20,6 @@ public class CouponServiceTest extends IntergrationTest{
     @Before
     public void setUp() throws Exception{
         dto = CouponCreateRequest.builder()
-                .couponSpecId(1234l)
                 .owner("yonghu")
                 .build();
         spec = CouponSpec.builder()

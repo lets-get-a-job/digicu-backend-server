@@ -12,6 +12,9 @@ public class JwtConfig {
     @Value("${security.jwt.secret:86ae5efb008c10740e15}")
     private String secret;
 
+    @Value("${security.jwt.expiration:#{7200000}}")
+    private int expiration;
+
     public String getHeader() {
         return header;
     }

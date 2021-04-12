@@ -1,16 +1,14 @@
 package com.digicu.couponservice.domain.couponspec.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.*;
 
 @Table(name = "coupon_spec")
-@Getter
-@Builder
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
+@Getter
 public class CouponSpec {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,4 +32,15 @@ public class CouponSpec {
 
     @Column(name="owner", nullable = false)
     private String owner;
+
+    @Builder
+    public CouponSpec(Long id, int goal, String type, String name, int period, int value, String owner) {
+        this.id = id;
+        this.goal = goal;
+        this.type = type;
+        this.name = name;
+        this.period = period;
+        this.value = value;
+        this.owner = owner;
+    }
 }
