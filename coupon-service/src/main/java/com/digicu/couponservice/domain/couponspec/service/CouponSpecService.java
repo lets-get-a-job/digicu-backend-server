@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class CouponSpecService {
-    private CouponSpecRepository couponSpecRepository;
+    final private CouponSpecRepository couponSpecRepository;
 
-    public CouponSpec create(CouponSpecCreateRequest dto){
-        return couponSpecRepository.save(dto.toEntity());
+    public CouponSpec create(String email, CouponSpecCreateRequest dto){
+        return couponSpecRepository.save(dto.toEntity(email));
     }
 }

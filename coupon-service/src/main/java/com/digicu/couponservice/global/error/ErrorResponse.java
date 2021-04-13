@@ -1,6 +1,7 @@
 package com.digicu.couponservice.global.error;
 
 import com.digicu.couponservice.global.error.exception.ErrorCode;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ErrorResponse {
     private String message;
     private int status;
@@ -27,6 +28,7 @@ public class ErrorResponse {
     private ErrorResponse(final ErrorCode errorCode) {
         this.message = errorCode.getMessage();
         this.status = errorCode.getStatus();
+        this.errors = new ArrayList<>();
     }
 
     public static ErrorResponse of(final ErrorCode errorCode){
@@ -43,6 +45,8 @@ public class ErrorResponse {
         return new ErrorResponse(ErrorCode.INVALID_INPUT_VALUE, errors);
     }
 
+    @Getter
+    @NoArgsConstructor
     public static class FieldError {
         private String field;
         private String value;
@@ -60,7 +64,7 @@ public class ErrorResponse {
             return fieldErrors;
         }
 
-        public static List<FieldError> of(final BindingResult bindingResult){
+        private static List<FieldError> of(final BindingResult bindingResult){
             final List<org.springframework.validation.FieldError> fieldErrors = bindingResult.getFieldErrors();
             return fieldErrors.stream()
                     .map(error -> new FieldError(

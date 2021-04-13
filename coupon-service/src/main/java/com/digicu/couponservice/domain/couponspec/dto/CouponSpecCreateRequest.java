@@ -4,22 +4,26 @@ import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 @Builder
 @Getter
 public class CouponSpecCreateRequest {
-    private String name;
-    private int value;
-    private String type;
-    private String owner;
-    private int goal;
-    private int period;
 
-    public CouponSpec toEntity(){
+    @NotEmpty private String name;
+    @NotNull private int value;
+    @NotEmpty private String type;
+    private String owner;
+    @NotNull private int goal;
+    @NotNull private int period;
+
+    public CouponSpec toEntity(final String email){
         CouponSpec couponSpec = CouponSpec.builder()
                 .name(name)
                 .value(value)
                 .type(type)
-                .owner(owner)
+                .owner(email)
                 .period(period)
                 .goal(goal)
                 .build();
