@@ -1,19 +1,26 @@
 spring:
   application:
     name: couponservice
+
   profiles:
     active:
       default
   cloud:
     config:
       enabled: true
-  h2:
-    console:
-      enabled: true
+#  h2:
+#    console:
+#      enabled: true
   jpa:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+
+  datasource:
+    url: jdbc:mariadb://givven.cyucihz6valb.ap-northeast-2.rds.amazonaws.com:3306/coupon_db
+    username: admin
+    password: givven123
+    driver-class-name: org.mariadb.jdbc.Driver
 
 server:
   port: 8501
