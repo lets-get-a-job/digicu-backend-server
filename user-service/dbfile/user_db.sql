@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- 생성 시간: 21-04-14 19:50
+-- 생성 시간: 21-04-14 21:20
 -- 서버 버전: 8.0.23-0ubuntu0.20.04.1
 -- PHP 버전: 7.4.3
 
@@ -50,13 +50,6 @@ CREATE TABLE `company_profile` (
   `company_homepage` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- 테이블의 덤프 데이터 `company_profile`
---
-
-INSERT INTO `company_profile` (`email`, `company_number`, `company_name`, `company_phone`, `company_address`, `company_owner`, `company_homepage`) VALUES
-('formail0001@gmail.com', '1234567890', 'ddddd', '01000000000', 'ddddd', 'ddddd', 'https://www.google.com');
-
 -- --------------------------------------------------------
 
 --
@@ -70,13 +63,6 @@ CREATE TABLE `registration` (
   `type` varchar(10) NOT NULL,
   `letter_ok` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- 테이블의 덤프 데이터 `registration`
---
-
-INSERT INTO `registration` (`email`, `hash_string`, `registration_date`, `type`, `letter_ok`) VALUES
-('formail0001@gmail.com', '$2b$10$Km6zgbdrjnCD1u7/J8hzP.vs3y0oTJ3GSmVA/JcjWTeuiaqJGdRlm', '2021-04-09', 'company', '2021-04-09');
 
 -- --------------------------------------------------------
 
