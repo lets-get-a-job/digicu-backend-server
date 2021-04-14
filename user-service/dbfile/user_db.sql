@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- 생성 시간: 21-04-14 14:54
+-- 생성 시간: 21-04-14 19:07
 -- 서버 버전: 8.0.23-0ubuntu0.20.04.1
 -- PHP 버전: 7.4.3
 
@@ -89,7 +89,9 @@ CREATE TABLE `social_profile` (
   `email` varchar(320) NOT NULL,
   `nickname` varchar(20) NOT NULL,
   `profile_image` varchar(255) NOT NULL,
-  `thumbnail_image` varchar(255) NOT NULL
+  `thumbnail_image` varchar(255) NOT NULL,
+  `registration_date` date NOT NULL,
+  `letter_ok` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -119,8 +121,7 @@ ALTER TABLE `registration`
 -- 테이블의 인덱스 `social_profile`
 --
 ALTER TABLE `social_profile`
-  ADD PRIMARY KEY (`social_id`),
-  ADD KEY `social_profile_ibfk_1` (`email`);
+  ADD PRIMARY KEY (`social_id`);
 
 --
 -- 덤프된 테이블의 제약사항
@@ -137,12 +138,6 @@ ALTER TABLE `authentication`
 --
 ALTER TABLE `company_profile`
   ADD CONSTRAINT `company_profile_ibfk_1` FOREIGN KEY (`email`) REFERENCES `registration` (`email`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- 테이블의 제약사항 `social_profile`
---
-ALTER TABLE `social_profile`
-  ADD CONSTRAINT `social_profile_ibfk_1` FOREIGN KEY (`email`) REFERENCES `registration` (`email`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
