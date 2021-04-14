@@ -42,8 +42,10 @@ async function query(sqlActions) {
     connection.release();
     return sqlResponse;
   } catch (error) {
-    await connection.rollback(); // 요청한 쿼리 중 하나라도 실패하면 rollback
-    connection.release();
+    if (connection) {
+      await connection.rollback(); // 요청한 쿼리 중 하나라도 실패하면 rollback
+      connection.release();
+    }
     throw error;
   }
 }
