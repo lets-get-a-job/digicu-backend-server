@@ -16,6 +16,9 @@ router.post('/login', async (req, res) => {
       email,
       true,
     );
+    if (type !== 'admin' && type !== 'company') {
+      errorHandling.sendError(res, 403, '업체가 아닙니다.', '업체가 아닙니다.');
+    }
     if (bcrypt.compareSync(plain_password, hash_string)) {
       if (await authentication.isEmailChecked(email)) {
         jwt.sign(

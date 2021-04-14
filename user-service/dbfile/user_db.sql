@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- 생성 시간: 21-04-14 19:07
+-- 생성 시간: 21-04-14 19:50
 -- 서버 버전: 8.0.23-0ubuntu0.20.04.1
 -- PHP 버전: 7.4.3
 
@@ -86,6 +86,7 @@ INSERT INTO `registration` (`email`, `hash_string`, `registration_date`, `type`,
 
 CREATE TABLE `social_profile` (
   `social_id` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
   `email` varchar(320) NOT NULL,
   `nickname` varchar(20) NOT NULL,
   `profile_image` varchar(255) NOT NULL,

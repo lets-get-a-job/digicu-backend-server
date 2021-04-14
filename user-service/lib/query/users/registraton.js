@@ -6,7 +6,7 @@ const isEmail = require('validator/lib/isEmail');
 const isURL = require('validator/lib/isURL');
 const isNumeric = require('validator/lib/isNumeric');
 
-function isFormValid(
+function isCompanyFormValid(
   email,
   letterOK,
   companyNumber,
@@ -22,6 +22,15 @@ function isFormValid(
       companyPhone.length === 10 ||
       companyPhone.length === 8) &&
     isURL(companyHomepage)
+  );
+}
+
+function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
+  return (
+    isEmail(email) &&
+    isURL(profile_image) &&
+    isURL(thumbnail_image) &&
+    typeof letter_ok === 'boolean'
   );
 }
 
@@ -49,12 +58,60 @@ function isFormValid(
 /**
  * 소셜 가입 정보
  * @typedef {{
+ * social_id: string
+ * token: string
  * email: string
  * nickname: string
  * profile_image: string
  * thumbnail_image: string
+ * letter_ok: boolean
  * }} SocialInformation
  */
+
+/**
+ *
+ * @param {SocialInformation} socialInfo
+ * @returns {Promise<boolean>} 회원가입 성공 여부
+ */
+async function registerSocial(socialInfo) {
+  try {
+    // form validation
+    if (
+      !isSocialFormValid(
+        socialInfo.email,
+        socialInfo.profile_image,
+        socialInfo.thumbnail_image,
+        socialInfo.letter_ok,
+      )
+    ) {
+      return false;
+    }
+    const responses = await query([
+      {
+        sql: 'INSERT INTO social_profile VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        values: [
+          socialInfo.social_id,
+          socialInfo.token,
+          socialInfo.email,
+          socialInfo.nickname,
+          socialInfo.profile_image,
+          socialInfo.thumbnail_image
+            ? socialInfo.thumbnail_image
+            : socialInfo.profile_image,
+          new Date(),
+          socialInfo.letter_ok ? new Date() : null,
+        ],
+      },
+    ]);
+    if (responses[0].rows.affectedRows > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    throw e;
+  }
+}
 
 /**
  *
@@ -76,7 +133,7 @@ async function registerCompany(regInfo, companyInfo) {
     } = companyInfo;
     // 입력된 폼이 유효한지 검사합니다.
     if (
-      isFormValid(
+      isCompanyFormValid(
         regInfo.email,
         regInfo.letter_ok,
         company_number,
@@ -91,7 +148,7 @@ async function registerCompany(regInfo, companyInfo) {
       const token = randomstring.generate(30);
 
       // 회원 가입
-      await query([
+      const responses = await query([
         // 업주 등록 쿼리
         {
           sql: 'INSERT INTO registration VALUES (?, ?, ?, ?, ?)',
@@ -122,13 +179,17 @@ async function registerCompany(regInfo, companyInfo) {
           values: [regInfo.email, token, 'reg', null], // 이메일 인증 토큰은 만료기간이 없습니다.
         },
       ]);
-      // SMTP로 인증 메일을 보냅니다.
-      await sendAuthEmail(
-        regInfo.email,
-        `"Digicu" <${process.env.SMTP_FROM}>`,
-        token,
-      );
-      return true;
+      if (responses[0].rows.affectedRows > 0) {
+        // SMTP로 인증 메일을 보냅니다.
+        await sendAuthEmail(
+          regInfo.email,
+          `"Digicu" <${process.env.SMTP_FROM}>`,
+          token,
+        );
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -137,10 +198,9 @@ async function registerCompany(regInfo, companyInfo) {
   }
 }
 
-async function registerUser(regInfo, socialInfo) {}
-
 async function registerAdmin(regInfo) {}
 
 module.exports = {
   registerCompany,
+  registerSocial,
 };

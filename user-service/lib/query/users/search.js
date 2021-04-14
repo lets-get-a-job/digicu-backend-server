@@ -24,6 +24,18 @@ const { query } = require('../index');
  */
 
 /**
+ * 소셜 가입 정보
+ * @typedef {{
+ * email: string
+ * token: string
+ * nickname: string
+ * profile_image: string
+ * thumbnail_image: string
+ * letter_ok: boolean
+ * }} SocialInformation
+ */
+
+/**
  * 회원 등록번호 조회
  * @param {string} email
  * @param {boolean?} withPassword password도 같이 조회할지
@@ -98,8 +110,44 @@ async function findCompanyByCompanyNumber(companyNumber) {
   }
 }
 
+/**
+ * 소셜 아이디로 소셜 프로필 조회
+ * @param {string} socialID
+ * @returns {Promise<SocialInformation | null>}
+ */
+async function findSocialBySocialID(socialID) {
+  try {
+    const response = await query([
+      {
+        sql:
+          'SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok FROM social_profile WHERE social_id = ?',
+        values: [socialID],
+      },
+    ]);
+    const rows = response[0].rows;
+    if (rows.length > 0) {
+      rows[0].registration_date = new Date(
+        rows[0].registration_date,
+      ).toLocaleDateString('ko-KR');
+
+      if (rows[0].letter_ok) {
+        rows[0].letter_ok = new Date(rows[0].letter_ok).toLocaleDateString(
+          'ko-KR',
+        );
+      }
+
+      return rows[0];
+    } else {
+      return null;
+    }
+  } catch (e) {
+    throw e;
+  }
+}
+
 module.exports = {
   findRegistrationByEmail,
   findCompanyByEmail,
   findCompanyByCompanyNumber,
+  findSocialBySocialID,
 };

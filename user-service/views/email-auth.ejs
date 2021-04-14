@@ -30,7 +30,7 @@
           loaderElement.classList.toggle('loader-5');
         }
       };
-      request.open('PUT', '/authentication/<%- email %>?type=reg');
+      request.open('PATCH', '/authentication/<%- email %>?type=reg');
       request.setRequestHeader('Content-Type', 'application/json');
       request.send(
         JSON.stringify({
