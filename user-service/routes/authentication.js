@@ -25,6 +25,7 @@ router.post('/login', async (req, res) => {
           {
             email,
             admin: type === 'admin',
+            type,
           },
           jwtSecret,
           {

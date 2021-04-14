@@ -28,6 +28,7 @@ services:
       - DB_HOST=givven.cyucihz6valb.ap-northeast-2.rds.amazonaws.com
       - DB_USER=admin
       - DB_PASS=givven123
+      - SMTP_ORIGIN=http://127.0.0.1:3000
     # depends_on:
     #   - userdb
 
