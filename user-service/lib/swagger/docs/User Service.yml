@@ -16,6 +16,132 @@ tags:
   - name: "Test"
     description: "테스트용 API (개발 모드에서만 라우팅 됨)"
 paths:
+  /social/registration/:social_id:
+    get:
+      tags:
+        - "Social"
+      summary: "소셜 가입 확인"
+      description: "소셜 가입이 되었는지 확인합니다."
+      parameters:
+        - name: "social_id"
+          required: true
+          description: "소셜 id"
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "가입 된 계정입니다."
+        "404":
+          description: "가입 되지 않은 계정입니다."
+        "500":
+          description: "서버 에러"
+  /social/registration:
+    post:
+      tags:
+        - "Social"
+      summary: "소셜 가입 진행"
+      description: "DB에 토큰 레코드를 새로 생성하고, 소셜 프로필을 새롭게 저장합니다."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - social_id
+                - email
+                - nickname
+                - profile_image
+              properties:
+                token:
+                  type: string
+                  description: "토큰 값"
+                social_id:
+                  type: string
+                  description: "소셜 아이디"
+                email:
+                  type: string
+                  description: "유저 이메일"
+                nickname:
+                  type: string
+                  description: "유저 닉네임(Display Name)"
+                profile_image:
+                  type: string
+                  description: "프로필 이미지 URI"
+                thumbnail_image:
+                  type: string
+                  description: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+              example:
+                token: "토큰 값"
+                social_id: "소셜 아이디 값"
+                email: "유저 이메일"
+                nickname: "유저 닉네임(Display Name)"
+                profile_image: "프로필 이미지 URI"
+                thumbnail_image: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+      responses:
+        "200":
+          description: "토큰 레코드를 생성했고, 전달 받은 파라미터로 소셜 프로필을 만들었습니다."
+        "400":
+          description: "파라미터가 잘못 되었습니다."
+        "500":
+          description: "서버 에러"
+  /social/update:
+    patch:
+      tags:
+        - "Social"
+      summary: "토큰 갱신, 유저 업데이트"
+      description: "토큰을 갱신하고, 유저를 업데이트 합니다. 앱에서 로그인 또는 토큰이 만료되어 새로 갱신했을 경우 해당 API를 호출해주세요."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - social_id
+                - email
+                - nickname
+                - profile_image
+              properties:
+                token:
+                  type: string
+                  description: "토큰 값"
+                social_id:
+                  type: string
+                  description: "소셜 아이디"
+                email:
+                  type: string
+                  description: "유저 이메일"
+                nickname:
+                  type: string
+                  description: "유저 닉네임(Display Name)"
+                profile_image:
+                  type: string
+                  description: "프로필 이미지 URI"
+                thumbnail_image:
+                  type: string
+                  description: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+                letter_ok:
+                  type: boolean
+                  description: "이메일 수신 동의 여부"
+              example:
+                token: "토큰 값"
+                social_id: "소셜 아이디 값"
+                email: "유저 이메일"
+                nickname: "유저 닉네임(Display Name)"
+                profile_image: "프로필 이미지 URI"
+                thumbnail_image: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+                letter_ok: true
+      responses:
+        "200":
+          description: "토큰을 갱신했고, 전달 받은 파라미터로 유저를 업데이트 했습니다."
+        "400":
+          description: "파라미터가 잘못 되었습니다."
+        "401":
+          description: "social id가 잘못 되었습니다."
+        "500":
+          description: "서버 에러"
   /tests/isLoggedIn:
     post:
       tags:
@@ -49,6 +175,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - email
+                - plain_password
               properties:
                 email:
                   type: string
@@ -95,6 +224,8 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - token
               properties:
                 token:
                   type: string
@@ -315,7 +446,7 @@ paths:
           description: "요청에 실패했습니다."
         "500":
           description: "서버 에러"
-    put:
+    patch:
       tags:
         - "Authentication"
       summary: "이메일 인증 또는 패스워드 변경"
@@ -351,6 +482,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - reg_info
+                - company_info
               properties:
                 reg_info:
                   description: "기본 등록 정보"

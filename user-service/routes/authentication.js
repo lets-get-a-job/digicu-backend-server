@@ -127,7 +127,7 @@ router.post('/:email', async (req, res) => {
   }
 });
 
-router.put('/:email', async (req, res) => {
+router.patch('/:email', async (req, res) => {
   try {
     if (req.query.type === 'reg') {
       const isAuthOk = await authentication.confirmEmailAuth(
