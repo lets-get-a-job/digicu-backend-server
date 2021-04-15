@@ -43,3 +43,5 @@ zuul:
       path: /coupon/**
       serviceId: couponservice
       stripPrefix: false
+
+  ignore-security-headers: false
