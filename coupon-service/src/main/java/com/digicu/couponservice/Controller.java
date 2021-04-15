@@ -9,7 +9,7 @@ import java.util.Map;
 
 @RestController
 public class Controller {
-    @GetMapping("/coupon/hi")
+    @GetMapping("/hi")
     public String hello(@RequestHeader Map<String, String> headers){
         if(headers.containsKey("email")){
             System.out.println(headers.get("email"));
