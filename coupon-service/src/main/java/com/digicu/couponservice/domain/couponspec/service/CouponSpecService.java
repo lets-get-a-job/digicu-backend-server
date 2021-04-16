@@ -1,10 +1,10 @@
 package com.digicu.couponservice.domain.couponspec.service;
 
-import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.couponspec.dao.CouponSpecFindDao;
 import com.digicu.couponservice.domain.couponspec.dao.CouponSpecRepository;
 import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
 import com.digicu.couponservice.domain.couponspec.dto.CouponSpecCreateRequest;
+import com.digicu.couponservice.domain.couponspec.dto.CouponSpecUpdateRequest;
 import com.digicu.couponservice.global.error.exception.AccessDeniedException;
 import com.digicu.couponservice.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,16 @@ public class CouponSpecService {
         CouponSpec spec = couponSpecFindDao.findById(couponSpecId);
         if(email.equals(spec.getOwner())){
             couponSpecRepository.delete(spec);
+        } else {
+            throw new AccessDeniedException(email + "has no access for " + couponSpecId, ErrorCode.ACCESS_DENIED);
+        }
+    }
+
+    public CouponSpec update(String email, Long couponSpecId, final CouponSpecUpdateRequest dto){
+        CouponSpec spec = couponSpecFindDao.findById(couponSpecId);
+        if(email.equals(spec.getOwner())){
+            spec.update(dto);
+            return couponSpecRepository.save(spec);
         } else {
             throw new AccessDeniedException(email + "has no access for " + couponSpecId, ErrorCode.ACCESS_DENIED);
         }

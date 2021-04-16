@@ -14,7 +14,6 @@ public class CouponSpecCreateRequest {
     @NotEmpty private String name;
     @NotNull private int value;
     @NotEmpty private String type;
-    private String owner;
     @NotNull private int goal;
     @NotNull private int period;
 

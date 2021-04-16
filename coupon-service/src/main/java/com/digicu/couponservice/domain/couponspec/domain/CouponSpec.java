@@ -1,4 +1,5 @@
 package com.digicu.couponservice.domain.couponspec.domain;
+import com.digicu.couponservice.domain.couponspec.dto.CouponSpecUpdateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 public class CouponSpec {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +44,23 @@ public class CouponSpec {
         this.period = period;
         this.value = value;
         this.owner = owner;
+    }
+
+    public void update(CouponSpecUpdateRequest dto){
+        if(dto.getName() != null){
+            this.name = dto.getName();
+        }
+        if(dto.getGoal() != 0){
+            this.goal = dto.getGoal();
+        }
+        if(dto.getPeriod() != 0){
+            this.period = dto.getPeriod();
+        }
+        if(dto.getValue() != 0){
+            this.value = dto.getValue();
+        }
+        if(dto.getType() != null){
+            this.type = dto.getType();
+        }
     }
 }
