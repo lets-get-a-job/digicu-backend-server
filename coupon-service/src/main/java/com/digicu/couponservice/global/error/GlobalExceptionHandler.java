@@ -1,5 +1,6 @@
 package com.digicu.couponservice.global.error;
 
+import com.digicu.couponservice.global.error.exception.AccessDeniedException;
 import com.digicu.couponservice.global.error.exception.BusinessException;
 import com.digicu.couponservice.global.error.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.persistence.EntityNotFoundException;
 
 @Slf4j
 @ControllerAdvice
@@ -22,6 +22,15 @@ public class GlobalExceptionHandler {
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.of(errorCode);
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
+    }
+
+    //authorization
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e){
+        log.error("handleAccessDeniedException");
+        final ErrorCode errorCode = e.getErrorCode();
+        final ErrorResponse response = ErrorResponse.of(errorCode);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     // parameter errors

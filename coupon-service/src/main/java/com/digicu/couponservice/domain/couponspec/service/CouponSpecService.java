@@ -5,9 +5,12 @@ import com.digicu.couponservice.domain.couponspec.dao.CouponSpecFindDao;
 import com.digicu.couponservice.domain.couponspec.dao.CouponSpecRepository;
 import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
 import com.digicu.couponservice.domain.couponspec.dto.CouponSpecCreateRequest;
+import com.digicu.couponservice.global.error.exception.AccessDeniedException;
+import com.digicu.couponservice.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @Transactional
@@ -22,6 +25,10 @@ public class CouponSpecService {
 
     public void delete(String email, Long couponSpecId){
         CouponSpec spec = couponSpecFindDao.findById(couponSpecId);
-        couponSpecRepository.delete(spec);
+        if(email.equals(spec.getOwner())){
+            couponSpecRepository.delete(spec);
+        } else {
+            throw new AccessDeniedException(email + "has no access for " + couponSpecId, ErrorCode.ACCESS_DENIED);
+        }
     }
 }
