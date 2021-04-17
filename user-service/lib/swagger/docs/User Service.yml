@@ -16,7 +16,7 @@ tags:
   - name: "Test"
     description: "테스트용 API (개발 모드에서만 라우팅 됨)"
 paths:
-  /users/social/:social_id:
+  /users/social/{social_id}:
     get:
       tags:
         - "Social"
@@ -280,7 +280,7 @@ paths:
           description: 인증에 실패했습니다.
         "500":
           description: 서버 에러
-  /users/company/:email:
+  /users/company/{email}:
     get:
       tags:
         - "Company"
@@ -334,7 +334,7 @@ paths:
         "500":
           description: 서버 에러
 
-  /users/company/:companyNumber:
+  /users/company/{companyNumber}:
     get:
       tags:
         - "Company"
@@ -383,7 +383,7 @@ paths:
         "500":
           description: "서버 에러"
 
-  /authentication/:email?type={type}':
+  /authentication/{email}':
     get:
       tags:
         - "Authentication"
@@ -539,7 +539,7 @@ paths:
         "500":
           description: "서버 에러"
 
-  /users/:email/checked:
+  /users/{email}/checked:
     get:
       tags:
         - "Company"

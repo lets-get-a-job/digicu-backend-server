@@ -12,6 +12,7 @@ function isCompanyFormValid(
   companyNumber,
   companyPhone,
   companyHomepage,
+  companyLogo,
 ) {
   return (
     isEmail(email) &&
@@ -21,7 +22,8 @@ function isCompanyFormValid(
     (companyPhone.length === 11 ||
       companyPhone.length === 10 ||
       companyPhone.length === 8) &&
-    isURL(companyHomepage)
+    isURL(companyHomepage) &&
+    (!companyLogo || isURL(companyLogo))
   );
 }
 
@@ -52,6 +54,7 @@ function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
  * company_address: string
  * company_owner: string
  * company_homepage: string
+ * company_logo: string
  * }} CompanyInformation
  */
 
@@ -122,23 +125,15 @@ async function registerSocial(socialInfo) {
  */
 async function registerCompany(regInfo, companyInfo) {
   try {
-    // 회사 정보
-    const {
-      company_number,
-      company_name,
-      company_phone,
-      company_address,
-      company_owner,
-      company_homepage,
-    } = companyInfo;
     // 입력된 폼이 유효한지 검사합니다.
     if (
       isCompanyFormValid(
         regInfo.email,
         regInfo.letter_ok,
-        company_number,
-        company_phone,
-        company_homepage,
+        companyInfo.company_number,
+        companyInfo.company_phone,
+        companyInfo.company_homepage,
+        companyInfo.company_logo,
       )
     ) {
       const saltRounds = 10;
@@ -162,15 +157,16 @@ async function registerCompany(regInfo, companyInfo) {
         },
         // 업주 프로필 생성 쿼리
         {
-          sql: 'INSERT INTO company_profile VALUES (?, ?, ?, ?, ?, ?, ?)',
+          sql: 'INSERT INTO company_profile VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
           values: [
             regInfo.email,
-            company_number,
-            company_name,
-            company_phone,
-            company_address,
-            company_owner,
-            company_homepage,
+            companyInfo.company_number,
+            companyInfo.company_name,
+            companyInfo.company_phone,
+            companyInfo.company_address,
+            companyInfo.company_owner,
+            companyInfo.company_homepage,
+            companyInfo.company_logo ? companyInfo.company_logo : null,
           ],
         },
         // 이메일 인증 토큰 생성 쿼리

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- 생성 시간: 21-04-14 21:20
+-- 생성 시간: 21-04-17 15:34
 -- 서버 버전: 8.0.23-0ubuntu0.20.04.1
 -- PHP 버전: 7.4.3
 
@@ -47,7 +47,8 @@ CREATE TABLE `company_profile` (
   `company_phone` char(11) NOT NULL,
   `company_address` varchar(255) NOT NULL,
   `company_owner` varchar(10) NOT NULL,
-  `company_homepage` varchar(255) NOT NULL
+  `company_homepage` varchar(255) NOT NULL,
+  `company_logo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------

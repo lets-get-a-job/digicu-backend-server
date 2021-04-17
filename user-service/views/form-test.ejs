@@ -36,6 +36,7 @@
       <input id="company_address" placeholder="업체 주소" /> <br />
       <input id="company_owner" placeholder="사업자 이름" /> <br />
       <input id="company_homepage" placeholder="업체 홈페이지" /> <br />
+      <input id="company_logo" placeholder="업체 로고" /> <br />
       <button onclick="registration()">등록하기</button>
     </section>
     <script>
@@ -51,6 +52,7 @@
         const company_owner = document.querySelector('#company_owner').value;
         const company_homepage = document.querySelector('#company_homepage')
           .value;
+        const company_logo = document.querySelector('#company_logo').value;
 
         fetch('/users/company', {
           method: 'POST',
@@ -70,6 +72,7 @@
               company_address,
               company_owner,
               company_homepage,
+              company_logo,
             },
           }),
         })

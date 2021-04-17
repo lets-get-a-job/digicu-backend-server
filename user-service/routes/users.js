@@ -66,7 +66,22 @@ router.post('/company', async (req, res) => {
     }
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
-      errorHandling.sendError(res, 400, '이미 존재하는 메일입니다.', error);
+      errorHandling.sendError(
+        res,
+        400,
+        '이미 존재하는 메일입니다.',
+        '이미 존재하는 메일입니다.',
+      );
+    } else if (
+      error.code === 'ER_BAD_NULL_ERROR' ||
+      error instanceof TypeError
+    ) {
+      errorHandling.sendError(
+        res,
+        400,
+        '파라미터가 잘못되었습니다.',
+        '파라미터가 잘못되었습니다.',
+      );
     } else {
       errorHandling.sendError(res, 500, '오류가 발생했습니다.', error);
     }
@@ -115,9 +130,22 @@ router.post('/social', async (req, res) => {
     }
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
-      errorHandling.sendError(res, 400, '이미 존재하는 메일입니다.', error);
-    } else if (error.code === 'ER_BAD_NULL_ERROR') {
-      errorHandling.sendError(res, 400, '파라미터가 잘못 되었습니다.', error);
+      errorHandling.sendError(
+        res,
+        400,
+        '이미 존재하는 메일입니다.',
+        '이미 존재하는 메일입니다.',
+      );
+    } else if (
+      error.code === 'ER_BAD_NULL_ERROR' ||
+      error instanceof TypeError
+    ) {
+      errorHandling.sendError(
+        res,
+        400,
+        '파라미터가 잘못 되었습니다.',
+        '파라미터가 잘못 되었습니다.',
+      );
     } else {
       errorHandling.sendError(res, 500, '오류가 발생했습니다.', error);
     }

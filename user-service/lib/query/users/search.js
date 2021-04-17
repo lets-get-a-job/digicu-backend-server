@@ -20,6 +20,7 @@ const { query } = require('../index');
  * companyAddress: string
  * companyOwner: string
  * companyHomepage: string
+ * company_logo: string | null
  * }} CompanyInformation
  */
 
