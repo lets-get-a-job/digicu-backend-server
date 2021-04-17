@@ -4,15 +4,12 @@
 
 - company logo 추가할 수 있게 변경
 - [v] 업체 프로필 변경
-  PATCH /users/company/{companyNumber}
+  PATCH /users/company
 - [v] 업체 검색 API
   GET /users/company
   ?include=
   &count=
   &page=
-- [v] 회원탈퇴 (소셜, 업체)
-  DELETE /users/company/{companyNumber}
-  DELETE /users/social/{social_id}
 
 ## 2021-04-14
 

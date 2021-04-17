@@ -22,7 +22,7 @@ function isCompanyFormValid(
     (companyPhone.length === 11 ||
       companyPhone.length === 10 ||
       companyPhone.length === 8) &&
-    isURL(companyHomepage) &&
+    (!companyHomepage || isURL(companyHomepage)) &&
     (!companyLogo || isURL(companyLogo))
   );
 }
@@ -165,7 +165,7 @@ async function registerCompany(regInfo, companyInfo) {
             companyInfo.company_phone,
             companyInfo.company_address,
             companyInfo.company_owner,
-            companyInfo.company_homepage,
+            companyInfo.company_homepage ? companyInfo.company_homepage : null,
             companyInfo.company_logo ? companyInfo.company_logo : null,
           ],
         },

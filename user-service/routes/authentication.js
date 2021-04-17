@@ -16,14 +16,19 @@ router.post('/login', async (req, res) => {
       email,
       true,
     );
+    let companyInfo;
     if (type !== 'admin' && type !== 'company') {
       errorHandling.sendError(res, 403, '업체가 아닙니다.', '업체가 아닙니다.');
+    }
+    if (type === 'company') {
+      companyInfo = await search.findCompanyByEmail(email);
     }
     if (bcrypt.compareSync(plain_password, hash_string)) {
       if (await authentication.isEmailChecked(email)) {
         jwt.sign(
           {
             email,
+            companyInfo,
             admin: type === 'admin',
             type,
           },
