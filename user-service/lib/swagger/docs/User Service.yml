@@ -600,6 +600,7 @@ paths:
                   company_address: "수원시 영통구 삼성로 129"
                   company_owner: "이재용"
                   company_homepage: "https://samsung.com/"
+                  company_logo: "..."
       responses:
         "200":
           description: "등록 성공. 반드시 유저에게 이메일 확인을 요청하세요."
@@ -611,18 +612,22 @@ paths:
       tags:
         - "Company"
       summary: "업체 정보 변경"
-      description: "업체 정보를 변경합니다. jwt 토큰이 발급된 상태에서만 가능합니다."
+      description: "업체 정보를 변경합니다. jwt 토큰이 발급된 상태에서만 가능합니다. 변경사항이 없으면 기존 데이터를 그냥 보내주세요."
       requestBody:
         content:
           application/json:
             schema:
               type: object
               required:
+                - "token"
                 - "company_name"
                 - "company_phone"
                 - "company_address"
                 - "company_owner"
               properties:
+                token:
+                  description: "로그인 토큰"
+                  type: string
                 company_name:
                   description: "업체 이름"
                   type: string

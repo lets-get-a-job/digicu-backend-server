@@ -8,6 +8,7 @@ const {
   update,
 } = require('../lib/query/users');
 const { errorHandling } = require('../lib/routing');
+const { isLoggedIn } = require('../lib/middleware');
 
 /** 이메일로 유저 조회 */
 router.get('/company/:email', async (req, res) => {
@@ -160,6 +161,37 @@ router.patch('/social', async (req, res) => {
       body.thumbnail_image = body.profile_image;
     }
     const isUpdated = await update.updateSocial(body);
+    if (isUpdated) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(400);
+    }
+  } catch (error) {
+    errorHandling.sendError(res, 500, '에러가 발생했습니다.', error);
+  }
+});
+
+/** 업체 정보 변경 */
+router.patch('/company', isLoggedIn, async (req, res) => {
+  try {
+    const {
+      company_name,
+      company_phone,
+      company_address,
+      company_owner,
+      company_homepage,
+      company_logo,
+    } = req.body;
+    const company_number = req.user.companyInfo.company_number;
+    const isUpdated = await update.updateCompany({
+      company_number,
+      company_name,
+      company_phone,
+      company_address,
+      company_owner,
+      company_homepage,
+      company_logo,
+    });
     if (isUpdated) {
       res.sendStatus(200);
     } else {

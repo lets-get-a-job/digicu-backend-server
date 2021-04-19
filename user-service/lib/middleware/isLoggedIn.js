@@ -20,7 +20,7 @@ const isLoggedIn = async (req, res, next) => {
   } catch (error) {
     errorHandling.sendError(
       res,
-      403,
+      401,
       '인증에 실패했습니다.',
       '인증에 실패했습니다.',
     );
