@@ -202,4 +202,33 @@ router.patch('/company', isLoggedIn, async (req, res) => {
   }
 });
 
+router.get('/company', async (req, res) => {
+  try {
+    const { include, count, page, orderby, desc } = req.query;
+    const result = await search.findCompany(
+      include,
+      parseInt(count),
+      parseInt(page),
+      orderby,
+      desc === 'true',
+    );
+    if (result) {
+      res.send(result);
+    } else {
+      res.send([]);
+    }
+  } catch (e) {
+    if (e.code === 'ER_PARSE_ERROR') {
+      errorHandling.sendError(
+        res,
+        400,
+        '파라미터가 잘못 되었습니다.',
+        '파라미터가 잘못 되었습니다.',
+      );
+    } else {
+      errorHandling.sendError(res, 500, '에러가 발생했습니다.', e);
+    }
+  }
+});
+
 module.exports = router;

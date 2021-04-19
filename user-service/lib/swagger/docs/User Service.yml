@@ -483,22 +483,39 @@ paths:
       parameters:
         - name: "include"
           required: false
-          description: "해당 문자열이 사업자번호, 업체 이름 등에 포함되어 있는지 확인합니다. (지정하지 않을 경우 단순 SELECT)"
+          description: "해당 문자열이 업체 이름, 주소, 사업자명에 포함되어 있는지 확인합니다. (지정하지 않을 경우 단순 SELECT)"
           in: query
           schema:
             type: string
+            example: "삼성"
         - name: "count"
           required: false
-          description: "페이지 당 최대 몇개의 자료를 표시할지 지정합니다. (양수, 기본값 10)"
+          description: "페이지 당 최대 몇개의 자료를 표시할지 지정합니다. (양수)"
           in: query
           schema:
             type: number
+            default: 10
         - name: "page"
           required: false
-          description: "몇 페이지 부터 시작할지 지정합니다. (양수, 기본값 1)"
+          description: "몇 페이지 부터 시작할지 지정합니다. (양수)"
           in: query
           schema:
             type: number
+            default: 1
+        - name: "orderby"
+          required: false
+          description: "어떤 컬럼을 기준으로 정렬할지"
+          in: query
+          schema:
+            type: string
+            example: company_number | company_name | company_owner
+        - name: "desc"
+          required: false
+          description: "내림차순으로 정렬할지 (orderby와 함께 사용해야함)"
+          in: query
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: "검색에 성공했습니다. 검색 결과가 없을 경우 빈 리스트 []를 반환합니다."

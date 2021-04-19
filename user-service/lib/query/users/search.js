@@ -146,7 +146,74 @@ async function findSocialBySocialID(socialID) {
   }
 }
 
+/**
+ * 통합 검색
+ * @param {string} include?
+ * @param {number} count?
+ * @param {number} page?
+ * @param {string} orderby?
+ * @param {boolean} desc?
+ * @returns {Promise<CompanyInformation[] | null>}
+ */
+async function findCompany(include, count, page, orderby, desc) {
+  try {
+    let sql = 'SELECT * FROM company_profile';
+    let where = '';
+    let order = '';
+    let limit = '';
+    let offset = '';
+    if (include) {
+      where = where.concat(` company_name LIKE '%${include}%'`);
+      where = where.concat(`OR company_address LIKE '%${include}%'`);
+      where = where.concat(`OR company_owner LIKE '%${include}%'`);
+    }
+    if (orderby) {
+      order = order.concat(`${orderby}`);
+      if (desc) {
+        order = order.concat(` DESC`);
+      } else {
+        order = order.concat(` ASC`);
+      }
+    }
+    if (count) {
+      limit = limit.concat(`${count}`);
+    }
+    if (page) {
+      offset = offset.concat(`${(page - 1) * count}`);
+    }
+    if (where) {
+      sql = `${sql} WHERE ${where}`;
+    }
+    if (order) {
+      sql = `${sql} ORDER BY ${order}`;
+    }
+    if (limit) {
+      sql = `${sql} LIMIT ${limit}`;
+    }
+    if (offset) {
+      sql = `${sql} OFFSET ${offset}`;
+    }
+    console.log(sql);
+    const response = await query([
+      {
+        sql,
+        values: [],
+      },
+    ]);
+    const rows = response[0].rows;
+    console.log(rows);
+    if (rows.length > 0) {
+      return rows;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
+  findCompany,
   findRegistrationByEmail,
   findCompanyByEmail,
   findCompanyByCompanyNumber,
