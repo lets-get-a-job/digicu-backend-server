@@ -35,4 +35,15 @@ public class CouponService {
                     ErrorCode.ACCESS_DENIED);
         }
     }
+
+    public Coupon use(final Long couponId, final String email){
+        Coupon coupon = couponFindDao.findById(couponId);
+        if(email.equals(coupon.getOwner())){
+            coupon.use();
+            return coupon;
+        } else {
+            throw new AccessDeniedException(email + " has not access for coupon:" + couponId,
+                    ErrorCode.ACCESS_DENIED);
+        }
+    }
 }

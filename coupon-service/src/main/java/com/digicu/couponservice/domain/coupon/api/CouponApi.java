@@ -33,4 +33,11 @@ public class CouponApi {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Coupon> useCoupon(
+            @Valid @RequestHeader(name = "email") String email,
+            @Valid @PathVariable(name = "id") Long couponId){
+        Coupon coupon = couponService.use(couponId, email);
+        return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
+    }
 }

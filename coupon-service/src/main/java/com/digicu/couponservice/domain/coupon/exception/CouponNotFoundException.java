@@ -1,4 +1,4 @@
-package com.digicu.couponservice.domain.coupon.dto;
+package com.digicu.couponservice.domain.coupon.exception;
 
 import com.digicu.couponservice.global.error.exception.EntityNotFoundException;
 import com.digicu.couponservice.global.error.exception.ErrorCode;

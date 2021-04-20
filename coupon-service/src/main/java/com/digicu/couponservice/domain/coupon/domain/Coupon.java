@@ -75,6 +75,6 @@ public class Coupon {
     public void use(){
         verifyExpiration();
         verifyUsed();
-        this.used = true;
+        this.used = true; //occur dirty check
     }
 }

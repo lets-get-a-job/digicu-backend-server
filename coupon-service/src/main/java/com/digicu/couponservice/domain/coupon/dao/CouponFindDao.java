@@ -1,10 +1,7 @@
 package com.digicu.couponservice.domain.coupon.dao;
 
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
-import com.digicu.couponservice.domain.coupon.dto.CouponNotFoundException;
-import com.digicu.couponservice.domain.couponspec.exception.CouponSpecNotFoundException;
-import com.digicu.couponservice.global.error.exception.EntityNotFoundException;
-import com.digicu.couponservice.global.error.exception.ErrorCode;
+import com.digicu.couponservice.domain.coupon.exception.CouponNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
