@@ -15,11 +15,15 @@ router.get('/company/:email', async (req, res) => {
   try {
     const user = await search.findRegistrationByEmail(req.params.email);
     if (user) {
-      user.registration_date = new Date(
-        user.registration_date,
-      ).toLocaleDateString('ko-KR');
+      user.registration_date = new Date(user.registration_date)
+        .toLocaleDateString('ko-KR')
+        .replace(/\./g, '-')
+        .replace(/ /g, '-');
       user.letter_ok = user.letter_ok
-        ? new Date(user.letter_ok).toLocaleDateString('ko-KR')
+        ? new Date(user.letter_ok)
+            .toLocaleDateString('ko-KR')
+            .replace(/\./g, '-')
+            .replace(/ /g, '-')
         : null;
       if (user.type === 'company') {
         const companyProfile = await search.findCompanyByEmail(

@@ -99,8 +99,8 @@ paths:
                   type: string
                   description: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
                 letter_ok:
-                  type: boolean
-                  description: "이메일 수신 동의 여부"
+                  type: string
+                  description: "이메일 수신 동의 날짜"
               example:
                 token: "토큰 값"
                 social_id: "소셜 아이디 값"
@@ -108,7 +108,7 @@ paths:
                 nickname: "유저 닉네임(Display Name)"
                 profile_image: "프로필 이미지 URI"
                 thumbnail_image: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
-                letter_ok: true
+                letter_ok: "2020-12-31"
       responses:
         "200":
           description: "토큰 레코드를 생성했고, 전달 받은 파라미터로 소셜 프로필을 만들었습니다."
@@ -315,9 +315,9 @@ paths:
                     type: string
                 example:
                   "email": "example@site.com"
-                  "registration_date": "2021. 3. 24."
+                  "registration_date": "2021-03-24"
                   "type": "company"
-                  "letter_ok": "2021. 3. 24."
+                  "letter_ok": "2021-03-24"
                   "company_number": "1248100998"
                   "company_name": "삼성전자 주식회사"
                   "company_phone": "0222550114"
@@ -576,8 +576,8 @@ paths:
                       description: "회원 비밀번호"
                       type: string
                     letter_ok:
-                      description: "이메일 수신 동의 여부"
-                      type: boolean
+                      description: "이메일 수신 동의 날짜"
+                      type: string
                 company_info:
                   description: "업체 등록 정보"
                   type: object
@@ -609,7 +609,7 @@ paths:
                 reg_info:
                   email: "example@site.com"
                   plain_password: "1234567890"
-                  letter_ok: true
+                  letter_ok: "2020-01-31"
                 company_info:
                   company_number: "1248100998"
                   company_name: "삼성전자 주식회사"

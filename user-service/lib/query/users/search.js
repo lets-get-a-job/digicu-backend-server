@@ -7,7 +7,7 @@ const { query } = require('../index');
  * hash_string: string
  * registration_Date: string
  * type: string
- * letter_ok: boolean
+ * letter_ok: Date
  * }} RegistratonInformation
  */
 
@@ -32,7 +32,7 @@ const { query } = require('../index');
  * nickname: string
  * profile_image: string
  * thumbnail_image: string
- * letter_ok: boolean
+ * letter_ok: Date
  * }} SocialInformation
  */
 
@@ -127,14 +127,16 @@ async function findSocialBySocialID(socialID) {
     ]);
     const rows = response[0].rows;
     if (rows.length > 0) {
-      rows[0].registration_date = new Date(
-        rows[0].registration_date,
-      ).toLocaleDateString('ko-KR');
+      rows[0].registration_date = new Date(rows[0].registration_date)
+        .toLocaleDateString('ko-KR')
+        .replace(/\./g, '')
+        .replace(/ /g, '-');
 
       if (rows[0].letter_ok) {
-        rows[0].letter_ok = new Date(rows[0].letter_ok).toLocaleDateString(
-          'ko-KR',
-        );
+        rows[0].letter_ok = new Date(rows[0].letter_ok)
+          .toLocaleDateString('ko-KR')
+          .replace(/\./g, '')
+          .replace(/ /g, '-');
       }
 
       return rows[0];

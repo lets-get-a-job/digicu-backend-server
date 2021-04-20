@@ -5,6 +5,7 @@ const { sendAuthEmail } = require('../../mailer/mail-defintion');
 const isEmail = require('validator/lib/isEmail');
 const isURL = require('validator/lib/isURL');
 const isNumeric = require('validator/lib/isNumeric');
+const isDate = require('validator/lib/isDate');
 
 function isCompanyFormValid(
   email,
@@ -16,7 +17,7 @@ function isCompanyFormValid(
 ) {
   return (
     isEmail(email) &&
-    typeof letterOK === 'boolean' &&
+    isDate(letterOK, { locale: 'ko-KR' }) &&
     companyNumber.length === 10 &&
     isNumeric(companyPhone) &&
     (companyPhone.length === 11 ||
@@ -32,7 +33,7 @@ function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
     isEmail(email) &&
     isURL(profile_image) &&
     isURL(thumbnail_image) &&
-    typeof letter_ok === 'boolean'
+    isDate(letter_ok, { locale: 'ko-KR' })
   );
 }
 
@@ -41,7 +42,7 @@ function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
  * @typedef {{
  * email: string
  * plain_password: string
- * letter_ok: boolean
+ * letter_ok: Date
  * }} RegistratonInformation
  */
 
@@ -67,7 +68,7 @@ function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
  * nickname: string
  * profile_image: string
  * thumbnail_image: string
- * letter_ok: boolean
+ * letter_ok: Date
  * }} SocialInformation
  */
 
@@ -102,7 +103,7 @@ async function registerSocial(socialInfo) {
             ? socialInfo.thumbnail_image
             : socialInfo.profile_image,
           new Date(),
-          socialInfo.letter_ok ? new Date() : null,
+          socialInfo.letter_ok ? socialInfo.letter_ok : null,
         ],
       },
     ]);
@@ -152,7 +153,7 @@ async function registerCompany(regInfo, companyInfo) {
             hash_string,
             null,
             'company',
-            regInfo.letter_ok ? new Date() : null,
+            regInfo.letter_ok ? regInfo.letter_ok : null,
           ],
         },
         // 업주 프로필 생성 쿼리
