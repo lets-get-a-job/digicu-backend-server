@@ -16,6 +16,155 @@ tags:
   - name: "Test"
     description: "테스트용 API (개발 모드에서만 라우팅 됨)"
 paths:
+  /users/social/{social_id}:
+    get:
+      tags:
+        - "Social"
+      summary: "소셜 가입 정보"
+      description: "소셜 가입 정보를 요청합니다. 이걸로 가입 여부를 확인하면 됩니다."
+      parameters:
+        - name: "social_id"
+          required: true
+          description: "소셜 id"
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "가입 된 계정입니다."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: "마지막에 갱신된 토큰"
+                  email:
+                    type: string
+                    description: "유저 이메일"
+                  nickname:
+                    type: string
+                    description: "유저 닉네임(Display Name)"
+                  profile_image:
+                    type: string
+                    description: "프로필 이미지 URI"
+                  thumbnail_image:
+                    type: string
+                    description: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+                  registration_date:
+                    type: string
+                    description: "가입 날짜"
+                  letter_ok:
+                    type: string
+                    description: "메일 수신 동의 날짜 (nullable)"
+        "404":
+          description: "가입 되지 않은 계정입니다."
+        "500":
+          description: "서버 에러"
+  /users/social:
+    post:
+      tags:
+        - "Social"
+      summary: "소셜 가입 진행"
+      description: "DB에 토큰 레코드를 새로 생성하고, 소셜 프로필을 새롭게 저장합니다."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - social_id
+                - email
+                - nickname
+                - profile_image
+              properties:
+                token:
+                  type: string
+                  description: "토큰 값"
+                social_id:
+                  type: string
+                  description: "소셜 아이디"
+                email:
+                  type: string
+                  description: "유저 이메일"
+                nickname:
+                  type: string
+                  description: "유저 닉네임(Display Name)"
+                profile_image:
+                  type: string
+                  description: "프로필 이미지 URI"
+                thumbnail_image:
+                  type: string
+                  description: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+                letter_ok:
+                  type: string
+                  description: "이메일 수신 동의 날짜"
+              example:
+                token: "토큰 값"
+                social_id: "소셜 아이디 값"
+                email: "유저 이메일"
+                nickname: "유저 닉네임(Display Name)"
+                profile_image: "프로필 이미지 URI"
+                thumbnail_image: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+                letter_ok: "2020-12-31"
+      responses:
+        "200":
+          description: "토큰 레코드를 생성했고, 전달 받은 파라미터로 소셜 프로필을 만들었습니다."
+        "400":
+          description: "파라미터가 잘못 되었습니다."
+        "500":
+          description: "서버 에러"
+    patch:
+      tags:
+        - "Social"
+      summary: "토큰 갱신, 유저 업데이트"
+      description: "토큰을 갱신하고, 유저를 업데이트 합니다. 앱에서 로그인 또는 토큰이 만료되어 새로 갱신했을 경우 해당 API를 호출해주세요."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - social_id
+                - email
+                - nickname
+                - profile_image
+              properties:
+                token:
+                  type: string
+                  description: "토큰 값"
+                social_id:
+                  type: string
+                  description: "소셜 아이디"
+                email:
+                  type: string
+                  description: "유저 이메일"
+                nickname:
+                  type: string
+                  description: "유저 닉네임(Display Name)"
+                profile_image:
+                  type: string
+                  description: "프로필 이미지 URI"
+                thumbnail_image:
+                  type: string
+                  description: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+              example:
+                token: "토큰 값"
+                social_id: "소셜 아이디 값"
+                email: "유저 이메일"
+                nickname: "유저 닉네임(Display Name)"
+                profile_image: "프로필 이미지 URI"
+                thumbnail_image: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
+      responses:
+        "200":
+          description: "토큰을 갱신했고, 전달 받은 파라미터로 유저를 업데이트 했습니다."
+        "400":
+          description: "파라미터가 잘못 되었습니다."
+        "500":
+          description: "서버 에러"
   /tests/isLoggedIn:
     post:
       tags:
@@ -49,6 +198,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - email
+                - plain_password
               properties:
                 email:
                   type: string
@@ -95,6 +247,8 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - token
               properties:
                 token:
                   type: string
@@ -126,12 +280,12 @@ paths:
           description: 인증에 실패했습니다.
         "500":
           description: 서버 에러
-  /users/:email:
+  /users/company/{email}:
     get:
       tags:
-        - "Common"
-      summary: "유저 정보 조회"
-      description: "유저 정보를 조회합니다."
+        - "Company"
+      summary: "업체 조회"
+      description: "업체 정보를 조회합니다."
       parameters:
         - name: "email"
           required: true
@@ -141,9 +295,9 @@ paths:
             type: string
       responses:
         "200":
-          description: "소셜 계정의 경우 소셜 프로필을, 업체 계정의 경우 업체 프로필을 함께 응답합니다. 미디어 타입을 반드시 확인해주세요."
+          description: "회사 정보를 리턴합니다."
           content:
-            (소셜) application/json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -161,34 +315,9 @@ paths:
                     type: string
                 example:
                   "email": "example@site.com"
-                  "registration_date": "2021. 3. 24."
+                  "registration_date": "2021-03-24"
                   "type": "company"
-                  "letter_ok": "2021. 3. 24."
-                  "social_id": "...."
-                  "nickname": "...."
-                  "profile_image": "https://...."
-                  "thumbnail_image": "https://...."
-            (업체) application/json:
-              schema:
-                type: object
-                properties:
-                  email:
-                    description: 이메일
-                    type: string
-                  registration_date:
-                    description: 가입일
-                    type: string
-                  type:
-                    description: 회원 유형
-                    type: string
-                  letter_ok:
-                    description: 메일 수신 동의 날짜 (nullable)
-                    type: string
-                example:
-                  "email": "example@site.com"
-                  "registration_date": "2021. 3. 24."
-                  "type": "company"
-                  "letter_ok": "2021. 3. 24."
+                  "letter_ok": "2021-03-24"
                   "company_number": "1248100998"
                   "company_name": "삼성전자 주식회사"
                   "company_phone": "0222550114"
@@ -205,7 +334,7 @@ paths:
         "500":
           description: 서버 에러
 
-  /users/company/:companyNumber:
+  /users/company/{companyNumber}:
     get:
       tags:
         - "Company"
@@ -244,6 +373,9 @@ paths:
                   company_homepage:
                     description: "업체 홈페이지"
                     type: string
+                  company_logo:
+                    description: "업체 로고"
+                    type: string
                 example:
                   company_number: "1248100998"
                   company_name: "삼성전자 주식회사"
@@ -251,10 +383,11 @@ paths:
                   company_address: "수원시 영통구 삼성로 129"
                   company_owner: "이재용"
                   company_homepage: "https://samsung.com/"
+                  company_logo: "https://.../logo.png"
         "500":
           description: "서버 에러"
 
-  /authentication/:email?type={type}':
+  /authentication/{email}':
     get:
       tags:
         - "Authentication"
@@ -315,7 +448,7 @@ paths:
           description: "요청에 실패했습니다."
         "500":
           description: "서버 에러"
-    put:
+    patch:
       tags:
         - "Authentication"
       summary: "이메일 인증 또는 패스워드 변경"
@@ -342,6 +475,83 @@ paths:
           description: "서버 에러"
 
   /users/company:
+    get:
+      tags:
+        - "Company"
+      summary: "업체 통합 검색"
+      description: "업체를 통합 검색합니다."
+      parameters:
+        - name: "include"
+          required: false
+          description: "해당 문자열이 업체 이름, 주소, 사업자명에 포함되어 있는지 확인합니다. (지정하지 않을 경우 단순 SELECT)"
+          in: query
+          schema:
+            type: string
+            example: "삼성"
+        - name: "count"
+          required: false
+          description: "페이지 당 최대 몇개의 자료를 표시할지 지정합니다. (양수)"
+          in: query
+          schema:
+            type: number
+            default: 10
+        - name: "page"
+          required: false
+          description: "몇 페이지 부터 시작할지 지정합니다. (양수)"
+          in: query
+          schema:
+            type: number
+            default: 1
+        - name: "orderby"
+          required: false
+          description: "어떤 컬럼을 기준으로 정렬할지"
+          in: query
+          schema:
+            type: string
+            example: company_number | company_name | company_owner
+        - name: "desc"
+          required: false
+          description: "내림차순으로 정렬할지 (orderby와 함께 사용해야함)"
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: "검색에 성공했습니다. 검색 결과가 없을 경우 빈 리스트 []를 반환합니다."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    company_number:
+                      description: "사업자등록번호"
+                      type: string
+                    company_name:
+                      description: "업체 이름"
+                      type: string
+                    company_phone:
+                      description: "업체 번호"
+                      type: string
+                    company_address:
+                      description: "업체 주소"
+                      type: string
+                    company_owner:
+                      description: "사업자 이름"
+                      type: string
+                    company_homepage:
+                      description: "업체 홈페이지"
+                      type: string
+                  example:
+                    company_number: "1248100998"
+                    company_name: "삼성전자 주식회사"
+                    company_phone: "0222550114"
+                    company_address: "수원시 영통구 삼성로 129"
+                    company_owner: "이재용"
+                    company_homepage: "https://samsung.com/"
+                    company_logo: "https://.../logo.png"
     post:
       tags:
         - "Company"
@@ -351,6 +561,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - reg_info
+                - company_info
               properties:
                 reg_info:
                   description: "기본 등록 정보"
@@ -363,8 +576,8 @@ paths:
                       description: "회원 비밀번호"
                       type: string
                     letter_ok:
-                      description: "이메일 수신 동의 여부"
-                      type: boolean
+                      description: "이메일 수신 동의 날짜"
+                      type: string
                 company_info:
                   description: "업체 등록 정보"
                   type: object
@@ -387,11 +600,16 @@ paths:
                     company_homepage:
                       description: "업체 홈페이지"
                       type: string
+                      nullable: true
+                    company_logo:
+                      description: "업체 로고"
+                      type: string
+                      nullable: true
               example:
                 reg_info:
                   email: "example@site.com"
                   plain_password: "1234567890"
-                  letter_ok: true
+                  letter_ok: "2020-01-31"
                 company_info:
                   company_number: "1248100998"
                   company_name: "삼성전자 주식회사"
@@ -399,6 +617,7 @@ paths:
                   company_address: "수원시 영통구 삼성로 129"
                   company_owner: "이재용"
                   company_homepage: "https://samsung.com/"
+                  company_logo: "..."
       responses:
         "200":
           description: "등록 성공. 반드시 유저에게 이메일 확인을 요청하세요."
@@ -406,11 +625,59 @@ paths:
           description: "등록 실패"
         "500":
           description: "서버 에러"
-
-  /users/:email/checked:
+    patch:
+      tags:
+        - "Company"
+      summary: "업체 정보 변경"
+      description: "업체 정보를 변경합니다. jwt 토큰이 발급된 상태에서만 가능합니다. 변경사항이 없으면 기존 데이터를 그냥 보내주세요."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "token"
+                - "company_name"
+                - "company_phone"
+                - "company_address"
+                - "company_owner"
+              properties:
+                token:
+                  description: "로그인 토큰"
+                  type: string
+                company_name:
+                  description: "업체 이름"
+                  type: string
+                company_phone:
+                  description: "업체 번호"
+                  type: string
+                company_address:
+                  description: "업체 주소"
+                  type: string
+                company_owner:
+                  description: "사업자 이름"
+                  type: string
+                company_homepage:
+                  description: "업체 홈페이지"
+                  type: string
+                  nullable: true
+                company_logo:
+                  description: "업체 로고"
+                  type: string
+                  nullable: true
+      responses:
+        "200":
+          description: 업데이트 성공
+        "400":
+          description: 파라미터가 잘못되었습니다.
+        "401":
+          description: 인증되지 않은 회원입니다.
+        "500":
+          description: 서버 에러
+  /users/{email}/checked:
     get:
       tags:
-        - "Common"
+        - "Company"
       summary: "이메일 인증되었는지 확인"
       description: "이메일 인증이 되었는지 확인합니다."
       parameters:

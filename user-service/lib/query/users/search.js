@@ -7,7 +7,7 @@ const { query } = require('../index');
  * hash_string: string
  * registration_Date: string
  * type: string
- * letter_ok: boolean
+ * letter_ok: Date
  * }} RegistratonInformation
  */
 
@@ -20,7 +20,20 @@ const { query } = require('../index');
  * companyAddress: string
  * companyOwner: string
  * companyHomepage: string
+ * company_logo: string | null
  * }} CompanyInformation
+ */
+
+/**
+ * 소셜 가입 정보
+ * @typedef {{
+ * email: string
+ * token: string
+ * nickname: string
+ * profile_image: string
+ * thumbnail_image: string
+ * letter_ok: Date
+ * }} SocialInformation
  */
 
 /**
@@ -98,8 +111,113 @@ async function findCompanyByCompanyNumber(companyNumber) {
   }
 }
 
+/**
+ * 소셜 아이디로 소셜 프로필 조회
+ * @param {string} socialID
+ * @returns {Promise<SocialInformation | null>}
+ */
+async function findSocialBySocialID(socialID) {
+  try {
+    const response = await query([
+      {
+        sql:
+          'SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok FROM social_profile WHERE social_id = ?',
+        values: [socialID],
+      },
+    ]);
+    const rows = response[0].rows;
+    if (rows.length > 0) {
+      rows[0].registration_date = new Date(rows[0].registration_date)
+        .toLocaleDateString('ko-KR')
+        .replace(/\./g, '')
+        .replace(/ /g, '-');
+
+      if (rows[0].letter_ok) {
+        rows[0].letter_ok = new Date(rows[0].letter_ok)
+          .toLocaleDateString('ko-KR')
+          .replace(/\./g, '')
+          .replace(/ /g, '-');
+      }
+
+      return rows[0];
+    } else {
+      return null;
+    }
+  } catch (e) {
+    throw e;
+  }
+}
+
+/**
+ * 통합 검색
+ * @param {string} include?
+ * @param {number} count?
+ * @param {number} page?
+ * @param {string} orderby?
+ * @param {boolean} desc?
+ * @returns {Promise<CompanyInformation[] | null>}
+ */
+async function findCompany(include, count, page, orderby, desc) {
+  try {
+    let sql = 'SELECT * FROM company_profile';
+    let where = '';
+    let order = '';
+    let limit = '';
+    let offset = '';
+    if (include) {
+      where = where.concat(` company_name LIKE '%${include}%'`);
+      where = where.concat(`OR company_address LIKE '%${include}%'`);
+      where = where.concat(`OR company_owner LIKE '%${include}%'`);
+    }
+    if (orderby) {
+      order = order.concat(`${orderby}`);
+      if (desc) {
+        order = order.concat(` DESC`);
+      } else {
+        order = order.concat(` ASC`);
+      }
+    }
+    if (count) {
+      limit = limit.concat(`${count}`);
+    }
+    if (page) {
+      offset = offset.concat(`${(page - 1) * count}`);
+    }
+    if (where) {
+      sql = `${sql} WHERE ${where}`;
+    }
+    if (order) {
+      sql = `${sql} ORDER BY ${order}`;
+    }
+    if (limit) {
+      sql = `${sql} LIMIT ${limit}`;
+    }
+    if (offset) {
+      sql = `${sql} OFFSET ${offset}`;
+    }
+    console.log(sql);
+    const response = await query([
+      {
+        sql,
+        values: [],
+      },
+    ]);
+    const rows = response[0].rows;
+    console.log(rows);
+    if (rows.length > 0) {
+      return rows;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
+  findCompany,
   findRegistrationByEmail,
   findCompanyByEmail,
   findCompanyByCompanyNumber,
+  findSocialBySocialID,
 };

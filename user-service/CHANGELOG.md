@@ -1,5 +1,23 @@
 # Change Log
 
+## 2021-04-18
+
+- company logo 추가할 수 있게 변경
+- [v] 업체 프로필 변경
+  PATCH /users/company
+- [v] 업체 검색 API
+  GET /users/company
+  ?include=
+  &count=
+  &page=
+- [v] 가입 시 수신 동의를 날짜로
+
+## 2021-04-14
+
+- 소셜 로그인 백엔드 API 추가
+- 업데이트를 하는 경우 기존 PUT -> PATCH 메서드로 변경
+- 기존 로그인 문제 해결
+
 ## 2021-04-09
 
 - SMTP 메일 부분 수정
