@@ -1,5 +1,6 @@
 package com.digicu.couponservice.domain.coupon.api;
 
+import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
 import com.digicu.couponservice.domain.coupon.service.CouponService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/coupon")
@@ -16,6 +18,7 @@ import javax.validation.Valid;
 public class CouponApi {
 
     final private CouponService couponService;
+    final private CouponFindDao couponFindDao;
 
     @PostMapping
     public ResponseEntity<Coupon> createCoupon(
@@ -39,5 +42,21 @@ public class CouponApi {
             @Valid @PathVariable(name = "id") Long couponId){
         Coupon coupon = couponService.use(couponId, email);
         return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
+    }
+
+
+    //    임시 조회 api 추후 상세한 조회 요구사항이 결정 되면
+    //    CouponFindService 따로 만들어서 구현 할 것
+    @GetMapping("/{id}")
+    public ResponseEntity<Coupon> getCoupon(
+            @Valid @PathVariable(name = "id") Long couponId){
+        Coupon coupon = couponFindDao.findById(couponId);
+        return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Coupon>> getCoupons(@Valid @RequestParam String email){
+        List<Coupon> coupons = couponFindDao.findAllByEmail(email);
+        return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
     }
 }
