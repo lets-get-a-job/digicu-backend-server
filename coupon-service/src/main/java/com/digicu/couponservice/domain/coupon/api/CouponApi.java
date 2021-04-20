@@ -1,24 +1,36 @@
 package com.digicu.couponservice.domain.coupon.api;
 
+import com.digicu.couponservice.domain.coupon.domain.Coupon;
+import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
 import com.digicu.couponservice.domain.coupon.service.CouponService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/coupon")
 @RequiredArgsConstructor
 public class CouponApi {
 
-    private CouponService couponService;
+    final private CouponService couponService;
 
-    /*
-    ResponseEntity createCoupon(Long couponSpecId, CouponCreateRequest dto) {
-        // dto.getCouponSpecId()로 spec 정보 받아오기
-        CouponSpec spec = new CouponSpec();
-        final Coupon coupon = couponService.create(dto, spec);
-        return new CouponResponse(coupon);
+    @PostMapping
+    public ResponseEntity<Coupon> createCoupon(
+            @Valid @RequestHeader(name = "email") String email,
+            @Valid @RequestBody CouponCreateRequest dto) {
+        Coupon coupon = couponService.create(dto,email);
+        return new ResponseEntity<Coupon>(coupon, HttpStatus.CREATED);
     }
 
-     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteCoupon(
+            @Valid @RequestHeader(name = "email") String email,
+            @Valid @PathVariable(name = "id") Long couponId){
+        couponService.delete(couponId, email);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 }

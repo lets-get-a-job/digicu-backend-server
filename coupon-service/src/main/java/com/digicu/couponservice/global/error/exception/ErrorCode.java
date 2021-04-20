@@ -15,7 +15,9 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE(400, "유효하지 않은 파라미터 입니다."),
 
     //Entity
-    ENTITY_NOT_FOUND(400, "존재하지 않는 리소스입니다."),
+    ENTITY_NOT_FOUND(400, "존재하지 않는 비즈니스 자원입니다."),
+    COUPONSPEC_NOT_FOUND(400, "존재하지 않는 쿠폰 상세정보입니다."),
+    COUPON_NOT_FOUND(400, "존재하지 않는 쿠폰 입니다."),
 
     // CAN'T HANDLE
     INTERNAL_SERVER_ERROR(500, "관리자에게 문의해주십시오"),

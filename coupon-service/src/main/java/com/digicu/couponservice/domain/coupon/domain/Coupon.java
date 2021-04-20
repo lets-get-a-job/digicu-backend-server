@@ -2,6 +2,7 @@ package com.digicu.couponservice.domain.coupon.domain;
 
 import com.digicu.couponservice.domain.coupon.exception.CouponExpireException;
 import com.digicu.couponservice.domain.coupon.exception.CouponUsedException;
+import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -38,6 +39,9 @@ public class Coupon {
     @Column(name="count", nullable = false)
     private int count;
 
+    @Column(name="goal", nullable = false)
+    private int goal;
+
     @Column(name="expire_at", nullable = true)
     private LocalDate expirationDate;
 
@@ -46,12 +50,13 @@ public class Coupon {
     private LocalDateTime createdDate;
 
     @Builder
-    public Coupon(String name, String owner, String type, int value, int count, LocalDate expirationDate) {
+    public Coupon(String name, String owner, String type, int value, int goal, int count, LocalDate expirationDate) {
         this.name = name;
         this.owner = owner;
         this.type = type;
         this.value = value;
-        this.count = 1;
+        this.goal = goal;
+        this.count = count;
         this.expirationDate = expirationDate;
         this.used = false;
     }

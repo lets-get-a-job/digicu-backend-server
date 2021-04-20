@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/coupon_spec")
+@RequestMapping("/coupon/coupon_spec")
 public class CouponSpecApi {
     final private CouponSpecService couponSpecService;
     final private CouponSpecFindDao couponSpecFindDao; // Remove after
