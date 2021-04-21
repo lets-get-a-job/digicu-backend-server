@@ -28,6 +28,7 @@ eureka:
 
 zuul:
   sensitive-headers: Set-Cookie, Cookie
+  ignore-security-headers: false
   routes:
     authserver:
       path: /authentication/**
@@ -43,3 +44,9 @@ zuul:
       path: /coupon/**
       serviceId: couponservice
       stripPrefix: false
+
+    ribbon:
+      eager-load:
+        enabled: true
+
+

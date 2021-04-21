@@ -9,11 +9,13 @@ import java.util.Map;
 
 @RestController
 public class Controller {
-    @GetMapping("/coupon/hi")
+    @GetMapping("/hi")
     public String hello(@RequestHeader Map<String, String> headers){
-        headers.forEach((key, value)->{
-            System.out.println(key + " : " + value);
-        });
+        if(headers.containsKey("email")){
+            System.out.println(headers.get("email"));
+        } else{
+            System.out.println("no email header");
+        }
         return "hihihi";
     }
 }

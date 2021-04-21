@@ -10,8 +10,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.plaf.SeparatorUI;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +27,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader(jwtConfig.getHeader());
-
+        HeaderMapRequestWrapper reqWrapper = new HeaderMapRequestWrapper(request);
         if(header == null || !header.startsWith(jwtConfig.getPrefix())){
             chain.doFilter(request, response);
             return;
@@ -39,7 +39,8 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                             .setSigningKey(jwtConfig.getSecret().getBytes())
                             .parseClaimsJws(token)
                             .getBody();
-            String username = claims.getSubject();
+            String username = (String)claims.get("email");
+
             if(username != null) {
                 //List<String> authorities = (List<String>)claims.get("type");
                 @SuppressWarnings("unchecked")
@@ -47,6 +48,8 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 authority = "ROLE_" + authority.toUpperCase();
                 System.out.println(">>>> " + authority);
                 List<String> authorities = Arrays.asList(authority);
+
+                reqWrapper.addHeader("email", username);
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
@@ -56,6 +59,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
         }
-        chain.doFilter(request, response);
+        chain.doFilter(reqWrapper, response);
     }
 }

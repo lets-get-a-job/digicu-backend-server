@@ -6,14 +6,14 @@ public class JwtConfig {
     @Value("${security.jwt.header:Authorization}")
     private String header;
 
-    @Value("${security.jwt.prefix:Bearer }")
+    @Value("${security.jwt.prefix:Bearer}")
     private String prefix;
 
-    @Value("${security.jwt.expiration:#{24*60*60}}")
-    private int expiration;
-
-    @Value("${security.jwt.secret:JwtSecretKey}")
+    @Value("${security.jwt.secret:86ae5efb008c10740e15}")
     private String secret;
+
+    @Value("${security.jwt.expiration:#{7200000}}")
+    private int expiration;
 
     public String getHeader() {
         return header;
@@ -21,10 +21,6 @@ public class JwtConfig {
 
     public String getPrefix() {
         return prefix;
-    }
-
-    public int getExpiration() {
-        return expiration;
     }
 
     public String getSecret() {
