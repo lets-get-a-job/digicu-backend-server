@@ -23,16 +23,16 @@ function isCompanyFormValid(
     (companyPhone.length === 11 ||
       companyPhone.length === 10 ||
       companyPhone.length === 8) &&
-    (!companyHomepage || isURL(companyHomepage)) &&
-    (!companyLogo || isURL(companyLogo))
+    (!companyHomepage || isURL(companyHomepage, { require_tld: false })) &&
+    (!companyLogo || isURL(companyLogo, { require_tld: false }))
   );
 }
 
 function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
   return (
     isEmail(email) &&
-    isURL(profile_image) &&
-    isURL(thumbnail_image) &&
+    isURL(profile_image, { require_tld: false }) &&
+    isURL(thumbnail_image, { require_tld: false }) &&
     isDate(letter_ok, { locale: 'ko-KR' })
   );
 }
