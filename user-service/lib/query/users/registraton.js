@@ -17,7 +17,7 @@ function isCompanyFormValid(
 ) {
   return (
     isEmail(email) &&
-    isDate(letterOK, { locale: 'ko-KR' }) &&
+    (!letterOK || isDate(letterOK, { locale: 'ko-KR' })) &&
     companyNumber.length === 10 &&
     isNumeric(companyPhone) &&
     (companyPhone.length === 11 ||
@@ -33,7 +33,7 @@ function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
     isEmail(email) &&
     isURL(profile_image, { require_tld: false }) &&
     isURL(thumbnail_image, { require_tld: false }) &&
-    isDate(letter_ok, { locale: 'ko-KR' })
+    (!letterOK || isDate(letter_ok, { locale: 'ko-KR' }))
   );
 }
 
