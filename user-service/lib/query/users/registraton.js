@@ -33,7 +33,7 @@ function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
     isEmail(email) &&
     isURL(profile_image, { require_tld: false }) &&
     isURL(thumbnail_image, { require_tld: false }) &&
-    (!letterOK || isDate(letter_ok, { locale: 'ko-KR' }))
+    (!letter_ok || isDate(letter_ok, { locale: 'ko-KR' }))
   );
 }
 

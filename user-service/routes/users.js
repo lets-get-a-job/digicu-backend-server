@@ -9,6 +9,7 @@ const {
 } = require('../lib/query/users');
 const { errorHandling } = require('../lib/routing');
 const { isLoggedIn } = require('../lib/middleware');
+const jwt = require('jsonwebtoken');
 
 /** 이메일로 유저 조회 */
 router.get('/company/:email', async (req, res) => {
@@ -124,12 +125,35 @@ router.get('/social/:social_id', async (req, res) => {
 router.post('/social', async (req, res) => {
   try {
     const body = req.body;
+    const jwtSecret = process.env.JWT_SECRET;
     if (!body.thumbnail_image) {
       body.thumbnail_image = body.profile_image;
     }
     const isRegisterd = await registraton.registerSocial(body);
     if (isRegisterd) {
-      res.sendStatus(200);
+      jwt.sign(
+        {
+          email: body.email,
+          socialInfo: body,
+          admin: false,
+          type: 'social',
+        },
+        jwtSecret,
+        {
+          expiresIn: '2h',
+          issuer: 'digicu',
+          subject: 'userLogin',
+        },
+        (err, token) => {
+          if (err) {
+            errorHandling.sendError(res, 500, '토큰 발급 실패', error);
+          }
+          res.send({
+            digicu_token: token,
+            expires_in: 7200000, // 2h
+          });
+        },
+      );
     } else {
       res.sendStatus(400);
     }
@@ -161,12 +185,35 @@ router.post('/social', async (req, res) => {
 router.patch('/social', async (req, res) => {
   try {
     const body = req.body;
+    const jwtSecret = process.env.JWT_SECRET;
     if (!body.thumbnail_image) {
       body.thumbnail_image = body.profile_image;
     }
     const isUpdated = await update.updateSocial(body);
     if (isUpdated) {
-      res.sendStatus(200);
+      jwt.sign(
+        {
+          email: body.email,
+          socialInfo: body,
+          admin: false,
+          type: 'social',
+        },
+        jwtSecret,
+        {
+          expiresIn: '2h',
+          issuer: 'digicu',
+          subject: 'userLogin',
+        },
+        (err, token) => {
+          if (err) {
+            errorHandling.sendError(res, 500, '토큰 발급 실패', error);
+          }
+          res.send({
+            digicu_token: token,
+            expires_in: 7200000, // 2h
+          });
+        },
+      );
     } else {
       res.sendStatus(400);
     }
