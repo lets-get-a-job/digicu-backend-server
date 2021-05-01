@@ -12,8 +12,7 @@ require("dotenv").config();
 var app = require("../app");
 var debug = require("debug")("user-service:server");
 var http = require("http");
-// docker로 다른 서비스들이랑 한번에 띄울 땐 주석 풀어주어야 합니다.
-const eurekaHelper = require("../lib/eureka/eureka-helper");
+
 
 /**
  * Get port from environment and store in Express.
@@ -34,7 +33,12 @@ var server = http.createServer(app);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
-eurekaHelper.registerWithEureka("userservice", port);
+console.log(process.env.EUREKA_ENV)
+if(process.env.EUREKA_ENV === "true"){
+  const eurekaHelper = require("../lib/eureka/eureka-helper");
+  eurekaHelper.registerWithEureka("userservice", port);
+}
+
 
 /**
  * Normalize a port into a number, string, or false.

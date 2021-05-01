@@ -75,6 +75,13 @@ SMTP_FROM = your_user_id@domain
 JWT_SECRET = ...
 ```
 
+## EUREKA 환경 설정
+eureka 환경에서 동작할시
+.env 에
+`` 
+EUREKA_ENV = true
+`` 
+
 ## TODO
 
 ---
