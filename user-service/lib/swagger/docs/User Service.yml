@@ -101,6 +101,9 @@ paths:
                 letter_ok:
                   type: string
                   description: "이메일 수신 동의 날짜"
+                phone:
+                  type: string
+                  description: "핸드폰 번호"
               example:
                 token: "토큰 값"
                 social_id: "소셜 아이디 값"
@@ -109,9 +112,21 @@ paths:
                 profile_image: "프로필 이미지 URI"
                 thumbnail_image: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
                 letter_ok: "2020-12-31"
+                phone: "01012345678"
       responses:
         "200":
           description: "토큰 레코드를 생성했고, 전달 받은 파라미터로 소셜 프로필을 만들었습니다."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  digicu_token:
+                    type: string
+                    description: 디지쿠 애플리케이션 토큰
+                  expires_in:
+                    type: string
+                    description: 디지쿠 토큰 만료 시간
         "400":
           description: "파라미터가 잘못 되었습니다."
         "500":
@@ -161,6 +176,17 @@ paths:
       responses:
         "200":
           description: "토큰을 갱신했고, 전달 받은 파라미터로 유저를 업데이트 했습니다."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  digicu_token:
+                    type: string
+                    description: 디지쿠 애플리케이션 토큰
+                  expires_in:
+                    type: string
+                    description: 디지쿠 토큰 만료 시간
         "400":
           description: "파라미터가 잘못 되었습니다."
         "500":

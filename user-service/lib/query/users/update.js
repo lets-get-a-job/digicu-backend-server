@@ -3,7 +3,7 @@ const isEmail = require('validator/lib/isEmail');
 const isURL = require('validator/lib/isURL');
 const isNumeric = require('validator/lib/isNumeric');
 
-function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
+function isSocialFormValid(email, profile_image, thumbnail_image) {
   return (
     isEmail(email) &&
     isURL(profile_image, { require_tld: false }) &&

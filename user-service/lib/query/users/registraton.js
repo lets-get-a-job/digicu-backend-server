@@ -17,7 +17,7 @@ function isCompanyFormValid(
 ) {
   return (
     isEmail(email) &&
-    isDate(letterOK, { locale: 'ko-KR' }) &&
+    (!letterOK || isDate(letterOK, { locale: 'ko-KR' })) &&
     companyNumber.length === 10 &&
     isNumeric(companyPhone) &&
     (companyPhone.length === 11 ||
@@ -28,12 +28,21 @@ function isCompanyFormValid(
   );
 }
 
-function isSocialFormValid(email, profile_image, thumbnail_image, letter_ok) {
+function isSocialFormValid(
+  email,
+  profile_image,
+  thumbnail_image,
+  letter_ok,
+  company_phone,
+) {
   return (
     isEmail(email) &&
     isURL(profile_image, { require_tld: false }) &&
     isURL(thumbnail_image, { require_tld: false }) &&
-    isDate(letter_ok, { locale: 'ko-KR' })
+    (!letter_ok || isDate(letter_ok, { locale: 'ko-KR' })) &&
+    (company_phone.length === 11 ||
+      company_phone.length === 10 ||
+      company_phone.length === 8)
   );
 }
 
@@ -86,13 +95,14 @@ async function registerSocial(socialInfo) {
         socialInfo.profile_image,
         socialInfo.thumbnail_image,
         socialInfo.letter_ok,
+        socialInfo.phone,
       )
     ) {
       return false;
     }
     const responses = await query([
       {
-        sql: 'INSERT INTO social_profile VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        sql: 'INSERT INTO social_profile VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
         values: [
           socialInfo.social_id,
           socialInfo.token,
@@ -104,6 +114,7 @@ async function registerSocial(socialInfo) {
             : socialInfo.profile_image,
           new Date(),
           socialInfo.letter_ok ? socialInfo.letter_ok : null,
+          socialInfo.company_phone,
         ],
       },
     ]);

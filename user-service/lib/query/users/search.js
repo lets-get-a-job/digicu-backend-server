@@ -121,7 +121,7 @@ async function findSocialBySocialID(socialID) {
     const response = await query([
       {
         sql:
-          'SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok FROM social_profile WHERE social_id = ?',
+          'SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok, phone FROM social_profile WHERE social_id = ?',
         values: [socialID],
       },
     ]);
