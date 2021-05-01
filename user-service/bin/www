@@ -33,7 +33,6 @@ var server = http.createServer(app);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
-console.log(process.env.EUREKA_ENV)
 if(process.env.EUREKA_ENV === "true"){
   const eurekaHelper = require("../lib/eureka/eureka-helper");
   eurekaHelper.registerWithEureka("userservice", port);
