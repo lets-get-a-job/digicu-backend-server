@@ -22,13 +22,14 @@ services:
   userservice:
     image: digicu/userservice
     ports:
-      - "3000:3000"
+      - "5000:5000"
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=eurekaserver
       - DB_HOST=givven.cyucihz6valb.ap-northeast-2.rds.amazonaws.com
       - DB_USER=admin
       - DB_PASS=givven123
-      - SMTP_ORIGIN=http://127.0.0.1:3000
+      - SMTP_ORIGIN=http://ec2-3-34-247-127.ap-northeast-2.compute.amazonaws.com:5555
+      - EUREKA_ENV=true
     # depends_on:
     #   - userdb
 
