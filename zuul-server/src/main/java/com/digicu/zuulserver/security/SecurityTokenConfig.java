@@ -32,6 +32,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/authentication/**").permitAll()
+                .antMatchers("/users/social/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/**").permitAll()
                 .antMatchers("/coupon/**").hasAnyRole("ADMIN", "COMPANY") // TEST위해 COMAPY함 나중에 COUSTOMER등으로 바꿔야함
                 .anyRequest().authenticated()
