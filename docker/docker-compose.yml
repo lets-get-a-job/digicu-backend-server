@@ -29,6 +29,7 @@ services:
       - DB_USER=admin
       - DB_PASS=givven123
       - SMTP_ORIGIN=http://ec2-3-34-247-127.ap-northeast-2.compute.amazonaws.com:5555
+      - EUREKA_ENV=true
     # depends_on:
     #   - userdb
 
