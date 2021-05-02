@@ -27,6 +27,9 @@ public class Coupon {
     @Column(name="owner", nullable = false)
     private String owner;
 
+    @Column(name="issuer", nullable = false)
+    private String issuer;
+
     @Column(name="type", nullable = false)
     private String type;
 
@@ -50,9 +53,10 @@ public class Coupon {
     private LocalDateTime createdDate;
 
     @Builder
-    public Coupon(String name, String owner, String type, int value, int goal, int count, LocalDate expirationDate) {
+    public Coupon(String name, String owner, String issuer, String type, int value, int goal, int count, LocalDate expirationDate) {
         this.name = name;
         this.owner = owner;
+        this.issuer = issuer;
         this.type = type;
         this.value = value;
         this.goal = goal;

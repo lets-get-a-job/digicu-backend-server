@@ -44,7 +44,6 @@ public class CouponApi {
         return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
     }
 
-
     //    임시 조회 api 추후 상세한 조회 요구사항이 결정 되면
     //    CouponFindService 따로 만들어서 구현 할 것
     @GetMapping("/{id}")

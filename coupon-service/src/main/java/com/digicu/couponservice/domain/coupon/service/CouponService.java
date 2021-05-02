@@ -23,7 +23,11 @@ public class CouponService {
 
     public Coupon create(final CouponCreateRequest dto, final String email){
         CouponSpec spec = couponSpecFindDao.findById(dto.getCouponSpecId());
-        return couponRepository.save(dto.toEntity(spec, email));
+        if(email.equals(spec.getOwner())){
+            return couponRepository.save(dto.toEntity(spec, email));
+        } else {
+            throw new AccessDeniedException(email + " has not access for couponspec: " + spec.getId(), ErrorCode.ACCESS_DENIED);
+        }
     }
 
     public void delete(final Long couponId, final String email){
@@ -36,9 +40,9 @@ public class CouponService {
         }
     }
 
-    public Coupon use(final Long couponId, final String email){
+    public Coupon use(final Long couponId, final String email) {
         Coupon coupon = couponFindDao.findById(couponId);
-        if(email.equals(coupon.getOwner())){
+        if (email.equals(coupon.getOwner())) {
             coupon.use();
             return coupon;
         } else {
