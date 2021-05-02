@@ -114,7 +114,7 @@ async function registerSocial(socialInfo) {
             : socialInfo.profile_image,
           new Date(),
           socialInfo.letter_ok ? socialInfo.letter_ok : null,
-          socialInfo.company_phone,
+          socialInfo.phone,
         ],
       },
     ]);
