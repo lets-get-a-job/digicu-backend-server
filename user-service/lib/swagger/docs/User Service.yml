@@ -135,7 +135,7 @@ paths:
       tags:
         - "Social"
       summary: "토큰 갱신, 유저 업데이트"
-      description: "토큰을 갱신하고, 유저를 업데이트 합니다. 앱에서 로그인 또는 토큰이 만료되어 새로 갱신했을 경우 해당 API를 호출해주세요."
+      description: "토큰을 갱신하고, 유저를 업데이트 합니다. 앱에서 로그인 또는 토큰이 만료되어 새로 갱신했을 경우 해당 API를 호출해주세요. token과 social_id는 반드시 보내시고, 나머지 정보는 갱신되었을 경우 보내주세요."
       requestBody:
         content:
           application/json:
@@ -144,9 +144,6 @@ paths:
               required:
                 - token
                 - social_id
-                - email
-                - nickname
-                - profile_image
               properties:
                 token:
                   type: string

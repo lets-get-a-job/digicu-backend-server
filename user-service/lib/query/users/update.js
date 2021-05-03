@@ -3,11 +3,13 @@ const isEmail = require('validator/lib/isEmail');
 const isURL = require('validator/lib/isURL');
 const isNumeric = require('validator/lib/isNumeric');
 
-function isSocialFormValid(email, profile_image, thumbnail_image) {
+function isSocialFormValid(social_id, token, email, profile_image, thumbnail_image) {
   return (
-    isEmail(email) &&
-    isURL(profile_image, { require_tld: false }) &&
-    isURL(thumbnail_image, { require_tld: false })
+    social_id && 
+    token &&
+    (!email || isEmail(email)) &&
+    (!profile_image || isURL(profile_image, { require_tld: process.env.NODE_ENV === 'production' })) &&
+    (!thumbnail_image || isURL(thumbnail_image, { require_tld: process.env.NODE_ENV === 'production' }))
   );
 }
 
@@ -50,6 +52,8 @@ async function updateSocial(socialInfo) {
     // form validation
     if (
       !isSocialFormValid(
+        socialInfo.social_id,
+        socialInfo.token,
         socialInfo.email,
         socialInfo.profile_image,
         socialInfo.thumbnail_image,
@@ -57,20 +61,30 @@ async function updateSocial(socialInfo) {
     ) {
       return false;
     }
+    let sql = 'UPDATE social_profile SET token = ?';
+    const values = [socialInfo.token];
+    if (socialInfo.email) {
+      sql += ', email = ?';
+      values.push(socialInfo.email);
+    }
+    if (socialInfo.nickname) {
+      sql += ', nickname = ?';
+      values.push(socialInfo.nickname);
+    }
+    if (socialInfo.profile_image) {
+      sql += ', profile_image = ?';
+      values.push(socialInfo.profile_image);
+    }
+    if (socialInfo.thumbnail_image) {
+      sql += ', thumbnail_image = ?';
+      values.push(socialInfo.thumbnail_image);
+    }
+    sql += ' WHERE social_id = ?';
+    values.push(socialInfo.social_id);
     const responses = await query([
       {
-        sql:
-          'UPDATE social_profile SET token = ?, email = ?, nickname = ?, profile_image = ?, thumbnail_image = ? WHERE social_id = ?',
-        values: [
-          socialInfo.token,
-          socialInfo.email,
-          socialInfo.nickname,
-          socialInfo.profile_image,
-          socialInfo.thumbnail_image
-            ? socialInfo.thumbnail_image
-            : socialInfo.profile_image,
-          socialInfo.social_id,
-        ],
+        sql,
+        values
       },
     ]);
     if (responses[0].rows.affectedRows > 0) {
