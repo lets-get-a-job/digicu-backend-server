@@ -7,6 +7,7 @@ public enum ErrorCode {
     //COUPON
     COUPON_USED(400, "쿠폰이 이미 사용 됐습니다."),
     COUPON_EXPIRED(400,"만료된 쿠폰 입니다."),
+    COUPON_FULL(400, "이미 적립 완료된 쿠폰입니다."),
 
     //AUTHORIZATION
     ACCESS_DENIED(403, "접근할 수 없는 자원입니다."),

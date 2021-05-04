@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -25,13 +26,18 @@ public class CouponCreateRequest {
     @JsonProperty(value = "coupon_spec_id")
     private Long couponSpecId;
 
+    @NotEmpty
+    @JsonProperty(value = "subject_phone")
+    private String subjectPhone;
+
     public Coupon toEntity(CouponSpec spec, final String email){
         Coupon coupon = Coupon.builder()
                 .name(spec.getName())
                 .count(count)
                 .value(spec.getValue())
                 .goal(spec.getGoal())
-                .owner(email)
+                .owner(subjectPhone)
+                .issuer(email)
                 .type(spec.getType())
                 .expirationDate(LocalDate.now().plusDays(spec.getPeriod()))
                 .build();

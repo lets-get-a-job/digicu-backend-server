@@ -1,5 +1,6 @@
 package com.digicu.couponservice.domain.coupon.domain;
 
+import com.digicu.couponservice.domain.coupon.exception.CouponAccumulateException;
 import com.digicu.couponservice.domain.coupon.exception.CouponExpireException;
 import com.digicu.couponservice.domain.coupon.exception.CouponUsedException;
 import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
@@ -27,11 +28,15 @@ public class Coupon {
     @Column(name="owner", nullable = false)
     private String owner;
 
+    @Column(name="issuer", nullable = false)
+    private String issuer;
+
     @Column(name="type", nullable = false)
     private String type;
 
     @Column(name="value", nullable = false)
     private int value;
+
 
     @Column(name="used", nullable = false)
     private boolean used;
@@ -50,9 +55,10 @@ public class Coupon {
     private LocalDateTime createdDate;
 
     @Builder
-    public Coupon(String name, String owner, String type, int value, int goal, int count, LocalDate expirationDate) {
+    public Coupon(String name, String owner, String issuer, String type, int value, int goal, int count, LocalDate expirationDate) {
         this.name = name;
         this.owner = owner;
+        this.issuer = issuer;
         this.type = type;
         this.value = value;
         this.goal = goal;
@@ -76,5 +82,17 @@ public class Coupon {
         verifyExpiration();
         verifyUsed();
         this.used = true; //occur dirty check
+    }
+    public void verifyFull(final int numAcc){
+        if(count + numAcc > goal){
+            throw new CouponAccumulateException();
+        }
+    }
+
+    public void accumulate(final int numAcc){
+        verifyExpiration();
+        verifyUsed();
+        verifyFull(numAcc);
+        this.count += numAcc;
     }
 }
