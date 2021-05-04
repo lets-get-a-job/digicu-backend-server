@@ -1,5 +1,6 @@
 package com.digicu.couponservice.domain.coupon.domain;
 
+import com.digicu.couponservice.domain.coupon.exception.CouponAccumulateException;
 import com.digicu.couponservice.domain.coupon.exception.CouponExpireException;
 import com.digicu.couponservice.domain.coupon.exception.CouponUsedException;
 import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
@@ -35,6 +36,7 @@ public class Coupon {
 
     @Column(name="value", nullable = false)
     private int value;
+
 
     @Column(name="used", nullable = false)
     private boolean used;
@@ -80,5 +82,17 @@ public class Coupon {
         verifyExpiration();
         verifyUsed();
         this.used = true; //occur dirty check
+    }
+    public void verifyFull(final int numAcc){
+        if(count + numAcc > goal){
+            throw new CouponAccumulateException();
+        }
+    }
+
+    public void accumulate(final int numAcc){
+        verifyExpiration();
+        verifyUsed();
+        verifyFull(numAcc);
+        this.count += numAcc;
     }
 }

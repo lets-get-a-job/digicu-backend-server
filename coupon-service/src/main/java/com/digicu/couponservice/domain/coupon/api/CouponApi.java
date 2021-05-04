@@ -4,6 +4,7 @@ import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
 import com.digicu.couponservice.domain.coupon.service.CouponService;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +37,22 @@ public class CouponApi {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/{id}")
+    // pos쪽에서 use들어 올 때 사용자의 동의가 있는건지 확인 하는 루틴 필요
+    // user password로 암호화 한 쿠폰 정보를 보내주면 될 것 같음.
+    @PatchMapping("/use/{id}")
     public ResponseEntity<Coupon> useCoupon(
             @Valid @RequestHeader(name = "email") String email,
             @Valid @PathVariable(name = "id") Long couponId){
         Coupon coupon = couponService.use(couponId, email);
+        return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
+    }
+
+    @PatchMapping("/accumulate/{id}")
+    public ResponseEntity<Coupon> accumulateCoupon(
+            @Valid @RequestHeader(name = "email") String email,
+            @Valid @PathVariable(name = "id") Long couponId,
+            @Valid @RequestBody @JsonProperty(value = "num_acc") int numAcc){
+        Coupon coupon = couponService.accumulate(couponId, email, numAcc);
         return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
     }
 
