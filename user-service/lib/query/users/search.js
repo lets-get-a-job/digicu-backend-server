@@ -195,7 +195,6 @@ async function findCompany(include, count, page, orderby, desc) {
     if (offset) {
       sql = `${sql} OFFSET ${offset}`;
     }
-    console.log(sql);
     const response = await query([
       {
         sql,

@@ -43,3 +43,11 @@ export async function query(sqlActions: SQLAction[]) {
     throw error;
   }
 }
+
+export interface SearchSchema {
+  include?: string;
+  count?: number;
+  page?: number;
+  orderby?: string;
+  desc?: boolean;
+}

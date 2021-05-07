@@ -1,3 +1,5 @@
+import { SearchSchema } from '../index';
+
 export interface MenuRegistartion {
   company_number: string;
   menu_name: string;
@@ -12,3 +14,14 @@ export interface MenuFull extends MenuRegistartion {
 
 export interface MenuPatch
   extends Omit<MenuFull, 'company_number' | 'regi_date'> {}
+
+export type MenuOrderBy =
+  | 'company_number'
+  | 'menu_name'
+  | 'menu_value'
+  | 'stock'
+  | 'regi_date';
+
+export interface MenuSearch extends SearchSchema {
+  orderby?: MenuOrderBy;
+}
