@@ -8,6 +8,10 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
+router.post('/isLoggedIn', isLoggedIn, (req, res) => {
+  res.send(req.user);
+});
+
 router.post('/login', async (req, res) => {
   const { email, plain_password } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
