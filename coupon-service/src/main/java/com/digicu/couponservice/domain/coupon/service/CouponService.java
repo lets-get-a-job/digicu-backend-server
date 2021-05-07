@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -30,19 +32,19 @@ public class CouponService {
         }
     }
 
-    public void delete(final Long couponId, final String email){
+    public void delete(final Long couponId, final String phone){
         Coupon coupon = couponFindDao.findById(couponId);
-        if(email.equals(coupon.getOwner())){
+        if(phone.equals(coupon.getOwner())){
             couponRepository.delete(coupon);
         } else {
-            throw new AccessDeniedException(email + " has not access for coupon:" + couponId,
+            throw new AccessDeniedException(phone + " has not access for coupon:" + couponId,
                     ErrorCode.ACCESS_DENIED);
         }
     }
 
     public Coupon use(final Long couponId, final String email) {
         Coupon coupon = couponFindDao.findById(couponId);
-        if (email.equals(coupon.getOwner())) {
+        if (email.equals(coupon.getIssuer())) {
             coupon.use();
             return coupon;
         } else {
