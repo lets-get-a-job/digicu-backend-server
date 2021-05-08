@@ -41,6 +41,7 @@ public class CouponCreateRequest {
                 .type(spec.getType())
                 .expirationDate(LocalDate.now().plusDays(spec.getPeriod()))
                 .build();
+        coupon.verifyFull(0);
         return coupon;
     }
 }

@@ -37,9 +37,9 @@ public class Coupon {
     @Column(name="value", nullable = false)
     private int value;
 
-
-    @Column(name="used", nullable = false)
-    private boolean used;
+    //USED, DONE, NORMAL, TRADING
+    @Column(name="state", nullable = false)
+    private String state;
 
     @Column(name="count", nullable = false)
     private int count;
@@ -54,17 +54,18 @@ public class Coupon {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
+
     @Builder
     public Coupon(String name, String owner, String issuer, String type, int value, int goal, int count, LocalDate expirationDate) {
         this.name = name;
         this.owner = owner;
         this.issuer = issuer;
         this.type = type;
+        this.state = "NORMAL";
         this.value = value;
         this.goal = goal;
         this.count = count;
         this.expirationDate = expirationDate;
-        this.used = false;
     }
 
     public void verifyExpiration(){
@@ -74,14 +75,14 @@ public class Coupon {
     }
 
     public void verifyUsed(){
-        if(used) {
+        if(this.state.equals("USED")) {
             throw new CouponUsedException();
         }
     }
     public void use(){
         verifyExpiration();
         verifyUsed();
-        this.used = true; //occur dirty check
+        this.state = "USED"; //occur dirty check
     }
     public void verifyFull(final int numAcc){
         if(count + numAcc > goal){
@@ -94,5 +95,8 @@ public class Coupon {
         verifyUsed();
         verifyFull(numAcc);
         this.count += numAcc;
+        if(this.count == this.goal){
+            this.state = "DONE";
+        }
     }
 }
