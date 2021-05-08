@@ -2,6 +2,7 @@ package com.digicu.couponservice.domain.coupon.api;
 
 import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
+import com.digicu.couponservice.domain.coupon.dto.CouponAccumulateRequest;
 import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
 import com.digicu.couponservice.domain.coupon.service.CouponService;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -53,8 +54,8 @@ public class CouponApi {
     public ResponseEntity<Coupon> accumulateCoupon(
             @Valid @RequestHeader(name = "email") String email,
             @Valid @PathVariable(name = "id") Long couponId,
-            @Valid @RequestBody @JsonProperty(value = "num_acc") int numAcc){
-        Coupon coupon = couponService.accumulate(couponId, email, numAcc);
+            @Valid @RequestBody CouponAccumulateRequest dto){
+        Coupon coupon = couponService.accumulate(couponId, email, dto.getAccNum());
         return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
     }
 

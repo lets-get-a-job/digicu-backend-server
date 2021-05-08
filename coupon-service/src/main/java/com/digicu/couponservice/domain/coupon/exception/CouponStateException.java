@@ -11,7 +11,8 @@ public class CouponStateException extends BusinessException {
         switch (state){
             case "NORMAL" :  return new CouponStateException(ErrorCode.COUPON_IS_NORMAL);
             case "TRADING" : return new CouponStateException(ErrorCode.COUPON_IS_TRADING);
-            default: return new CouponStateException(ErrorCode.COUPON_IS_NORMAL);
+            case "USED" : return new CouponStateException(ErrorCode.COUPON_USED);
+            default: return new CouponStateException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 }
