@@ -35,6 +35,7 @@ public class CouponService {
     public void delete(final Long couponId, final String phone){
         Coupon coupon = couponFindDao.findById(couponId);
         if(phone.equals(coupon.getOwner())){
+            coupon.verifyAspectNotState("TRADING");
             couponRepository.delete(coupon);
         } else {
             throw new AccessDeniedException(phone + " has not access for coupon:" + couponId,

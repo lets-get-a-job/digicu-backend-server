@@ -2,8 +2,7 @@ package com.digicu.couponservice.domain.coupon.domain;
 
 import com.digicu.couponservice.domain.coupon.exception.CouponAccumulateException;
 import com.digicu.couponservice.domain.coupon.exception.CouponExpireException;
-import com.digicu.couponservice.domain.coupon.exception.CouponUsedException;
-import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
+import com.digicu.couponservice.domain.coupon.exception.CouponStateException;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -74,15 +73,20 @@ public class Coupon {
        }
     }
 
-    public void verifyUsed(){
-        if(this.state.equals("USED")) {
-            throw new CouponUsedException();
+    public void verifyAspectState(final String aspect){
+        if(!this.state.equals(aspect)){
+            throw CouponStateException.of(this.state);
+        }
+    }
+    public void verifyAspectNotState(final String aspect){
+        if(this.state.equals(aspect)){
+            throw CouponStateException.of(this.state);
         }
     }
     public void use(){
         verifyExpiration();
-        verifyUsed();
-        this.state = "USED"; //occur dirty check
+        verifyAspectState("DONE");
+        this.state = "USED";
     }
     public void verifyFull(final int numAcc){
         if(count + numAcc > goal){
@@ -92,7 +96,7 @@ public class Coupon {
 
     public void accumulate(final int numAcc){
         verifyExpiration();
-        verifyUsed();
+        verifyAspectState("NORMAL");
         verifyFull(numAcc);
         this.count += numAcc;
         if(this.count == this.goal){
