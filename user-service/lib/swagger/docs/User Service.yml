@@ -16,6 +16,45 @@ tags:
   - name: "Test"
     description: "테스트용 API (개발 모드에서만 라우팅 됨)"
 paths:
+  /users/social/{social_id}/fcm:
+    post:
+      tags:
+        - "Social"
+      summary: "저장된 fcm 토큰 조회(로그인 상태)"
+      description: "저장된 fcm 토큰을 불러옵니다 (로그인 상태에서만 가능)"
+      parameters:
+        - name: "social_id"
+          required: true
+          description: "소셜 id"
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  description: "digicu 토큰 값"
+                  type: string
+      responses:
+        "200":
+          description: "fcm 토큰 조회성공"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fcm_token:
+                    description: "fcm 토큰 값"
+                    type: string
+        "401":
+          description: "로그인 안됨"
+        "404":
+          description: "유저 없음"
+        "500":
+          description: "서버 오류"
   /users/social/{social_id}:
     get:
       tags:
@@ -62,6 +101,7 @@ paths:
           description: "가입 되지 않은 계정입니다."
         "500":
           description: "서버 에러"
+
   /users/social:
     post:
       tags:
@@ -79,6 +119,7 @@ paths:
                 - email
                 - nickname
                 - profile_image
+                - fcm_token
               properties:
                 token:
                   type: string
@@ -104,6 +145,9 @@ paths:
                 phone:
                   type: string
                   description: "핸드폰 번호"
+                fcm_token:
+                  description: "fcm_token 값"
+                  type: string
               example:
                 token: "토큰 값"
                 social_id: "소셜 아이디 값"
@@ -113,6 +157,7 @@ paths:
                 thumbnail_image: "썸네일 이미지 URI (파라미터를 보내지 않으면 profile_image와 동일한 값)"
                 letter_ok: "2020-12-31"
                 phone: "01012345678"
+                fcm_token: "dfkjk3243kj1lfkjskdsakjh"
       responses:
         "200":
           description: "토큰 레코드를 생성했고, 전달 받은 파라미터로 소셜 프로필을 만들었습니다."
@@ -410,7 +455,7 @@ paths:
         "500":
           description: "서버 에러"
 
-  /authentication/{email}':
+  /authentication/{email}:
     get:
       tags:
         - "Authentication"
@@ -601,6 +646,9 @@ paths:
                     letter_ok:
                       description: "이메일 수신 동의 날짜"
                       type: string
+                    fcm_token:
+                      description: "fcm_token 값"
+                      type: string
                 company_info:
                   description: "업체 등록 정보"
                   type: object
@@ -633,6 +681,7 @@ paths:
                   email: "example@site.com"
                   plain_password: "1234567890"
                   letter_ok: "2020-01-31"
+                  fcm_token: "dfkjk3243kj1lfkjskdsakjh"
                 company_info:
                   company_number: "1248100998"
                   company_name: "삼성전자 주식회사"
