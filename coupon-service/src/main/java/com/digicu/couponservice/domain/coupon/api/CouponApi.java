@@ -81,7 +81,7 @@ public class CouponApi {
         // 특정 유저의 상태별 쿠폰
         else{
             String phone = String.valueOf(params.get("phone"));
-            String state = String.valueOf(params.get("state"));
+            String state = String.valueOf(params.get("state")).toUpperCase();
             List<Coupon> coupons = couponFindDao.findAllByPhoneAndState(phone, state);
             return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
         }
