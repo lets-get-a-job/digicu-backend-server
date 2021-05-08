@@ -5,12 +5,14 @@ import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
 import com.digicu.couponservice.domain.coupon.service.CouponService;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -56,8 +58,6 @@ public class CouponApi {
         return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
     }
 
-    //    임시 조회 api 추후 상세한 조회 요구사항이 결정 되면
-    //    CouponFindService 따로 만들어서 구현 할 것
     @GetMapping("/{id}")
     public ResponseEntity<Coupon> getCoupon(
             @Valid @PathVariable(name = "id") Long couponId){
@@ -66,8 +66,23 @@ public class CouponApi {
     }
 
     @GetMapping
-    public ResponseEntity<List<Coupon>> getCoupons(@Valid @RequestParam String email){
-        List<Coupon> coupons = couponFindDao.findAllByEmail(email);
-        return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
+    public ResponseEntity<List<Coupon>> getCoupons(
+            @RequestHeader(name = "email") String email,
+            @RequestParam HashMap<String, Object> params){
+
+        //no phone , yes email => email로 phone 조회해서 가져오기
+
+        // 전체 trading
+        if(!params.containsKey("phone")){
+            List<Coupon> coupons = couponFindDao.findAllTrading();
+            return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
+        }
+        // 특정 유저의 상태별 쿠폰
+        else{
+            String phone = String.valueOf(params.get("phone"));
+            String state = String.valueOf(params.get("state"));
+            List<Coupon> coupons = couponFindDao.findAllByPhoneAndState(phone, state);
+            return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
+        }
     }
 }

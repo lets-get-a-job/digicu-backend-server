@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +21,15 @@ public class CouponFindDao {
         return coupon.get();
     }
 
-    public List<Coupon> findAllByEmail(final String email){
-        Optional<List<Coupon>> coupons = couponRepository.findAllByOwner(email);
-        return coupons.orElse(new ArrayList<>());
+    public List<Coupon> findAllByPhone(final String phone){
+        return couponRepository.findAllByOwner(phone);
+    }
+
+    public List<Coupon> findAllTrading(){
+        return couponRepository.findAllByState("TRADING");
+    }
+
+    public List<Coupon> findAllByPhoneAndState(final String phone, final String state){
+        return couponRepository.findAllByOwnerAndState(phone, state);
     }
 }
