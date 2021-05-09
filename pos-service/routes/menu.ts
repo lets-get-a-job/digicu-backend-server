@@ -43,9 +43,9 @@ router.patch('/', async function (req, res) {
 });
 
 /** 메뉴 삭제 */
-router.delete('/', async function (req, res) {
+router.delete('/:menu_id', async function (req, res) {
   try {
-    await deleteMenu(req.body.menu_id);
+    await deleteMenu(Number(req.params.menu_id));
     res.send('삭제 성공');
   } catch (error) {
     if (error.message === 'wrong parameter') {

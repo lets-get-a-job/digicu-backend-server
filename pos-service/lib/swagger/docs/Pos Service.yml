@@ -203,9 +203,7 @@ paths:
       tags:
         - "Menu"
       parameters:
-        - $ref: "#/components/parameters/digicu_token"
-        - name: menu_id
-          $ref: "#/components/parameters/menu_id"
+        - $ref: "#/components/parameters/menu_id"
       responses:
         "200":
           description: "조회 성공"
@@ -220,6 +218,23 @@ paths:
         "500":
           $ref: "#/components/responses/internal_server_error"
 
+    delete:
+      description: 메뉴를 삭제합니다.
+      summary: 메뉴 삭제
+      tags:
+        - "Menu"
+      parameters:
+        - $ref: "#/components/parameters/menu_id"
+      responses:
+        "200":
+          $ref: "#/components/responses/success"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
   /menu:
     get:
       description: 메뉴를 통합 검색합니다.
@@ -227,7 +242,6 @@ paths:
       tags:
         - "Menu"
       parameters:
-        - $ref: "#/components/parameters/digicu_token"
         - $ref: "#/components/parameters/include"
         - $ref: "#/components/parameters/orderby"
         - $ref: "#/components/parameters/desc"
@@ -273,23 +287,6 @@ paths:
         - "Menu"
       requestBody:
         $ref: "#/components/requestBodies/editMenu"
-      responses:
-        "200":
-          $ref: "#/components/responses/success"
-        "400":
-          $ref: "#/components/responses/parameter_error"
-        "401":
-          $ref: "#/components/responses/not_login_error"
-        "500":
-          $ref: "#/components/responses/internal_server_error"
-
-    delete:
-      description: 메뉴를 삭제합니다.
-      summary: 메뉴 삭제
-      tags:
-        - "Menu"
-      requestBody:
-        $ref: "#/components/requestBodies/requireMenuId"
       responses:
         "200":
           $ref: "#/components/responses/success"
