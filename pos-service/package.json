@@ -5,7 +5,8 @@
   "scripts": {
     "build": "parcel build app.ts --target node",
     "dev": "nodemon --config nodemon.dev.json",
-    "prod": "npm run build && cross-env NODE_ENV=production node ./bin/www"
+    "prod": "npm run build && cross-env NODE_ENV=production node ./bin/www",
+    "api-docs": "nodemon --watch lib/swagger --ext js,yml lib/swagger/index.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -28,6 +29,8 @@
     "nodemon": "^2.0.7",
     "parcel-bundler": "^1.12.5",
     "parcel-plugin-clean-dist": "^0.0.6",
-    "typescript": "^4.2.4"
+    "swagger-ui-express": "^4.1.6",
+    "typescript": "^4.2.4",
+    "yamljs": "^0.3.0"
   }
 }

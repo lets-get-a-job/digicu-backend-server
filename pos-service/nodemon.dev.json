@@ -1,6 +1,6 @@
 {
   "verbose": true,
-  "watch": ["routes/", "lib/", "app.js", "bin/www"],
+  "watch": ["routes/", "lib/", "app.ts", "bin/www"],
   "ignore": ["lib/swagger/"],
   "env": {
     "NODE_ENV": "development"

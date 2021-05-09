@@ -1,14 +1,22 @@
 import { errorHandling } from '../routing';
 import Axios from 'axios';
+import { Request, Response, NextFunction } from 'express';
 
-export const isLoggedIn = async (req, res, next) => {
+export const isLoggedIn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const { token } = req.body;
+    const { digicu_token } = req.headers;
 
     const axiosResponse = await Axios.post(
       process.env.USER_SERVICE_URL + '/authentication/isLoggedIn',
+      null,
       {
-        token,
+        headers: {
+          digicu_token,
+        },
       },
     );
 
@@ -18,11 +26,6 @@ export const isLoggedIn = async (req, res, next) => {
       throw Error();
     }
   } catch (error) {
-    errorHandling.sendError(
-      res,
-      401,
-      '인증에 실패했습니다.',
-      '인증에 실패했습니다.',
-    );
+    errorHandling.sendError(res, 401, '인증에 실패했습니다.', error);
   }
 };

@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import indexRouter from './routes';
 import menuRouter from './routes/menu';
-import { isLoggedIn } from './lib/middleware/isLoggedIn';
+// import { isLoggedIn } from './lib/middleware/isLoggedIn';
 
 const app: express.Application = express();
 
@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/', indexRouter);
-app.use('/menu', isLoggedIn, menuRouter);
+app.use('/menu', menuRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
