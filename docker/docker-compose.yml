@@ -38,6 +38,7 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=eurekaserver
       - DB_HOST=givven.cyucihz6valb.ap-northeast-2.rds.amazonaws.com
+      - DB_NAME=pos_db
       - DB_USER=admin
       - DB_PASS=givven123
       - EUREKA_ENV=true
