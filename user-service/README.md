@@ -76,11 +76,10 @@ JWT_SECRET = ...
 ```
 
 ## EUREKA 환경 설정
+
 eureka 환경에서 동작할시
 .env 에
-`` 
-EUREKA_ENV = true
-`` 
+` EUREKA_ENV = true`
 
 ## TODO
 
@@ -96,7 +95,7 @@ EUREKA_ENV = true
 - [v] swagger 기반으로 API 작성
 - [v] jwt 토큰 기반 로그인 서비스
 - [v] 소셜 로그인 API
-- [ ] 업체 프로필 변경
-- [ ] 업체 검색 API
+- [v] 업체 프로필 변경
+- [v] 업체 검색 API
 
 > 이메일 인증은 화이트 도메인 문제로 우선 네이버 SMTP를 사용하도록 하겠습니다.

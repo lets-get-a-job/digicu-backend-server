@@ -1,0 +1,298 @@
+openapi: "3.0.2"
+info:
+  title: API Title
+  version: "1.0"
+servers:
+  - url: https://{server_url}/menu
+  - url: https://{server_url}/payment
+tags:
+  - name: "Menu"
+    description: "메뉴 API"
+  - name: "Payment"
+    description: "거래내역 API"
+
+components:
+  parameters:
+    menu_id:
+      name: menu_id
+      in: path
+      required: true
+      description: "{ menu_id }"
+      schema:
+        type: string
+        example: 1234
+    digicu_token:
+      name: digicu_token
+      in: header
+      required: true
+      description: digicu 토큰 (header)
+      schema:
+        type: string
+        example: sdsdwejhxbsgdsad3jhfus
+    include:
+      name: include
+      in: query
+      required: false
+      description: 해당 텍스트가 포함된 컬럼 조회
+      schema:
+        type: string
+        default: null
+        example: 삼성전자
+    orderby:
+      name: orderby
+      in: query
+      required: false
+      description: 특정 컬럼으로 정렬
+      schema:
+        type: string
+        default: null
+        example: menu_name
+    desc:
+      name: desc
+      in: query
+      required: false
+      description: "내림 차순으로 정렬 (default: false)"
+      schema:
+        type: boolean
+        default: false
+        example: true
+    count:
+      name: count
+      in: query
+      required: false
+      description: "한 페이지에 몇개의 데이터를 조회할지"
+      schema:
+        type: number
+        default: 10
+        example: 30
+    page:
+      name: page
+      in: query
+      required: false
+      description: "몇 페이지를 조회할지"
+      schema:
+        type: number
+        default: 1
+        example: 3
+
+  schemas:
+    MenuWithID:
+      type: object
+      properties:
+        menu_id:
+          description: 메뉴 ID
+          type: string
+        company_number:
+          description: 사업자 등록번호
+          type: string
+        menu_name:
+          description: 메뉴 이름
+          type: string
+        menu_value:
+          description: 메뉴 가격
+          type: string
+        stock:
+          description: 재고
+          type: number
+        regi_date:
+          description: 등록 날짜
+          type: string
+
+    MenuWithIDRequired:
+      type: object
+      required:
+        - "menu_id"
+      properties:
+        menu_id:
+          description: 메뉴 ID
+          type: string
+        company_number:
+          description: 사업자 등록번호
+          type: string
+        menu_name:
+          description: 메뉴 이름
+          type: string
+        menu_value:
+          description: 메뉴 가격
+          type: string
+        stock:
+          description: 재고
+          type: number
+        regi_date:
+          description: 등록 날짜
+          type: string
+      example:
+        menu_id: 1
+        company_number: 1248100998
+        menu_name: 떡볶이
+        menu_value: 5000
+        stock: 30
+        regi_date: "2020-03-31"
+
+    MenuWithOutID:
+      type: object
+      required:
+        - "company_number"
+        - "menu_name"
+        - "menu_value"
+        - "stock"
+        - "regi_date"
+      properties:
+        company_number:
+          description: 사업자 등록번호
+          type: string
+        menu_name:
+          description: 메뉴 이름
+          type: string
+        menu_value:
+          description: 메뉴 가격
+          type: string
+        stock:
+          description: 재고
+          type: number
+        regi_date:
+          description: 등록 날짜
+          type: string
+      example:
+        company_number: 1248100998
+        menu_name: 떡볶이
+        menu_value: 5000
+        stock: 30
+        regi_date: "2020-03-31"
+
+  requestBodies:
+    requireMenuId:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - menu_id
+            properties:
+              menu_id:
+                description: 메뉴 ID
+                type: string
+    registerMenu:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MenuWithOutID"
+    editMenu:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MenuWithIDRequired"
+
+  responses:
+    success:
+      description: 요청 성공
+    parameter_error:
+      description: 요청한 파라미터(paths || query || requestBody)에 문제가 있습니다.
+    not_login_error:
+      description: 로그인이 되어있지 않습니다.
+    not_found_error:
+      description: 요청한 리소스가 존재하지  않습니다.
+    internal_server_error:
+      description: 서버에서 문제가 발생했습니다. 이 에러가 표시되는 경우 개발자에게 보고해주세요.
+
+paths:
+  /menu/{menu_id}:
+    get:
+      description: 메뉴를 { menu_id }로 조회합니다.
+      summary: 메뉴 조회 ({ menu_id })
+      tags:
+        - "Menu"
+      parameters:
+        - $ref: "#/components/parameters/menu_id"
+      responses:
+        "200":
+          description: "조회 성공"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuWithID"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+    delete:
+      description: 메뉴를 삭제합니다.
+      summary: 메뉴 삭제
+      tags:
+        - "Menu"
+      parameters:
+        - $ref: "#/components/parameters/menu_id"
+      responses:
+        "200":
+          $ref: "#/components/responses/success"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+  /menu:
+    get:
+      description: 메뉴를 통합 검색합니다.
+      summary: 메뉴 통합 검색
+      tags:
+        - "Menu"
+      parameters:
+        - $ref: "#/components/parameters/include"
+        - $ref: "#/components/parameters/orderby"
+        - $ref: "#/components/parameters/desc"
+        - $ref: "#/components/parameters/count"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: "조회 성공 (배열이 리턴 됩니다.)"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MenuWithID"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+    post:
+      description: 메뉴를 등록합니다.
+      summary: 메뉴 등록
+      tags:
+        - "Menu"
+      requestBody:
+        $ref: "#/components/requestBodies/registerMenu"
+      responses:
+        "200":
+          $ref: "#/components/responses/success"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+    patch:
+      description: 메뉴를 수정합니다. menu_id를 제외하고 모든 값은 option 입니다.
+      summary: 메뉴 수정
+      tags:
+        - "Menu"
+      requestBody:
+        $ref: "#/components/requestBodies/editMenu"
+      responses:
+        "200":
+          $ref: "#/components/responses/success"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"

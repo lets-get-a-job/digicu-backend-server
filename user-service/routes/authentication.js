@@ -8,6 +8,10 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
+router.get('/isLoggedIn', isLoggedIn, (req, res) => {
+  res.send(req.user);
+});
+
 router.post('/login', async (req, res) => {
   const { email, plain_password } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
@@ -45,6 +49,7 @@ router.post('/login', async (req, res) => {
             res.send({
               token,
               type,
+              companyInfo,
               expires_in: 7200000, // 2h
             });
           },
@@ -79,7 +84,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/login/refresh', isLoggedIn, (req, res) => {
+router.post('/login/refresh', (req, res) => {
   jwt.sign(
     {
       email,

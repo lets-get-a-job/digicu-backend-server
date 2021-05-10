@@ -33,3 +33,14 @@ then
   sudo docker build -t ${group}/userservice user-service/.
   echo "userservice done..."
 fi
+
+if [ "${service}" == "all" ] || [ "${service}" == "posservice" ]
+then
+  echo "posservice build..."
+  sudo docker build -t ${group}/posservice pos-service/.
+  echo "posservice done..."
+fi
+
+if [ "${option}" == "up" ] ; then
+  sudo docker-compose -f ./docker/docker-compose.yml up
+fi

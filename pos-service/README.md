@@ -9,3 +9,19 @@
 - 개발: `npm run dev`
 
 - 배포: `npm run prod`
+
+## .env
+
+DB_HOST = localhost  
+DB_NAME = pos_db  
+DB_USER = {user}  
+DB_PASS = {pass}  
+USER_SERVICE_URL = {유저서비스 주소} # ex) http://localhost:3000  
+API_DOCS_PORT = {API 문서 포트}  
+
+>eureka 등록시  
+EUREKA_ENV=true
+
+## API 문서
+
+npm run api-docs

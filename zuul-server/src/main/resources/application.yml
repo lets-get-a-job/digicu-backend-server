@@ -45,8 +45,11 @@ zuul:
       serviceId: couponservice
       stripPrefix: false
 
+    posservice:
+      path: /pos/**
+      serviceId: posservice
+      stripPrefix: true
+
     ribbon:
       eager-load:
         enabled: true
-
-

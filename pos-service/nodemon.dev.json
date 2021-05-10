@@ -1,0 +1,10 @@
+{
+  "verbose": true,
+  "watch": ["routes/", "lib/", "app.ts", "bin/www"],
+  "ignore": ["lib/swagger/"],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js, json, ts",
+  "exec": "npm run build && node bin/www"
+}

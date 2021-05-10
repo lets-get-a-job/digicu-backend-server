@@ -223,7 +223,7 @@ router.patch('/social', async (req, res) => {
 });
 
 /** 업체 정보 변경 */
-router.patch('/company', isLoggedIn, async (req, res) => {
+router.patch('/company', async (req, res) => {
   try {
     const {
       company_name,
