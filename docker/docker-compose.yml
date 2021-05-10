@@ -30,16 +30,15 @@ services:
       - DB_PASS=givven123
       - SMTP_ORIGIN=http://ec2-3-34-247-127.ap-northeast-2.compute.amazonaws.com:5555
       - EUREKA_ENV=true
-    # depends_on:
-    #   - userdb
 
-  # userdb:
-  #   image: mysql:5.7
-  #   restart: always
-  #   ports:
-  #     - "3307:3306"
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=digicu123!@#
-  #     - MYSQL_USER=root
-  #     - MYSQL_PASSWORD=digicu123!@#
-  #     - MYSQL_DATABASE=user_db
+  posservice:
+    image: digicu/posservice
+    ports:
+      - "5001:5001"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=eurekaserver
+      - DB_HOST=givven.cyucihz6valb.ap-northeast-2.rds.amazonaws.com
+      - DB_USER=admin
+      - DB_PASS=givven123
+      - EUREKA_ENV=true
+      - USER_SERVICE_URL=userservice

@@ -19,27 +19,27 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtConfig jwtConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .exceptionHandling()
                 .authenticationEntryPoint(
                         (req, rsp, error) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED, error.getMessage()))
                 .and()
                 .addFilterBefore(new JwtTokenAuthenticationFilter(jwtConfig),
                         UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests()
-                .antMatchers("/actuator/**").permitAll()
+                .authorizeRequests().antMatchers("/actuator/**").permitAll()
                 .antMatchers("/authentication/**").permitAll()
                 .antMatchers("/users/social/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/**").permitAll()
-                .antMatchers("/coupon/**").hasAnyRole("ADMIN", "COMPANY") // TEST위해 COMAPY함 나중에 COUSTOMER등으로 바꿔야함
+                .antMatchers("/pos/**").hasRole("COMPANY")
+                .antMatchers("/coupon/**").hasAnyRole("ADMIN", "COMPANY", "SOCIAL") // TEST위해 COMAPY함 나중에 COUSTOMER등으로 바꿔야함
                 .anyRequest().authenticated()
-                .and()
-                .cors()
+                .and().cors()
                 .and();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -52,6 +52,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
     public JwtConfig jwtConfig() {
         return new JwtConfig();
