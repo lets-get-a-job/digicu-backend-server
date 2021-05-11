@@ -69,9 +69,9 @@ public class CouponApi {
 
     @GetMapping
     public ResponseEntity<List<Coupon>> getCoupons(
-            @Valid @RequestHeader(name = "type") String type,
-            @RequestHeader(name = "email") String email,
-            @RequestHeader(name = "phone") String phone,
+            @RequestHeader(name = "type") String type,
+            @RequestHeader(name = "email", required = false) String email,
+            @RequestHeader(name = "phone", required = false) String phone,
             @RequestParam HashMap<String, Object> params){
 
         List<Coupon> coupons = new ArrayList<>();
