@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long>, JpaSpecificationExecutor<Coupon>{
     List<Coupon> findAllByOwner(String phone);
-    List<Coupon> findAllByOwnerAndState(String phone, String state);
+    List<Coupon> findAllByOwnerAndStateAndIssuer(String phone, String state, String issuer);
     List<Coupon> findAllByState(String state);
+    List<Coupon> findAllByOwnerAndState(String owner, String state);
+
 }

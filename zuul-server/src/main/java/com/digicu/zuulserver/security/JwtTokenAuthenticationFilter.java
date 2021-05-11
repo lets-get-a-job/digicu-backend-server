@@ -49,6 +49,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 System.out.println(">>>> " + authority);
                 List<String> authorities = Arrays.asList(authority);
 
+                reqWrapper.addHeader("type", authority);
                 reqWrapper.addHeader("email", username);
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(

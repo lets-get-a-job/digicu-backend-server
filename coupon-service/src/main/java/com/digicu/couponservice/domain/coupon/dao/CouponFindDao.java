@@ -29,6 +29,10 @@ public class CouponFindDao {
         return couponRepository.findAllByState("TRADING");
     }
 
+
+    public List<Coupon> findAllByPhoneAndStateAndCompany(final String phone, final String state, final String issuer){
+        return couponRepository.findAllByOwnerAndStateAndIssuer(phone, state,issuer);
+    }
     public List<Coupon> findAllByPhoneAndState(final String phone, final String state){
         return couponRepository.findAllByOwnerAndState(phone, state);
     }

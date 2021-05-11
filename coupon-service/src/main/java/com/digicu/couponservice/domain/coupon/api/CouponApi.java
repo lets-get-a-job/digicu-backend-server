@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,22 +69,38 @@ public class CouponApi {
 
     @GetMapping
     public ResponseEntity<List<Coupon>> getCoupons(
+            @Valid @RequestHeader(name = "type") String type,
             @RequestHeader(name = "email") String email,
+            @RequestHeader(name = "phone") String phone,
             @RequestParam HashMap<String, Object> params){
 
-        //no phone , yes email => email로 phone 조회해서 가져오기
+        List<Coupon> coupons = new ArrayList<>();
 
-        // 전체 trading
-        if(!params.containsKey("phone")){
-            List<Coupon> coupons = couponFindDao.findAllTrading();
-            return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
+        //pos에서 접근 한 것
+        if(type.equals("ROLE_COMPANY")){
+            if(params.containsKey("phone")) {
+                String identifier = String.valueOf(params.get("phone"));
+                String state = String.valueOf(params.get("state")).toUpperCase();
+                coupons = couponFindDao.findAllByPhoneAndStateAndCompany(identifier, state, email);
+            }
         }
-        // 특정 유저의 상태별 쿠폰
-        else{
-            String phone = String.valueOf(params.get("phone"));
-            String state = String.valueOf(params.get("state")).toUpperCase();
-            List<Coupon> coupons = couponFindDao.findAllByPhoneAndState(phone, state);
-            return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
+        //app에서 접근
+        else if(type.equals("ROLE_SOCIAL")){
+            if(params.containsKey("email")) {
+                String identifier = String.valueOf(params.get("email"));  //TODO email->phone
+                String state = String.valueOf(params.get("state")).toUpperCase();
+                coupons = couponFindDao.findAllByPhoneAndState(identifier, state);
+            }
+            else if(params.containsKey("phone")) {
+                String identifier = String.valueOf(params.get("phone"));
+                String state = String.valueOf(params.get("state")).toUpperCase();
+                coupons = couponFindDao.findAllByPhoneAndState(identifier, state);
+            }
+            // 전체 trading
+            else if(!params.containsKey("phone") && !params.containsKey("email")){
+                coupons = couponFindDao.findAllTrading();
+            }
         }
+        return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
     }
 }
