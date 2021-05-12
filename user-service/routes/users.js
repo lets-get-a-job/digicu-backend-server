@@ -121,6 +121,23 @@ router.get('/social/:social_id', async (req, res) => {
   }
 });
 
+/** fcm 토큰 조회 */
+router.post('/social/:social_id/fcm', isLoggedIn, async (req, res) => {
+  try {
+    const social = await search.findSocialFCMTokenBySocialID(
+      req.params.social_id,
+    );
+    if (social) {
+      res.json(social);
+    } else {
+      res.status(404);
+      res.json(null);
+    }
+  } catch (error) {
+    errorHandling.sendError(res, 500, '에러가 발생했습니다.', error);
+  }
+});
+
 /** 소설 가입 진행 */
 router.post('/social', async (req, res) => {
   try {
@@ -159,22 +176,13 @@ router.post('/social', async (req, res) => {
     }
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
-      errorHandling.sendError(
-        res,
-        400,
-        '이미 존재하는 메일입니다.',
-        '이미 존재하는 메일입니다.',
-      );
+      errorHandling.sendError(res, 400, '이미 존재하는 메일입니다.', error);
     } else if (
       error.code === 'ER_BAD_NULL_ERROR' ||
+      'ER_NO_DEFAULT_FOR_FIELD' ||
       error instanceof TypeError
     ) {
-      errorHandling.sendError(
-        res,
-        400,
-        '파라미터가 잘못 되었습니다.',
-        '파라미터가 잘못 되었습니다.',
-      );
+      errorHandling.sendError(res, 400, '파라미터가 잘못 되었습니다.', error);
     } else {
       errorHandling.sendError(res, 500, '오류가 발생했습니다.', error);
     }

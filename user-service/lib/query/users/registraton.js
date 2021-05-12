@@ -34,6 +34,7 @@ function isSocialFormValid(
   thumbnail_image,
   letter_ok,
   company_phone,
+  fcm_token,
 ) {
   return (
     isEmail(email) &&
@@ -78,6 +79,7 @@ function isSocialFormValid(
  * profile_image: string
  * thumbnail_image: string
  * letter_ok: Date
+ * fcm_token: string
  * }} SocialInformation
  */
 
@@ -96,6 +98,7 @@ async function registerSocial(socialInfo) {
         socialInfo.thumbnail_image,
         socialInfo.letter_ok,
         socialInfo.phone,
+        socialInfo.fcm_token,
       )
     ) {
       return false;
@@ -116,6 +119,10 @@ async function registerSocial(socialInfo) {
           socialInfo.letter_ok ? socialInfo.letter_ok : null,
           socialInfo.phone,
         ],
+      },
+      {
+        sql: 'INSERT INTO fcm_token (social_id, fcm_token) VALUES (?, ?)',
+        values: [socialInfo.social_id, socialInfo.fcm_token],
       },
     ]);
     if (responses[0].rows.affectedRows > 0) {

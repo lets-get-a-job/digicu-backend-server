@@ -149,6 +149,30 @@ async function findSocialBySocialID(socialID) {
 }
 
 /**
+ * 소셜 아이디로 fcm_token 조회 (로그인 상태에서만 가능)
+ * @param {string} socialID
+ * @returns {Promise<SocialInformation | null>}
+ */
+async function findSocialFCMTokenBySocialID(socialID) {
+  try {
+    const response = await query([
+      {
+        sql: 'SELECT fcm_token FROM fcm_token WHERE social_id = ?',
+        values: [socialID],
+      },
+    ]);
+    const rows = response[0].rows;
+    if (rows.length > 0) {
+      return rows[0];
+    } else {
+      return null;
+    }
+  } catch (e) {
+    throw e;
+  }
+}
+
+/**
  * 통합 검색
  * @param {string} include?
  * @param {number} count?
@@ -219,4 +243,5 @@ module.exports = {
   findCompanyByEmail,
   findCompanyByCompanyNumber,
   findSocialBySocialID,
+  findSocialFCMTokenBySocialID,
 };
