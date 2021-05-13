@@ -122,10 +122,26 @@ router.get('/social/:social_id', async (req, res) => {
 });
 
 /** fcm 토큰 조회 */
-router.post('/social/:social_id/fcm', isLoggedIn, async (req, res) => {
+router.post('/social/:social_id/fcm', async (req, res) => {
   try {
     const social = await search.findSocialFCMTokenBySocialID(
       req.params.social_id,
+    );
+    if (social) {
+      res.json(social);
+    } else {
+      res.status(404);
+      res.json(null);
+    }
+  } catch (error) {
+    errorHandling.sendError(res, 500, '에러가 발생했습니다.', error);
+  }
+});
+
+router.get('/social/fcm', async (req, res) => {
+  try {
+    const social = await search.findSocialFCMTokenByEmail(
+        req.query.email,
     );
     if (social) {
       res.json(social);

@@ -121,8 +121,18 @@ async function registerSocial(socialInfo) {
         ],
       },
       {
-        sql: 'INSERT INTO fcm_token (social_id, fcm_token) VALUES (?, ?)',
-        values: [socialInfo.social_id, socialInfo.fcm_token],
+        sql: 'INSERT INTO registration VALUES (?, ?, ?, ?, ?)',
+        values: [
+          socialInfo.email,
+          null,
+          null,
+          'social',
+          null,
+        ],
+      },
+      {
+        sql: 'INSERT INTO fcm_token (social_id, email, fcm_token) VALUES (?, ?, ?)',
+        values: [socialInfo.social_id, socialInfo.email, socialInfo.fcm_token],
       },
     ]);
     if (responses[0].rows.affectedRows > 0) {
