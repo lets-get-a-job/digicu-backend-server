@@ -29,15 +29,6 @@ paths:
           in: path
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token:
-                  description: "digicu 토큰 값"
-                  type: string
       responses:
         "200":
           description: "fcm 토큰 조회성공"
@@ -233,6 +224,20 @@ paths:
           description: "파라미터가 잘못 되었습니다."
         "500":
           description: "서버 에러"
+
+    get:
+      description: 인덱스가 아닌 필드로 검색합니다.
+      summary: 인덱스가 아닌 필드로 검색 (ex. phone)
+      parameters:
+        - in: query
+          name: phone
+          description: 폰번호
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+
   /tests/isLoggedIn:
     post:
       tags:

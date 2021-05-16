@@ -1,4 +1,4 @@
-const { query } = require('../index')
+const { query } = require("../index");
 
 /**
  * 회원 가입 테이블 정보
@@ -14,12 +14,12 @@ const { query } = require('../index')
 /**
  * 업체 가입 정보
  * @typedef {{
- * companyNumber: string
- * companyName: string
- * companyPhone: string
- * companyAddress: string
- * companyOwner: string
- * companyHomepage: string
+ * company_number: string
+ * company_name: string
+ * company_phone: string
+ * company_address: string
+ * company_owner: string
+ * company_homepage: string
  * company_logo: string | null
  * }} CompanyInformation
  */
@@ -47,19 +47,19 @@ async function findRegistrationByEmail(email, withPassword) {
     const responses = await query([
       {
         sql: `SELECT email, ${
-          withPassword ? 'hash_string,' : ''
+          withPassword ? "hash_string," : ""
         } registration_date, type, letter_ok FROM registration WHERE email = ?`,
         values: [email],
       },
-    ])
-    const rows = responses[0].rows
+    ]);
+    const rows = responses[0].rows;
     if (rows.length > 0) {
-      return rows[0]
+      return rows[0];
     } else {
-      return null
+      return null;
     }
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
@@ -72,18 +72,18 @@ async function findCompanyByEmail(email) {
   try {
     const response = await query([
       {
-        sql: 'SELECT * FROM company_profile WHERE email = ?',
+        sql: "SELECT * FROM company_profile WHERE email = ?",
         values: [email],
       },
-    ])
-    const rows = response[0].rows
+    ]);
+    const rows = response[0].rows;
     if (rows.length > 0) {
-      return rows[0]
+      return rows[0];
     } else {
-      return null
+      return null;
     }
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
@@ -96,18 +96,18 @@ async function findCompanyByCompanyNumber(companyNumber) {
   try {
     const response = await query([
       {
-        sql: 'SELECT * FROM company_profile WHERE company_number = ?',
+        sql: "SELECT * FROM company_profile WHERE company_number = ?",
         values: [companyNumber],
       },
-    ])
-    const rows = response[0].rows
+    ]);
+    const rows = response[0].rows;
     if (rows.length > 0) {
-      return rows[0]
+      return rows[0];
     } else {
-      return null
+      return null;
     }
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
@@ -120,30 +120,30 @@ async function findSocialBySocialID(socialID) {
   try {
     const response = await query([
       {
-        sql: 'SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok, phone FROM social_profile WHERE social_id = ?',
+        sql: "SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok, phone FROM social_profile WHERE social_id = ?",
         values: [socialID],
       },
-    ])
-    const rows = response[0].rows
+    ]);
+    const rows = response[0].rows;
     if (rows.length > 0) {
       rows[0].registration_date = new Date(rows[0].registration_date)
-        .toLocaleDateString('ko-KR')
-        .replace(/\./g, '')
-        .replace(/ /g, '-')
+        .toLocaleDateString("ko-KR")
+        .replace(/\./g, "")
+        .replace(/ /g, "-");
 
       if (rows[0].letter_ok) {
         rows[0].letter_ok = new Date(rows[0].letter_ok)
-          .toLocaleDateString('ko-KR')
-          .replace(/\./g, '')
-          .replace(/ /g, '-')
+          .toLocaleDateString("ko-KR")
+          .replace(/\./g, "")
+          .replace(/ /g, "-");
       }
 
-      return rows[0]
+      return rows[0];
     } else {
-      return null
+      return null;
     }
   } catch (e) {
-    throw e
+    throw e;
   }
 }
 
@@ -156,18 +156,18 @@ async function findSocialFCMTokenBySocialID(socialID) {
   try {
     const response = await query([
       {
-        sql: 'SELECT fcm_token FROM fcm_token WHERE social_id = ?',
+        sql: "SELECT fcm_token FROM fcm_token WHERE social_id = ?",
         values: [socialID],
       },
-    ])
-    const rows = response[0].rows
+    ]);
+    const rows = response[0].rows;
     if (rows.length > 0) {
-      return rows[0]
+      return rows[0];
     } else {
-      return null
+      return null;
     }
   } catch (e) {
-    throw e
+    throw e;
   }
 }
 
@@ -180,18 +180,66 @@ async function findSocialFCMTokenByEmail(email) {
   try {
     const response = await query([
       {
-        sql: 'SELECT fcm_token FROM fcm_token WHERE email = ?',
+        sql: "SELECT fcm_token FROM fcm_token WHERE email = ?",
         values: [email],
       },
-    ])
-    const rows = response[0].rows
+    ]);
+    const rows = response[0].rows;
     if (rows.length > 0) {
-      return rows[0]
+      return rows[0];
     } else {
-      return null
+      return null;
     }
   } catch (e) {
-    throw e
+    throw e;
+  }
+}
+
+/**
+ * phone으로 업체 조회
+ * @query {string} phone
+ * @returns {Promise<CompanyInformation | null>}
+ */
+async function findCompanyByPhone(phone) {
+  try {
+    const response = await query([
+      {
+        sql: "SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok, phone FROM company_profile WHERE company_phone = ?",
+        values: [phone],
+      },
+    ]);
+    const rows = response[0].rows;
+    if (rows.length > 0) {
+      return rows[0];
+    } else {
+      return null;
+    }
+  } catch (e) {
+    throw e;
+  }
+}
+
+/**
+ * phone으로 소셜 유저 조회
+ * @query {string} phone
+ * @returns {Promise<SocialInformation | null>}
+ */
+async function findSocialByPhone(phone) {
+  try {
+    const response = await query([
+      {
+        sql: "SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok, phone FROM social_profile WHERE phone = ?",
+        values: [phone],
+      },
+    ]);
+    const rows = response[0].rows;
+    if (rows.length > 0) {
+      return rows[0];
+    } else {
+      return null;
+    }
+  } catch (e) {
+    throw e;
   }
 }
 
@@ -206,57 +254,57 @@ async function findSocialFCMTokenByEmail(email) {
  */
 async function findCompany(include, count, page, orderby, desc) {
   try {
-    let sql = 'SELECT * FROM company_profile'
-    let where = ''
-    let order = ''
-    let limit = ''
-    let offset = ''
+    let sql = "SELECT * FROM company_profile";
+    let where = "";
+    let order = "";
+    let limit = "";
+    let offset = "";
     if (include) {
-      where = where.concat(` company_name LIKE '%${include}%'`)
-      where = where.concat(`OR company_address LIKE '%${include}%'`)
-      where = where.concat(`OR company_owner LIKE '%${include}%'`)
+      where = where.concat(` company_name LIKE '%${include}%'`);
+      where = where.concat(`OR company_address LIKE '%${include}%'`);
+      where = where.concat(`OR company_owner LIKE '%${include}%'`);
     }
     if (orderby) {
-      order = order.concat(`${orderby}`)
+      order = order.concat(`${orderby}`);
       if (desc) {
-        order = order.concat(` DESC`)
+        order = order.concat(` DESC`);
       } else {
-        order = order.concat(` ASC`)
+        order = order.concat(` ASC`);
       }
     }
     if (count) {
-      limit = limit.concat(`${count}`)
+      limit = limit.concat(`${count}`);
     }
     if (page) {
-      offset = offset.concat(`${(page - 1) * count}`)
+      offset = offset.concat(`${(page - 1) * count}`);
     }
     if (where) {
-      sql = `${sql} WHERE ${where}`
+      sql = `${sql} WHERE ${where}`;
     }
     if (order) {
-      sql = `${sql} ORDER BY ${order}`
+      sql = `${sql} ORDER BY ${order}`;
     }
     if (limit) {
-      sql = `${sql} LIMIT ${limit}`
+      sql = `${sql} LIMIT ${limit}`;
     }
     if (offset) {
-      sql = `${sql} OFFSET ${offset}`
+      sql = `${sql} OFFSET ${offset}`;
     }
     const response = await query([
       {
         sql,
         values: [],
       },
-    ])
-    const rows = response[0].rows
-    console.log(rows)
+    ]);
+    const rows = response[0].rows;
+    console.log(rows);
     if (rows.length > 0) {
-      return rows
+      return rows;
     } else {
-      return null
+      return null;
     }
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
@@ -268,4 +316,6 @@ module.exports = {
   findSocialBySocialID,
   findSocialFCMTokenBySocialID,
   findSocialFCMTokenByEmail,
-}
+  findCompanyByPhone,
+  findSocialByPhone,
+};
