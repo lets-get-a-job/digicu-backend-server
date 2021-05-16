@@ -1,11 +1,11 @@
-const { query } = require('../index');
-const bcrypt = require('bcrypt');
-const randomstring = require('randomstring');
-const { sendAuthEmail } = require('../../mailer/mail-defintion');
-const isEmail = require('validator/lib/isEmail');
-const isURL = require('validator/lib/isURL');
-const isNumeric = require('validator/lib/isNumeric');
-const isDate = require('validator/lib/isDate');
+const { query } = require('../index')
+const bcrypt = require('bcrypt')
+const randomstring = require('randomstring')
+const { sendAuthEmail } = require('../../mailer/mail-defintion')
+const isEmail = require('validator/lib/isEmail')
+const isURL = require('validator/lib/isURL')
+const isNumeric = require('validator/lib/isNumeric')
+const isDate = require('validator/lib/isDate')
 
 function isCompanyFormValid(
   email,
@@ -25,7 +25,7 @@ function isCompanyFormValid(
       companyPhone.length === 8) &&
     (!companyHomepage || isURL(companyHomepage, { require_tld: false })) &&
     (!companyLogo || isURL(companyLogo, { require_tld: false }))
-  );
+  )
 }
 
 function isSocialFormValid(
@@ -34,7 +34,6 @@ function isSocialFormValid(
   thumbnail_image,
   letter_ok,
   company_phone,
-  fcm_token,
 ) {
   return (
     isEmail(email) &&
@@ -44,7 +43,7 @@ function isSocialFormValid(
     (company_phone.length === 11 ||
       company_phone.length === 10 ||
       company_phone.length === 8)
-  );
+  )
 }
 
 /**
@@ -98,10 +97,9 @@ async function registerSocial(socialInfo) {
         socialInfo.thumbnail_image,
         socialInfo.letter_ok,
         socialInfo.phone,
-        socialInfo.fcm_token,
       )
     ) {
-      return false;
+      return false
     }
     const responses = await query([
       {
@@ -121,17 +119,21 @@ async function registerSocial(socialInfo) {
         ],
       },
       {
-        sql: 'INSERT INTO fcm_token (social_id, fcm_token) VALUES (?, ?)',
-        values: [socialInfo.social_id, socialInfo.fcm_token],
+        sql: 'INSERT INTO registration VALUES (?, ?, ?, ?, ?)',
+        values: [socialInfo.email, null, null, 'social', null],
       },
-    ]);
+      {
+        sql: 'INSERT INTO fcm_token (social_id, email, fcm_token) VALUES (?, ?, ?)',
+        values: [socialInfo.social_id, socialInfo.email, socialInfo.fcm_token],
+      },
+    ])
     if (responses[0].rows.affectedRows > 0) {
-      return true;
+      return true
     } else {
-      return false;
+      return false
     }
   } catch (e) {
-    throw e;
+    throw e
   }
 }
 
@@ -155,11 +157,11 @@ async function registerCompany(regInfo, companyInfo) {
         companyInfo.company_logo,
       )
     ) {
-      const saltRounds = 10;
+      const saltRounds = 10
       // 평문 패스워드를 해시값으로 바꿉니다.
-      const hash_string = await bcrypt.hash(regInfo.plain_password, saltRounds);
+      const hash_string = await bcrypt.hash(regInfo.plain_password, saltRounds)
       // 이메일 인증을 위한 토큰을 생성합니다.
-      const token = randomstring.generate(30);
+      const token = randomstring.generate(30)
 
       // 회원 가입
       const responses = await query([
@@ -193,23 +195,23 @@ async function registerCompany(regInfo, companyInfo) {
           sql: 'INSERT INTO authentication VALUES(?, ?, ?, ?)',
           values: [regInfo.email, token, 'reg', null], // 이메일 인증 토큰은 만료기간이 없습니다.
         },
-      ]);
+      ])
       if (responses[0].rows.affectedRows > 0) {
         // SMTP로 인증 메일을 보냅니다.
         await sendAuthEmail(
           regInfo.email,
           `"Digicu" <${process.env.SMTP_FROM}>`,
           token,
-        );
-        return true;
+        )
+        return true
       } else {
-        return false;
+        return false
       }
     } else {
-      return false;
+      return false
     }
   } catch (error) {
-    throw error;
+    throw error
   }
 }
 
@@ -218,4 +220,4 @@ async function registerAdmin(regInfo) {}
 module.exports = {
   registerCompany,
   registerSocial,
-};
+}

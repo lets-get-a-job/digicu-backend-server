@@ -17,7 +17,7 @@ tags:
     description: "테스트용 API (개발 모드에서만 라우팅 됨)"
 paths:
   /users/social/{social_id}/fcm:
-    post:
+    get:
       tags:
         - "Social"
       summary: "저장된 fcm 토큰 조회(로그인 상태)"

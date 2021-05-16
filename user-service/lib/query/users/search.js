@@ -1,4 +1,4 @@
-const { query } = require('../index');
+const { query } = require('../index')
 
 /**
  * 회원 가입 테이블 정보
@@ -51,15 +51,15 @@ async function findRegistrationByEmail(email, withPassword) {
         } registration_date, type, letter_ok FROM registration WHERE email = ?`,
         values: [email],
       },
-    ]);
-    const rows = responses[0].rows;
+    ])
+    const rows = responses[0].rows
     if (rows.length > 0) {
-      return rows[0];
+      return rows[0]
     } else {
-      return null;
+      return null
     }
   } catch (error) {
-    throw error;
+    throw error
   }
 }
 
@@ -75,15 +75,15 @@ async function findCompanyByEmail(email) {
         sql: 'SELECT * FROM company_profile WHERE email = ?',
         values: [email],
       },
-    ]);
-    const rows = response[0].rows;
+    ])
+    const rows = response[0].rows
     if (rows.length > 0) {
-      return rows[0];
+      return rows[0]
     } else {
-      return null;
+      return null
     }
   } catch (error) {
-    throw error;
+    throw error
   }
 }
 
@@ -99,15 +99,15 @@ async function findCompanyByCompanyNumber(companyNumber) {
         sql: 'SELECT * FROM company_profile WHERE company_number = ?',
         values: [companyNumber],
       },
-    ]);
-    const rows = response[0].rows;
+    ])
+    const rows = response[0].rows
     if (rows.length > 0) {
-      return rows[0];
+      return rows[0]
     } else {
-      return null;
+      return null
     }
   } catch (error) {
-    throw error;
+    throw error
   }
 }
 
@@ -120,31 +120,30 @@ async function findSocialBySocialID(socialID) {
   try {
     const response = await query([
       {
-        sql:
-          'SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok, phone FROM social_profile WHERE social_id = ?',
+        sql: 'SELECT token, email, nickname, profile_image, thumbnail_image, registration_date, letter_ok, phone FROM social_profile WHERE social_id = ?',
         values: [socialID],
       },
-    ]);
-    const rows = response[0].rows;
+    ])
+    const rows = response[0].rows
     if (rows.length > 0) {
       rows[0].registration_date = new Date(rows[0].registration_date)
         .toLocaleDateString('ko-KR')
         .replace(/\./g, '')
-        .replace(/ /g, '-');
+        .replace(/ /g, '-')
 
       if (rows[0].letter_ok) {
         rows[0].letter_ok = new Date(rows[0].letter_ok)
           .toLocaleDateString('ko-KR')
           .replace(/\./g, '')
-          .replace(/ /g, '-');
+          .replace(/ /g, '-')
       }
 
-      return rows[0];
+      return rows[0]
     } else {
-      return null;
+      return null
     }
   } catch (e) {
-    throw e;
+    throw e
   }
 }
 
@@ -160,15 +159,39 @@ async function findSocialFCMTokenBySocialID(socialID) {
         sql: 'SELECT fcm_token FROM fcm_token WHERE social_id = ?',
         values: [socialID],
       },
-    ]);
-    const rows = response[0].rows;
+    ])
+    const rows = response[0].rows
     if (rows.length > 0) {
-      return rows[0];
+      return rows[0]
     } else {
-      return null;
+      return null
     }
   } catch (e) {
-    throw e;
+    throw e
+  }
+}
+
+/**
+ * email로 fcm_token 조회 (로그인 상태에서만 가능)
+ * @query {string} email
+ * @returns {Promise<SocialInformation | null>}
+ */
+async function findSocialFCMTokenByEmail(email) {
+  try {
+    const response = await query([
+      {
+        sql: 'SELECT fcm_token FROM fcm_token WHERE email = ?',
+        values: [email],
+      },
+    ])
+    const rows = response[0].rows
+    if (rows.length > 0) {
+      return rows[0]
+    } else {
+      return null
+    }
+  } catch (e) {
+    throw e
   }
 }
 
@@ -183,57 +206,57 @@ async function findSocialFCMTokenBySocialID(socialID) {
  */
 async function findCompany(include, count, page, orderby, desc) {
   try {
-    let sql = 'SELECT * FROM company_profile';
-    let where = '';
-    let order = '';
-    let limit = '';
-    let offset = '';
+    let sql = 'SELECT * FROM company_profile'
+    let where = ''
+    let order = ''
+    let limit = ''
+    let offset = ''
     if (include) {
-      where = where.concat(` company_name LIKE '%${include}%'`);
-      where = where.concat(`OR company_address LIKE '%${include}%'`);
-      where = where.concat(`OR company_owner LIKE '%${include}%'`);
+      where = where.concat(` company_name LIKE '%${include}%'`)
+      where = where.concat(`OR company_address LIKE '%${include}%'`)
+      where = where.concat(`OR company_owner LIKE '%${include}%'`)
     }
     if (orderby) {
-      order = order.concat(`${orderby}`);
+      order = order.concat(`${orderby}`)
       if (desc) {
-        order = order.concat(` DESC`);
+        order = order.concat(` DESC`)
       } else {
-        order = order.concat(` ASC`);
+        order = order.concat(` ASC`)
       }
     }
     if (count) {
-      limit = limit.concat(`${count}`);
+      limit = limit.concat(`${count}`)
     }
     if (page) {
-      offset = offset.concat(`${(page - 1) * count}`);
+      offset = offset.concat(`${(page - 1) * count}`)
     }
     if (where) {
-      sql = `${sql} WHERE ${where}`;
+      sql = `${sql} WHERE ${where}`
     }
     if (order) {
-      sql = `${sql} ORDER BY ${order}`;
+      sql = `${sql} ORDER BY ${order}`
     }
     if (limit) {
-      sql = `${sql} LIMIT ${limit}`;
+      sql = `${sql} LIMIT ${limit}`
     }
     if (offset) {
-      sql = `${sql} OFFSET ${offset}`;
+      sql = `${sql} OFFSET ${offset}`
     }
     const response = await query([
       {
         sql,
         values: [],
       },
-    ]);
-    const rows = response[0].rows;
-    console.log(rows);
+    ])
+    const rows = response[0].rows
+    console.log(rows)
     if (rows.length > 0) {
-      return rows;
+      return rows
     } else {
-      return null;
+      return null
     }
   } catch (error) {
-    throw error;
+    throw error
   }
 }
 
@@ -244,4 +267,5 @@ module.exports = {
   findCompanyByCompanyNumber,
   findSocialBySocialID,
   findSocialFCMTokenBySocialID,
-};
+  findSocialFCMTokenByEmail,
+}
