@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,16 +29,16 @@ public class CouponApi {
     @PostMapping
     public ResponseEntity<Coupon> createCoupon(
             @Valid @RequestHeader(name = "email") String email,
-            @Valid @RequestBody CouponCreateRequest dto) {
+            @Valid @RequestBody CouponCreateRequest dto) throws IOException {
         Coupon coupon = couponService.create(dto,email);
         return new ResponseEntity<Coupon>(coupon, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteCoupon(
-            @Valid @RequestHeader(name = "email") String email,
+            @Valid @RequestHeader(name = "phone") String phone,
             @Valid @PathVariable(name = "id") Long couponId){
-        couponService.delete(couponId, email);
+        couponService.delete(couponId, phone);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
@@ -55,7 +56,7 @@ public class CouponApi {
     public ResponseEntity<Coupon> accumulateCoupon(
             @Valid @RequestHeader(name = "email") String email,
             @Valid @PathVariable(name = "id") Long couponId,
-            @Valid @RequestBody CouponAccumulateRequest dto){
+            @Valid @RequestBody CouponAccumulateRequest dto) throws IOException{
         Coupon coupon = couponService.accumulate(couponId, email, dto.getAccNum());
         return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
     }

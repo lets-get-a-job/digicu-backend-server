@@ -1,5 +1,7 @@
-package com.digicu.couponservice.util.fcm;
+package com.digicu.couponservice.global.util.fcm;
 
+import com.digicu.couponservice.global.util.resttemplate.userservice.SocialResponse;
+import com.digicu.couponservice.global.util.resttemplate.userservice.UserServiceClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -19,8 +21,9 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class FCMService {
     private final ObjectMapper objectMapper;
+    private final UserServiceClient userServiceClient;
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
+    public void sendMessage(FcmMessage message) throws IOException {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://fcm.googleapis.com")
                 .path("/v1/projects/digicu/messages:send")
@@ -32,13 +35,16 @@ public class FCMService {
                 .post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + getAccessToken())
-                .body(makeMessage(targetToken, title, body));
+                .body(objectMapper.writeValueAsString(message));
+
+        System.out.println(req.getBody().toString());
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> res = restTemplate.exchange(req,String.class);
+        ResponseEntity<String> res = restTemplate.exchange(req, String.class);
         System.out.println(res.getStatusCode());
         System.out.println(res.getBody());
     }
+
     private String getAccessToken() throws IOException {
         String firebaseConfigPath = "firebase/digicu-firebase-key.json";
         GoogleCredentials googleCredentials = GoogleCredentials
@@ -49,20 +55,23 @@ public class FCMService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
+    public FcmMessage makeMessage(final String phone, String title, String body, MessageData msgData) throws JsonProcessingException {
+        final String email = userServiceClient.findEmailByPhone(phone);
+        final String targetToken = userServiceClient.findFcmTokenByEmail(email);
         FcmMessage.Message.Notification notification = FcmMessage.Message.Notification.builder()
                 .title(title)
                 .body(body)
-                .image(null)
                 .build();
         FcmMessage.Message message = FcmMessage.Message.builder()
                 .token(targetToken)
                 .notification(notification)
+                .data(msgData)
                 .build();
         FcmMessage fcmMessage = FcmMessage.builder()
                 .message(message)
                 .validate_only(false)
                 .build();
-        return objectMapper.writeValueAsString(fcmMessage);
+        System.out.println(fcmMessage.toString());
+        return fcmMessage;
     }
 }
