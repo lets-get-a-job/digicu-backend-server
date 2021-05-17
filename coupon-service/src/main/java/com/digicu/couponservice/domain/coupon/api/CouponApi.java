@@ -35,9 +35,9 @@ public class CouponApi {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteCoupon(
-            @Valid @RequestHeader(name = "email") String email,
+            @Valid @RequestHeader(name = "phone") String phone,
             @Valid @PathVariable(name = "id") Long couponId){
-        couponService.delete(couponId, email);
+        couponService.delete(couponId, phone);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
