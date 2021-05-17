@@ -1,7 +1,5 @@
-package com.digicu.couponservice.util.fcm;
+package com.digicu.couponservice.global.util.fcm;
 
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +17,7 @@ public class FcmMessage {
     public static class Message{
         private Notification notification;
         private String token;
+        private MessageData data;
 
         @Builder
         @AllArgsConstructor
@@ -26,7 +25,7 @@ public class FcmMessage {
         public static class Notification{
             private String title;
             private String body;
-            private String image;
         }
+
     }
 }

@@ -8,11 +8,14 @@ import com.digicu.couponservice.domain.couponspec.dao.CouponSpecFindDao;
 import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
 import com.digicu.couponservice.global.error.exception.AccessDeniedException;
 import com.digicu.couponservice.global.error.exception.ErrorCode;
+import com.digicu.couponservice.global.util.fcm.FCMService;
+import com.digicu.couponservice.global.util.fcm.FcmMessage;
+import com.digicu.couponservice.global.util.fcm.MessageData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.io.IOException;
 
 @Service
 @Transactional
@@ -22,11 +25,23 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponSpecFindDao couponSpecFindDao;
     private final CouponFindDao couponFindDao;
+    private final FCMService fcmService;
 
-    public Coupon create(final CouponCreateRequest dto, final String email){
+    public Coupon create(final CouponCreateRequest dto, final String email) throws IOException{
         CouponSpec spec = couponSpecFindDao.findById(dto.getCouponSpecId());
         if(email.equals(spec.getOwner())){
-            return couponRepository.save(dto.toEntity(spec, email));
+            Coupon created = couponRepository.save(dto.toEntity(spec, email));
+            MessageData messageData = MessageData.builder()
+                    .action("CREATION")
+                    .subject(String.valueOf(created.getId()))
+                    .build();
+            FcmMessage fcmMessage = fcmService.makeMessage(
+                    dto.getSubjectPhone(),
+                    "Digicu 쿠폰 알림!", created.getName() + "이 발급돼었습니다.",
+                    messageData
+            );
+            fcmService.sendMessage(fcmMessage);
+            return created;
         } else {
             throw new AccessDeniedException(email + " has not access for couponspec: " + spec.getId(), ErrorCode.ACCESS_DENIED);
         }
@@ -54,10 +69,21 @@ public class CouponService {
         }
     }
 
-    public Coupon accumulate(final Long couponId, final String email, final int numAcc){
+    public Coupon accumulate(final Long couponId, final String email, final int numAcc) throws IOException {
         Coupon coupon = couponFindDao.findById(couponId);
         if(email.equals(coupon.getIssuer())){
             coupon.accumulate(numAcc);
+            MessageData messageData = MessageData.builder()
+                    .action("ACCUMULATION")
+                    .subject(String.valueOf(coupon.getId()))
+                    .build();
+
+            FcmMessage fcmMessage = fcmService.makeMessage(
+                    coupon.getOwner(),
+                    "Digicu 쿠폰 알림!", coupon.getName() + "이 적립돼었습니다.",
+                    messageData
+            );
+            fcmService.sendMessage(fcmMessage);
             return coupon;
         } else {
             throw new AccessDeniedException(email + " has not access for coupon:" + couponId,
