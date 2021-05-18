@@ -10,12 +10,12 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("coupon/test")
+@RequestMapping("/coupon/test")
 public class Controller {
     private final FCMService fcmService;
 
-    @PostMapping("/fcm")
-    public String fcmEcho(@RequestHeader Map<String, String> headers, @RequestBody String phone) throws IOException{
+    @PostMapping("/fcm/{phone}")
+    public String fcmEcho(@RequestHeader Map<String, String> headers, @PathVariable String phone) throws IOException{
         if(headers.containsKey("email")){
             System.out.println(headers.get("email"));
         } else{

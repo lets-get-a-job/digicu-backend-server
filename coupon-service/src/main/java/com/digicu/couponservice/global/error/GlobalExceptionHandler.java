@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     //authorization
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e){
-        log.error("handleAccessDeniedException");
+        log.error("handleAccessDeniedException", e);
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.of(errorCode);
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(JsonProcessingException.class)
     protected ResponseEntity<ErrorResponse> handleJsonProcessingException(JsonProcessingException e){
-        log.error("handleJsonProcessingException");
+        log.error("handleJsonProcessingException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

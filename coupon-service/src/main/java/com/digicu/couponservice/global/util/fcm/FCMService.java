@@ -55,7 +55,7 @@ public class FCMService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-    public FcmMessage makeMessage(final String phone, MessageData msgData) throws JsonProcessingException {
+    public FcmMessage makeMessage(final String phone, MessageData msgData){
         final String email = userServiceClient.findEmailByPhone(phone);
         final String targetToken = userServiceClient.findFcmTokenByEmail(email);
 
@@ -67,6 +67,7 @@ public class FCMService {
                 .message(message)
                 .validate_only(false)
                 .build();
+        System.out.println(fcmMessage.toString());
         return fcmMessage;
     }
 }
