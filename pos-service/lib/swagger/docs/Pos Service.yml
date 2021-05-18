@@ -21,14 +21,14 @@ components:
       schema:
         type: string
         example: 1234
-    digicu_token:
-      name: digicu_token
-      in: header
+    company_number:
+      name: company_number
+      in: path
       required: true
-      description: digicu 토큰 (header)
+      description: "{ company_number }"
       schema:
         type: string
-        example: sdsdwejhxbsgdsad3jhfus
+        example: 1234567890
     include:
       name: include
       in: query
@@ -74,6 +74,22 @@ components:
         type: number
         default: 1
         example: 3
+    start:
+      name: start
+      in: query
+      required: false
+      description: 시작 날짜
+      schema:
+        type: string
+        example: "2021-05-19"
+    end:
+      name: end
+      in: query
+      required: false
+      description: 종료 날짜
+      schema:
+        type: string
+        example: "2021-05-30"
 
   schemas:
     MenuWithID:
@@ -98,45 +114,8 @@ components:
           description: 등록 날짜
           type: string
 
-    MenuWithIDRequired:
-      type: object
-      required:
-        - "menu_id"
-      properties:
-        menu_id:
-          description: 메뉴 ID
-          type: string
-        company_number:
-          description: 사업자 등록번호
-          type: string
-        menu_name:
-          description: 메뉴 이름
-          type: string
-        menu_value:
-          description: 메뉴 가격
-          type: string
-        stock:
-          description: 재고
-          type: number
-        regi_date:
-          description: 등록 날짜
-          type: string
-      example:
-        menu_id: 1
-        company_number: 1248100998
-        menu_name: 떡볶이
-        menu_value: 5000
-        stock: 30
-        regi_date: "2020-03-31"
-
     MenuWithOutID:
       type: object
-      required:
-        - "company_number"
-        - "menu_name"
-        - "menu_value"
-        - "stock"
-        - "regi_date"
       properties:
         company_number:
           description: 사업자 등록번호
@@ -154,7 +133,6 @@ components:
           description: 등록 날짜
           type: string
       example:
-        company_number: 1248100998
         menu_name: 떡볶이
         menu_value: 5000
         stock: 30
@@ -181,7 +159,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/MenuWithIDRequired"
+            $ref: "#/components/schemas/MenuWithOutID"
 
   responses:
     success:
@@ -196,21 +174,66 @@ components:
       description: 서버에서 문제가 발생했습니다. 이 에러가 표시되는 경우 개발자에게 보고해주세요.
 
 paths:
-  /menu/{menu_id}:
+  /payment/{company_number}:
     get:
-      description: 메뉴를 { menu_id }로 조회합니다.
-      summary: 메뉴 조회 ({ menu_id })
+      description: 결제 내역을 조회합니다. (start, end가 지정되지 않으면 당일 기록만)
+      summary: 결제 내역 조회
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          description: 인증되지 않은 사용자
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    post:
+      description: 결제 내역을 추가합니다.
+      summary: 결제 내역 추가
+      responses:
+        "200":
+          $ref: "#/components/responses/success"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /menu/{company_number}:
+    get:
+      description: 해당 업체의 모든 메뉴를 반환합니다.
+      summary: 메뉴 조회
       tags:
         - "Menu"
       parameters:
-        - $ref: "#/components/parameters/menu_id"
+        - $ref: "#/components/parameters/company_number"
       responses:
         "200":
           description: "조회 성공"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MenuWithID"
+                type: array
+                items:
+                  $ref: "#/components/schemas/MenuWithID"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    post:
+      description: 메뉴를 등록합니다.
+      summary: 메뉴 등록
+      tags:
+        - "Menu"
+      parameters:
+        - $ref: "#/components/parameters/company_number"
+      requestBody:
+        $ref: "#/components/requestBodies/registerMenu"
+      responses:
+        "200":
+          $ref: "#/components/responses/success"
         "400":
           $ref: "#/components/responses/parameter_error"
         "401":
@@ -218,6 +241,7 @@ paths:
         "500":
           $ref: "#/components/responses/internal_server_error"
 
+  /menu/{menu_id}:
     delete:
       description: 메뉴를 삭제합니다.
       summary: 메뉴 삭제
@@ -225,6 +249,25 @@ paths:
         - "Menu"
       parameters:
         - $ref: "#/components/parameters/menu_id"
+      responses:
+        "200":
+          $ref: "#/components/responses/success"
+        "400":
+          $ref: "#/components/responses/parameter_error"
+        "401":
+          $ref: "#/components/responses/not_login_error"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+    patch:
+      description: 메뉴를 수정합니다. 변경하고 싶은 컬럼만 보내시면 됩니다.
+      summary: 메뉴 수정
+      tags:
+        - "Menu"
+      parameters:
+        - $ref: "#/components/parameters/menu_id"
+      requestBody:
+        $ref: "#/components/requestBodies/editMenu"
       responses:
         "200":
           $ref: "#/components/responses/success"
@@ -256,40 +299,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MenuWithID"
-        "400":
-          $ref: "#/components/responses/parameter_error"
-        "401":
-          $ref: "#/components/responses/not_login_error"
-        "500":
-          $ref: "#/components/responses/internal_server_error"
-
-    post:
-      description: 메뉴를 등록합니다.
-      summary: 메뉴 등록
-      tags:
-        - "Menu"
-      requestBody:
-        $ref: "#/components/requestBodies/registerMenu"
-      responses:
-        "200":
-          $ref: "#/components/responses/success"
-        "400":
-          $ref: "#/components/responses/parameter_error"
-        "401":
-          $ref: "#/components/responses/not_login_error"
-        "500":
-          $ref: "#/components/responses/internal_server_error"
-
-    patch:
-      description: 메뉴를 수정합니다. menu_id를 제외하고 모든 값은 option 입니다.
-      summary: 메뉴 수정
-      tags:
-        - "Menu"
-      requestBody:
-        $ref: "#/components/requestBodies/editMenu"
-      responses:
-        "200":
-          $ref: "#/components/responses/success"
         "400":
           $ref: "#/components/responses/parameter_error"
         "401":
