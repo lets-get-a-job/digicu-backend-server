@@ -45,8 +45,7 @@ components:
       description: 특정 컬럼으로 정렬
       schema:
         type: string
-        default: null
-        example: menu_name
+        default: primary_key
     desc:
       name: desc
       in: query
@@ -78,18 +77,20 @@ components:
       name: start
       in: query
       required: false
-      description: 시작 날짜
+      description: 시작 날짜 (YYYY-MM-DD) [포함 payment_time >= start]
       schema:
         type: string
         example: "2021-05-19"
+        default: 오늘
     end:
       name: end
       in: query
       required: false
-      description: 종료 날짜
+      description: 종료 날짜 (YYYY-MM-DD) [포함하지 않음 payment_time < end]
       schema:
         type: string
         example: "2021-05-30"
+        default: null
 
   schemas:
     MenuWithID:
@@ -138,6 +139,50 @@ components:
         stock: 30
         regi_date: "2020-03-31"
 
+    PayemntWithID:
+      type: object
+      properties:
+        payment_id:
+          description: 결제 ID
+          type: string
+        menu_id:
+          description: 메뉴 ID
+          type: string
+        payment_value:
+          description: 결제 금액
+          type: number
+        payment_time:
+          description: 결제 시간 (YYYY-MM-DD HH:mm:ss)
+          type: string
+        payer_id:
+          description: 결제자 ID (소셜 ID)
+          type: string
+        coupons:
+          description: 발행된 쿠폰 ID 배열 (JSON Stringify, ex. "[\\"1234567\\", \\"12321412\\"]")
+          type: string
+          example: "Schema 참고 바람"
+
+    PaymentWithOutID:
+      type: object
+      properties:
+        menu_id:
+          description: 메뉴 ID
+          type: string
+        payment_value:
+          description: 결제 금액
+          type: number
+        payment_time:
+          description: 결제 시간 (YYYY-MM-DD HH:mm:ss)
+          type: string
+          example: YYYY-MM-DD HH:mm:ss
+        payer_id:
+          description: 결제자 ID (소셜 ID)
+          type: string
+        coupons:
+          description: 발행된 쿠폰 ID 배열 (JSON Stringify, ex. "[\\"1234567\\", \\"12321412\\"]")
+          type: string
+          example: "Schema 참고 바람"
+
   requestBodies:
     requireMenuId:
       content:
@@ -160,6 +205,11 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/MenuWithOutID"
+    registerPayment:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PaymentWithOutID"
 
   responses:
     success:
@@ -176,8 +226,18 @@ components:
 paths:
   /payment/{company_number}:
     get:
+      tags:
+        - "Payment"
       description: 결제 내역을 조회합니다. (start, end가 지정되지 않으면 당일 기록만)
       summary: 결제 내역 조회
+      parameters:
+        - $ref: "#/components/parameters/company_number"
+        - $ref: "#/components/parameters/orderby"
+        - $ref: "#/components/parameters/desc"
+        - $ref: "#/components/parameters/count"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/start"
+        - $ref: "#/components/parameters/end"
       responses:
         "200":
           description: OK
@@ -188,8 +248,14 @@ paths:
         "500":
           $ref: "#/components/responses/internal_server_error"
     post:
+      tags:
+        - "Payment"
       description: 결제 내역을 추가합니다.
       summary: 결제 내역 추가
+      parameters:
+        - $ref: "#/components/parameters/company_number"
+      requestBody:
+        $ref: "#/components/requestBodies/registerPayment"
       responses:
         "200":
           $ref: "#/components/responses/success"

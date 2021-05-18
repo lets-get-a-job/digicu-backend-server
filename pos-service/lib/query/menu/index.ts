@@ -2,6 +2,7 @@ import { query } from '../index'
 import { MenuRegistartion, MenuPatch, MenuSearch } from './MenuSchema'
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise'
 import isDate from 'validator/lib/isDate'
+import moment from 'moment'
 
 function menuRegistartionValidation(menu: MenuRegistartion) {
   const condition =
@@ -111,10 +112,7 @@ export async function findMenuWithID(menu_id: number) {
   const found = responses[0].rows[0]
 
   if (found) {
-    found.regi_date = new Date(found.regi_date)
-      .toLocaleDateString('ko-kr')
-      .replace(/\. /g, '-')
-      .replace(/\./, '')
+    found.regi_date = moment(found.regi_date).format('YYYY-MM-DD')
     return found
   } else {
     return null
@@ -135,10 +133,7 @@ export async function findAllMenuWithCompanyNumber(company_number: string) {
 
   if (found.length > 0) {
     return found.map(v => {
-      v.regi_date = new Date(v.regi_date)
-        .toLocaleDateString('ko-kr')
-        .replace(/\. /g, '-')
-        .replace(/\./, '')
+      v.regi_date = moment(v.regi_date).format('YYYY-MM-DD')
       return v
     })
   } else {
@@ -191,15 +186,10 @@ export async function searchMenu(searchQuery: MenuSearch) {
 
   if ((responses[0].rows as RowDataPacket[]).length > 0) {
     return (responses[0].rows as RowDataPacket[]).map(v => {
-      v.regi_date = new Date(v.regi_date)
-        .toLocaleDateString('ko-kr')
-        .replace(/\. /g, '-')
-        .replace(/\./, '')
+      v.regi_date = moment(v.regi_date).format('YYYY-MM-DD')
       return v
     })
   } else {
     return []
   }
-
-  return
 }
