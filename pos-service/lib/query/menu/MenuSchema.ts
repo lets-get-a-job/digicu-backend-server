@@ -1,27 +1,28 @@
-import { SearchSchema } from '../index';
+import { SearchSchema } from '../index'
 
 export interface MenuRegistartion {
-  company_number: string;
-  menu_name: string;
-  menu_value: number;
-  stock: number;
-  regi_date: Date;
+  company_number: string
+  menu_name: string
+  menu_value: number | string
+  stock: number | string
+  regi_date: string
 }
 
 export interface MenuFull extends MenuRegistartion {
-  menu_id: number;
+  menu_id: string
 }
 
 export interface MenuPatch
   extends Omit<MenuFull, 'company_number' | 'regi_date'> {}
 
 export type MenuOrderBy =
+  | 'menu_id'
   | 'company_number'
   | 'menu_name'
   | 'menu_value'
   | 'stock'
-  | 'regi_date';
+  | 'regi_date'
 
 export interface MenuSearch extends SearchSchema {
-  orderby?: MenuOrderBy;
+  orderby?: MenuOrderBy
 }

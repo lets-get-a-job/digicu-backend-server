@@ -38,7 +38,7 @@ router.post('/:company_number', async function (req, res) {
 router.patch('/:menu_id', async function (req, res) {
   try {
     const menu = {
-      menu_id: Number(req.params.menu_id),
+      menu_id: req.params.menu_id,
     }
     Object.assign(menu, req.body)
     await patchMenu(menu as MenuPatch)
@@ -75,7 +75,7 @@ router.get('/', async function (req, res) {
   try {
     const found = await searchMenu({
       include: (req.query.include as string) || undefined,
-      orderby: (req.query.orderby as MenuOrderBy) || undefined,
+      orderby: (req.query.orderby as MenuOrderBy) || 'menu_id',
       desc: req.query.desc === 'true',
       count: req.query.count ? Number(req.query.count) : 10,
       page: req.query.page ? Number(req.query.page) : 1,
