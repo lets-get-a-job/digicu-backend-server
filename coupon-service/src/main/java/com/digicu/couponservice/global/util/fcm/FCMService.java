@@ -55,23 +55,18 @@ public class FCMService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-    public FcmMessage makeMessage(final String phone, String title, String body, MessageData msgData) throws JsonProcessingException {
+    public FcmMessage makeMessage(final String phone, MessageData msgData) throws JsonProcessingException {
         final String email = userServiceClient.findEmailByPhone(phone);
         final String targetToken = userServiceClient.findFcmTokenByEmail(email);
-        FcmMessage.Message.Notification notification = FcmMessage.Message.Notification.builder()
-                .title(title)
-                .body(body)
-                .build();
+
         FcmMessage.Message message = FcmMessage.Message.builder()
                 .token(targetToken)
-                .notification(notification)
                 .data(msgData)
                 .build();
         FcmMessage fcmMessage = FcmMessage.builder()
                 .message(message)
                 .validate_only(false)
                 .build();
-        System.out.println(fcmMessage.toString());
         return fcmMessage;
     }
 }

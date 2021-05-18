@@ -8,6 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MessageData {
+    private String title;
+    private String body;
     private String action;
     private String subject;
     private String proposal;

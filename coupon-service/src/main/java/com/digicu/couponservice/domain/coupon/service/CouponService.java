@@ -32,15 +32,12 @@ public class CouponService {
         if(email.equals(spec.getOwner())){
             Coupon created = couponRepository.save(dto.toEntity(spec, email));
             MessageData messageData = MessageData.builder()
+                    .title("Digicu 쿠폰 알림!")
+                    .body(created.getName() + "이 발급돼었습니다.")
                     .action("CREATION")
                     .subject(String.valueOf(created.getId()))
                     .build();
-            FcmMessage fcmMessage = fcmService.makeMessage(
-                    dto.getSubjectPhone(),
-                    "Digicu 쿠폰 알림!", created.getName() + "이 발급돼었습니다.",
-                    messageData
-            );
-            fcmService.sendMessage(fcmMessage);
+            fcmService.sendMessage(fcmService.makeMessage(created.getOwner(), messageData));
             return created;
         } else {
             throw new AccessDeniedException(email + " has not access for couponspec: " + spec.getId(), ErrorCode.ACCESS_DENIED);
@@ -74,16 +71,13 @@ public class CouponService {
         if(email.equals(coupon.getIssuer())){
             coupon.accumulate(numAcc);
             MessageData messageData = MessageData.builder()
+                    .title("Digicu 쿠폰 알림!")
+                    .body(coupon.getName() + "이 적립돼었습니다.")
                     .action("ACCUMULATION")
                     .subject(String.valueOf(coupon.getId()))
                     .build();
 
-            FcmMessage fcmMessage = fcmService.makeMessage(
-                    coupon.getOwner(),
-                    "Digicu 쿠폰 알림!", coupon.getName() + "이 적립돼었습니다.",
-                    messageData
-            );
-            fcmService.sendMessage(fcmMessage);
+            fcmService.sendMessage(fcmService.makeMessage(coupon.getOwner(),messageData));
             return coupon;
         } else {
             throw new AccessDeniedException(email + " has not access for coupon:" + couponId,
