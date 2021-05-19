@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
@@ -42,15 +43,17 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             String username = (String)claims.get("email");
 
             if(username != null) {
-                //List<String> authorities = (List<String>)claims.get("type");
                 @SuppressWarnings("unchecked")
                 String authority = (String)claims.get("type");
                 authority = "ROLE_" + authority.toUpperCase();
-                System.out.println(">>>> " + authority);
                 List<String> authorities = Arrays.asList(authority);
 
                 reqWrapper.addHeader("type", authority);
                 reqWrapper.addHeader("email", username);
+                if(claims.containsKey("socialInfo")){
+                    Map<String, String> socialInfo = (Map<String,String>)claims.get("socialInfo");
+                    reqWrapper.addHeader("phone", (String)socialInfo.get("phone"));
+                }
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
