@@ -83,15 +83,17 @@ public class Coupon {
             throw CouponStateException.of(this.state);
         }
     }
-    public void use(){
-        verifyExpiration();
-        verifyAspectState("DONE");
-        this.state = "USED";
-    }
+
     public void verifyFull(final int numAcc){
         if(count + numAcc > goal){
             throw new CouponAccumulateException();
         }
+    }
+
+    public void use(){
+        verifyExpiration();
+        verifyAspectState("DONE");
+        this.state = "USED";
     }
 
     public void accumulate(final int numAcc){
@@ -102,5 +104,17 @@ public class Coupon {
         if(this.count == this.goal){
             this.state = "DONE";
         }
+    }
+
+    public void setTradeState(final String state){
+        switch(state){
+            case "DONE" :
+                verifyAspectState("TRADING");
+                break;
+            case "TRADING" :
+                verifyAspectState("DONE");
+                break;
+        }
+        this.state = state;
     }
 }

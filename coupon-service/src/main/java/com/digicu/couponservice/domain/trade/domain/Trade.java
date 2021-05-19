@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ public class Trade {
     @Column(name="owner", nullable = false)
     private String owner;
 
+    @Column(name="bound_value", nullable = false)
+    private Integer boundValue;
+
     @Column(name="created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime createdDate;
@@ -35,9 +39,10 @@ public class Trade {
     private List<Proposal> proposals;
 
     @Builder
-    public Trade(Coupon coupon, String owner) {
+    public Trade(Coupon coupon, String owner, Integer boundValue) {
         this.coupon = coupon;
         this.owner = owner;
+        this.boundValue = boundValue;
         this.proposals = new ArrayList<Proposal>();
     }
 }
