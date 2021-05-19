@@ -93,7 +93,7 @@ components:
         default: null
 
   schemas:
-    MenuWithID:
+    MenuResponse:
       type: object
       properties:
         menu_id:
@@ -108,14 +108,11 @@ components:
         menu_value:
           description: 메뉴 가격
           type: string
-        stock:
-          description: 재고
-          type: number
         regi_date:
           description: 등록 날짜
           type: string
 
-    MenuWithOutID:
+    MenuRequest:
       type: object
       properties:
         company_number:
@@ -127,89 +124,105 @@ components:
         menu_value:
           description: 메뉴 가격
           type: string
-        stock:
-          description: 재고
-          type: number
         regi_date:
           description: 등록 날짜
           type: string
       example:
         menu_name: 떡볶이
         menu_value: 5000
-        stock: 30
         regi_date: "2020-03-31"
 
-    PayemntWithID:
+    PayemntResponse:
+      type: array
+      items:
+        properties:
+          payment_group_id:
+            description: 결제 그룹 ID
+            type: string
+          sale:
+            description: 쿠폰 사용 금액
+            type: number
+          sum:
+            description: 물건 합산 금액
+            type: number
+          total:
+            description: 전체 계산 금액
+            type: number
+          company_number:
+            description: 사업자 등록번호
+            type: string
+          payment_time:
+            description: 결제 시간 (YYYY-MM-DD HH:mm:ss)
+            type: string
+          items:
+            description: 결제한 물품들
+            type: array
+            items:
+              type: object
+              properties:
+                payment_id:
+                  description: 결제 ID
+                  type: number
+                menu_id:
+                  description: 메뉴 ID
+                  type: number
+                payment_value:
+                  description: 물건 가격
+                  type: number
+                payment_count:
+                  description: 물건 개수
+                  type: number
+
+    PaymentRequest:
       type: object
       properties:
-        payment_id:
-          description: 결제 ID
-          type: string
-        menu_id:
-          description: 메뉴 ID
-          type: string
-        payment_value:
-          description: 결제 금액
-          type: number
-        payment_time:
-          description: 결제 시간 (YYYY-MM-DD HH:mm:ss)
-          type: string
-        payer_id:
-          description: 결제자 ID (소셜 ID)
-          type: string
-        coupons:
-          description: 발행된 쿠폰 ID 배열 (JSON Stringify, ex. "[\\"1234567\\", \\"12321412\\"]")
-          type: string
-          example: "Schema 참고 바람"
-
-    PaymentWithOutID:
-      type: object
-      properties:
-        menu_id:
-          description: 메뉴 ID
-          type: string
-        payment_value:
-          description: 결제 금액
-          type: number
-        payment_time:
-          description: 결제 시간 (YYYY-MM-DD HH:mm:ss)
-          type: string
-          example: YYYY-MM-DD HH:mm:ss
-        payer_id:
-          description: 결제자 ID (소셜 ID)
-          type: string
-        coupons:
-          description: 발행된 쿠폰 ID 배열 (JSON Stringify, ex. "[\\"1234567\\", \\"12321412\\"]")
-          type: string
-          example: "Schema 참고 바람"
-
-  requestBodies:
-    requireMenuId:
-      content:
-        application/json:
-          schema:
+        payment_info:
+          type: object
+          properties:
+            sale:
+              description: 쿠폰 사용 금액
+              type: number
+            sum:
+              description: 물건 합계
+              type: number
+            total:
+              description: 총 결제 금액
+              type: number
+            payment_time:
+              description: 결제 시간 (YYYY-MM-DD HH:mm:ss)
+              type: string
+              example: YYYY-MM-DD HH:mm:ss
+        payment_items:
+          type: array
+          items:
             type: object
-            required:
-              - menu_id
             properties:
               menu_id:
                 description: 메뉴 ID
-                type: string
+                type: number
+              payment_count:
+                description: 결제 개수
+                type: number
+              payment_value:
+                description: 결제 금액
+                type: number
+
+  requestBodies:
     registerMenu:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/MenuWithOutID"
+            $ref: "#/components/schemas/MenuRequest"
     editMenu:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/MenuWithOutID"
+            $ref: "#/components/schemas/MenuRequest"
     registerPayment:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/PaymentWithOutID"
+            $ref: "#/components/schemas/PaymentRequest"
 
   responses:
     success:
@@ -240,7 +253,11 @@ paths:
         - $ref: "#/components/parameters/end"
       responses:
         "200":
-          description: OK
+          description: 결제 내역 반환
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayemntResponse"
         "400":
           $ref: "#/components/responses/parameter_error"
         "401":
@@ -281,7 +298,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MenuWithID"
+                  $ref: "#/components/schemas/MenuResponse"
         "400":
           $ref: "#/components/responses/parameter_error"
         "401":
@@ -364,7 +381,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MenuWithID"
+                  $ref: "#/components/schemas/MenuResponse"
         "400":
           $ref: "#/components/responses/parameter_error"
         "401":

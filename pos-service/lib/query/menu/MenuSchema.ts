@@ -4,7 +4,6 @@ export interface MenuRegistartion {
   company_number: string
   menu_name: string
   menu_value: number | string
-  stock: number | string
   regi_date: string
 }
 
@@ -20,7 +19,6 @@ export type MenuOrderBy =
   | 'company_number'
   | 'menu_name'
   | 'menu_value'
-  | 'stock'
   | 'regi_date'
 
 export interface MenuSearch extends SearchSchema {

@@ -2,7 +2,7 @@ import express from 'express'
 import { registerPayment, searchPayment } from '../lib/query/payment'
 import {
   PaymentOrderBy,
-  PaymentRegistration,
+  PaymentRequest,
 } from '../lib/query/payment/PaymentSchema'
 import { sendError } from '../lib/routing/error-handling'
 const router = express.Router()
@@ -10,11 +10,13 @@ const router = express.Router()
 /** 결제 API */
 router.post('/:company_number', async (req, res) => {
   try {
-    const payment = {
+    const payment = req.body
+
+    Object.assign(payment.payment_info, {
       company_number: req.params.company_number,
-    }
-    Object.assign(payment, req.body)
-    await registerPayment(payment as PaymentRegistration)
+    })
+
+    await registerPayment(payment as PaymentRequest)
     res.send('등록 성공')
   } catch (error) {
     if (error.message === 'wrong parameter') {
