@@ -24,12 +24,11 @@ export async function registerMenu(menu: MenuRegistartion) {
 
   const responses = await query([
     {
-      sql: 'INSERT INTO menu (company_number, menu_name, menu_value, stock, regi_date) VALUES (?, ?, ?, ?, ?)',
+      sql: 'INSERT INTO menu (company_number, menu_name, menu_value, regi_date) VALUES (?, ?, ?, ?)',
       values: [
         menu.company_number,
         menu.menu_name,
         menu.menu_value,
-        menu.stock,
         new Date(menu.regi_date),
       ],
     },
@@ -55,10 +54,6 @@ export async function patchMenu(menu: MenuPatch) {
   if (menu.menu_value >= 0) {
     targets.push('menu_value=?')
     values.push(menu.menu_value)
-  }
-  if (menu.stock) {
-    targets.push('stock=?')
-    values.push(menu.stock)
   }
 
   if (targets.length > 0) {
