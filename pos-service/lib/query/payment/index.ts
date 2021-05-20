@@ -16,8 +16,8 @@ function paymentRegistrationValidation(payment: PaymentRequest) {
     const condtion1 =
       company_number &&
       isDateTime(payment_time) &&
-      sale > 0 &&
-      sum > 0 &&
+      sale >= 0 &&
+      sum >= 0 &&
       total === sum - sale
 
     const condtion2 = payment.payment_items.every(
