@@ -76,7 +76,8 @@ export async function registerPayment(payment: PaymentRequest) {
 }
 
 export async function searchPayment(searchQuery: PaymentSearch) {
-  let sql = 'SELECT * FROM payment_group NATURAL JOIN payment_items'
+  let sql =
+    'SELECT * FROM payment_group NATURAL JOIN payment_items NATURAL JOIN menu'
   let where = ''
   let order = ''
   let limit = ''
@@ -151,6 +152,7 @@ export async function searchPayment(searchQuery: PaymentSearch) {
           items: rows.map(v => ({
             payment_id: v.payment_id,
             menu_id: v.menu_id,
+            menu_name: v.menu_name,
             payment_value: v.payment_value,
             payment_count: v.payment_count,
           })),
