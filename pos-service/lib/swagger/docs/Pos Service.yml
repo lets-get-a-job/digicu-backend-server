@@ -115,9 +115,6 @@ components:
     MenuRequest:
       type: object
       properties:
-        company_number:
-          description: 사업자 등록번호
-          type: string
         menu_name:
           description: 메뉴 이름
           type: string
@@ -166,6 +163,9 @@ components:
                 menu_id:
                   description: 메뉴 ID
                   type: number
+                menu_name:
+                  description: 메뉴 이름
+                  type: string
                 payment_value:
                   description: 물건 가격
                   type: number
