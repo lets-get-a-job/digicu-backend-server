@@ -23,7 +23,7 @@ public class TradeApi {
     private final TradeService tradeService;
     private final TradeFindDao tradeFindDao;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Trade> createTrade(
             @Valid @RequestHeader(name = "phone") final String phone,
             @Valid @RequestBody TradeRegistRequest dto){
