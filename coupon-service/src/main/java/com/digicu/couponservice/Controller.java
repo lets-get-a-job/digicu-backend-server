@@ -15,12 +15,7 @@ public class Controller {
     private final FCMService fcmService;
 
     @PostMapping("/fcm/{phone}")
-    public String fcmEcho(@RequestHeader Map<String, String> headers, @PathVariable String phone) throws IOException{
-        if(headers.containsKey("email")){
-            System.out.println(headers.get("email"));
-        } else{
-            System.out.println("no email header");
-        }
+    public String fcmEcho(@PathVariable String phone) throws IOException{
         MessageData msgData = MessageData.builder()
                 .title("DIgicu")
                 .body("test message")
@@ -28,5 +23,16 @@ public class Controller {
                 .build();
         fcmService.sendMessage(fcmService.makeMessage(phone, msgData));
         return "OK";
+    }
+
+    @GetMapping("/header")
+    public Map<String,String> headerEcho(@RequestHeader Map<String, String> headers){
+        if(headers.containsKey("email")){
+            System.out.println(headers.get("email"));
+        }
+        if(headers.containsKey("phone")){
+            System.out.println(headers.get("phone"));
+        }
+        return headers;
     }
 }

@@ -4,12 +4,19 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
+    //COUPON_SPEC
+    COUPONSPEC_NOT_FOUND(400, "존재하지 않는 쿠폰 상세정보입니다."),
+
     //COUPON
     COUPON_USED(400, "쿠폰이 이미 사용 됐습니다."),
     COUPON_EXPIRED(400,"만료된 쿠폰 입니다."),
     COUPON_FULL(400, "적립 최대 개수를 초과하는 입력입니다."),
     COUPON_IS_TRADING(400, "현재 거래중 상태인 쿠폰입니다."),
     COUPON_IS_NORMAL(400, "적립이 완료되지 않은 쿠폰입니다."),
+    COUPON_NOT_FOUND(400, "존재하지 않는 쿠폰 입니다."),
+
+    //TRADE
+    TRADE_NOT_FOUND(400, "존재하지 않는 거래 정보 입니다."),
 
     //AUTHORIZATION
     ACCESS_DENIED(403, "접근할 수 없는 자원입니다."),
@@ -19,8 +26,6 @@ public enum ErrorCode {
 
     //Entity
     ENTITY_NOT_FOUND(400, "존재하지 않는 비즈니스 자원입니다."),
-    COUPONSPEC_NOT_FOUND(400, "존재하지 않는 쿠폰 상세정보입니다."),
-    COUPON_NOT_FOUND(400, "존재하지 않는 쿠폰 입니다."),
 
     // CAN'T HANDLE
     INTERNAL_SERVER_ERROR(500, "관리자에게 문의해주십시오"),
