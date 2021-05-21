@@ -11,7 +11,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/coupon/test")
-public class Controller {
+public class TestApi {
     private final FCMService fcmService;
 
     @PostMapping("/fcm/{phone}")
