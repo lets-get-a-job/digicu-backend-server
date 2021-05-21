@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "proposals")
 @Data
+@NoArgsConstructor
 public class Proposal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +28,4 @@ public class Proposal {
     @OneToOne
     @JoinColumn(name="id")
     private Coupon coupon;
-
 }
