@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 
 @Service
-@Transactional
+@Transactional(rollbackFor=IOException.class)
 @RequiredArgsConstructor
 public class CouponService {
 
