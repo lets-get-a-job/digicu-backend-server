@@ -1,6 +1,8 @@
 package com.digicu.couponservice.domain.trade.domain;
 
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,7 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "trades")
-@Data
+@Getter
 @NoArgsConstructor
 public class Trade {
     @Id
@@ -23,7 +25,7 @@ public class Trade {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="coupon_id")
     private Coupon coupon;
 
     @Column(name="owner", nullable = false)
@@ -36,9 +38,9 @@ public class Trade {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "trade"
-            ,cascade = CascadeType.ALL
-            ,orphanRemoval = true)
+    @JsonBackReference
+    @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL ,orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<Proposal> proposals;
 
     @Builder
