@@ -2,15 +2,18 @@ package com.digicu.couponservice.domain.trade.service;
 
 import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
-import com.digicu.couponservice.domain.trade.dao.TradeFindDao;
 import com.digicu.couponservice.domain.trade.dao.TradeRepository;
 import com.digicu.couponservice.domain.trade.domain.Trade;
 import com.digicu.couponservice.domain.trade.dto.TradeRegistRequest;
+import com.digicu.couponservice.domain.trade.exception.TradeNotFoundException;
 import com.digicu.couponservice.global.error.exception.AccessDeniedException;
 import com.digicu.couponservice.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TradeService {
     private final CouponFindDao couponFindDao;
     private final TradeRepository tradeRepository;
-    private final TradeFindDao tradeFindDao;
 
     public Trade create(TradeRegistRequest dto, final String phone){
         Coupon coupon = couponFindDao.findById(dto.getCouponId());
@@ -30,13 +32,23 @@ public class TradeService {
         }
     }
 
-    public void delete(final Long id, final String phone){
-        Trade trade = tradeFindDao.findById(id);
-        if(trade.getOwner().equals(phone)) {
+    public void delete(final Long id, final String phone) {
+        Trade trade = findById(id);
+        if (trade.getOwner().equals(phone)) {
             trade.getCoupon().setTradeState("DONE");
             tradeRepository.delete(trade);
         } else {
             throw new AccessDeniedException(phone + "has not access for " + trade.getId(), ErrorCode.ACCESS_DENIED);
         }
+    }
+
+    public Trade findById(final Long id){
+        Optional<Trade> trade = tradeRepository.findById(id);
+        trade.orElseThrow(()->new TradeNotFoundException(id));
+        return trade.get();
+    }
+
+    public List<Trade> findAllByPhone(final String phone){
+        return tradeRepository.findAllByOwner(phone);
     }
 }

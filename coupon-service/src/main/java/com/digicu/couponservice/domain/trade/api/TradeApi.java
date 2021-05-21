@@ -1,11 +1,9 @@
 package com.digicu.couponservice.domain.trade.api;
 
-import com.digicu.couponservice.domain.trade.dao.TradeFindDao;
 import com.digicu.couponservice.domain.trade.dao.TradeRepository;
 import com.digicu.couponservice.domain.trade.domain.Trade;
 import com.digicu.couponservice.domain.trade.dto.TradeRegistRequest;
 import com.digicu.couponservice.domain.trade.service.TradeService;
-import com.google.api.Http;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,6 @@ import java.util.List;
 @RequestMapping("/coupon/trade")
 public class TradeApi {
     private final TradeService tradeService;
-    private final TradeFindDao tradeFindDao;
 
     @PostMapping
     public ResponseEntity<Trade> createTrade(
@@ -32,7 +29,7 @@ public class TradeApi {
 
     @GetMapping("/{id}")
     public ResponseEntity<Trade> getTrade(@Valid @PathVariable(value = "id") Long id){
-        Trade trade = tradeFindDao.findById(id);
+        Trade trade = tradeService.findById(id);
         return new ResponseEntity<Trade>(trade, HttpStatus.OK);
     }
 
@@ -49,7 +46,7 @@ public class TradeApi {
             @RequestParam HashMap<String, Object> params) {
         List<Trade> trades = new ArrayList<>();
         if(params.containsKey("phone")){
-            trades = tradeFindDao.findAllByPhone(String.valueOf(params.get("phone")));
+            trades = tradeService.findAllByPhone(String.valueOf(params.get("phone")));
         }
         return new ResponseEntity<List<Trade>>(trades, HttpStatus.OK);
     }
