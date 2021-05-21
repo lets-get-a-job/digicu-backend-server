@@ -35,7 +35,9 @@ public class Trade {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "trade")
+    @OneToMany(mappedBy = "trade"
+            ,cascade = CascadeType.ALL
+            ,orphanRemoval = true)
     private List<Proposal> proposals;
 
     @Builder
@@ -44,5 +46,9 @@ public class Trade {
         this.owner = owner;
         this.boundValue = boundValue;
         this.proposals = new ArrayList<Proposal>();
+    }
+
+    public void addProposal(Proposal proposal){
+        this.proposals.add(proposal);
     }
 }
