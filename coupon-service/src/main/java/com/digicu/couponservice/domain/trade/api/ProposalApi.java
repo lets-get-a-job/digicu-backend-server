@@ -36,7 +36,7 @@ public class ProposalApi {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity getProposal(
+    public ResponseEntity deleteProposal(
             @Valid @RequestHeader(name = "phone") String phone,
             @Valid @PathVariable(value = "id") Long proposalId){
         proposalService.delete(proposalId, phone);
