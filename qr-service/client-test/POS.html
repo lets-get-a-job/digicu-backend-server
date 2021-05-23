@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR test</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
+  </head>
+  <body>
+    <div>
+      <label>사업자 번호</label>
+      <input id="company_id" type="text" value="1234567890" />
+
+      <div>응답 = <span id="response"></span></div>
+    </div>
+    <script>
+      /** @type { HTMLInputElement } */
+      const idElement = document.querySelector('#company_id')
+      /** @type { HTMLSpanElement } */
+      const responseElement = document.querySelector('#response')
+      const socket = io()
+
+      socket.on('dequeue', args => {
+        responseElement.innerText = args.coupon_id
+      })
+
+      socket.on('connect', () => {
+        console.log('pos connected') // false
+        socket.emit('join', {
+          type: 'POS',
+          company_id: idElement.value,
+        })
+      })
+    </script>
+  </body>
+</html>
