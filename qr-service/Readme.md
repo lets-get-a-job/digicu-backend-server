@@ -37,7 +37,7 @@ socket.emit('join', {
 
 ```
 socket.emit('enqueue', {
-  coupon_id: string
+  coupon_ids: string[]
 })
 ```
 
@@ -49,7 +49,7 @@ socket.emit('enqueue', {
 
 ```
 socket.emit('dequeue', {
-  coupon_id: string
+  coupon_ids: string[]
 })
 ```
 

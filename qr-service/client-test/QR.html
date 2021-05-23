@@ -32,7 +32,7 @@
 
       function sendMessage() {
         coupon_id = couponElement.value
-        socket.emit('enqueue', { coupon_id })
+        socket.emit('enqueue', { coupon_ids: [coupon_id] }) // 쿠폰이 여러개 일수도 있어서 배열로 보내야 함
       }
     </script>
   </body>

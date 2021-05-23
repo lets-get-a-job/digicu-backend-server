@@ -26,7 +26,9 @@ io.on('connection', socket => {
   })
 
   socket.on('disconnect', () => {
-    console.log('disconnected from ', socket.id)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('disconnected from ', socket.id)
+    }
   })
 })
 

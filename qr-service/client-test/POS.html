@@ -22,7 +22,8 @@
       const socket = io()
 
       socket.on('dequeue', args => {
-        responseElement.innerText = args.coupon_id
+        console.log(args)
+        responseElement.innerText = args.coupon_ids[0]
       })
 
       socket.on('connect', () => {
