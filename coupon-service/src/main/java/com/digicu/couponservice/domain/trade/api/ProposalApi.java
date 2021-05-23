@@ -1,5 +1,6 @@
 package com.digicu.couponservice.domain.trade.api;
 
+import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.trade.domain.Proposal;
 import com.digicu.couponservice.domain.trade.dto.TradeProposalRequest;
 import com.digicu.couponservice.domain.trade.service.ProposalService;
@@ -40,5 +41,13 @@ public class ProposalApi {
             @Valid @PathVariable(value = "id") Long proposalId){
         proposalService.delete(proposalId, phone);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{id}/accept")
+    public ResponseEntity<String> acceptProposal(
+            @Valid @RequestHeader(name = "phone") String phone,
+            @Valid @PathVariable(value = "id") Long proposalId) throws IOException {
+        proposalService.accept(proposalId, phone);
+        return new ResponseEntity<String>("교환에 성공했습니다.",HttpStatus.OK);
     }
 }

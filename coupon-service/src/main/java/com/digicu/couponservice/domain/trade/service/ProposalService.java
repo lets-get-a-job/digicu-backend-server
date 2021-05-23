@@ -71,6 +71,30 @@ public class ProposalService {
         }
     }
 
+    public void accept(final Long proposalId, final String phone) throws IOException{
+        Proposal proposal = findById(proposalId);
+        Trade trade = proposal.getTrade();
+        if(trade.getOwner().equals(phone)){
+            Coupon tradeCoupon = trade.getCoupon();
+            Coupon proposalCoupon = proposal.getCoupon();
+
+            tradeCoupon.setTradeState("DONE");
+            proposalCoupon.setTradeState("DONE");
+
+            tradeCoupon.setOwner(proposal.getOwner());
+            proposalCoupon.setOwner(trade.getOwner());
+
+            MessageData messageData = MessageData.builder()
+                    .title("Digicu 교환 알림!")
+                    .body(tradeCoupon.getName() + "에 대한 교환 요청이 수락됐습니다.")
+                    .action("TRADE_DONE")
+                    .build();
+            FcmMessage fcmToProposal = fcmService.makeMessage(proposal.getOwner(), messageData);
+            FcmMessage fcmToTrade = fcmService.makeMessage(trade.getOwner(), messageData);
+            fcmService.sendMessage(fcmToProposal);
+            fcmService.sendMessage(fcmToTrade);
+        }
+    }
 
     //////////////////////////////////////////////////////
     public Proposal findById(final Long proposalId){
@@ -78,6 +102,4 @@ public class ProposalService {
         proposal.orElseThrow(()-> new ProposalNotFoundException(proposalId));
         return proposal.get();
     }
-
-
 }

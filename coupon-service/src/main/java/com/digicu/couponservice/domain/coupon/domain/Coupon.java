@@ -24,6 +24,7 @@ public class Coupon {
     @Column(name="name", nullable = false)
     private String name;
 
+    @Setter
     @Column(name="owner", nullable = false)
     private String owner;
 
