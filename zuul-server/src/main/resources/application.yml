@@ -49,3 +49,7 @@ zuul:
       path: /pos/**
       serviceId: posservice
       stripPrefix: true
+
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 20000

@@ -17,6 +17,8 @@ public enum ErrorCode {
 
     //TRADE
     TRADE_NOT_FOUND(400, "존재하지 않는 거래 정보 입니다."),
+    PROPOSAL_NOT_FOUND(400, "존재하지 않는 교환 요청 입니다."),
+
 
     //AUTHORIZATION
     ACCESS_DENIED(403, "접근할 수 없는 자원입니다."),

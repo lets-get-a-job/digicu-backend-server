@@ -18,12 +18,13 @@ import java.time.LocalDateTime;
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name="coupon_id")
     private Long id;
 
     @Column(name="name", nullable = false)
     private String name;
 
+    @Setter
     @Column(name="owner", nullable = false)
     private String owner;
 

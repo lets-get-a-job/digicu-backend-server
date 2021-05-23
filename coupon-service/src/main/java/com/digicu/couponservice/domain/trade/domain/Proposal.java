@@ -1,16 +1,15 @@
 package com.digicu.couponservice.domain.trade.domain;
 
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "proposals")
-@Data
+@Getter
 @NoArgsConstructor
 public class Proposal {
     @Id
@@ -25,7 +24,15 @@ public class Proposal {
     @Column(name="owner", nullable = false)
     private String owner;
 
-    @OneToOne
-    @JoinColumn(name="id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @JoinColumn(name="coupon_id")
     private Coupon coupon;
+
+    @Builder
+    public Proposal(Trade trade, String owner, Coupon coupon) {
+        this.trade = trade;
+        this.owner = owner;
+        this.coupon = coupon;
+    }
 }
