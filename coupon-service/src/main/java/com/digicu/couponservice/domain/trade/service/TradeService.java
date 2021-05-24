@@ -26,6 +26,8 @@ public class TradeService {
         Coupon coupon = couponFindDao.findById(dto.getCouponId());
         if(phone.equals(coupon.getOwner())){
             coupon.setTradeState("TRADING");
+            Trade trade = dto.toEntity(coupon, phone);
+            trade.getCoupon().setTrade(trade);
             return tradeRepository.save(dto.toEntity(coupon, phone));
         } else {
             throw new AccessDeniedException(phone + "has not access for " + coupon.getId(), ErrorCode.ACCESS_DENIED);
@@ -35,7 +37,9 @@ public class TradeService {
     public void delete(final Long id, final String phone) {
         Trade trade = findById(id);
         if (trade.getOwner().equals(phone)) {
-            trade.getCoupon().setTradeState("DONE");
+            Coupon coupon = trade.getCoupon();
+            coupon.setTrade(null);
+            coupon.setTradeState("DONE");
             tradeRepository.delete(trade);
         } else {
             throw new AccessDeniedException(phone + "has not access for " + trade.getId(), ErrorCode.ACCESS_DENIED);
