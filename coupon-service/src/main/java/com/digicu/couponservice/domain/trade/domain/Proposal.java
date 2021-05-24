@@ -25,7 +25,6 @@ public class Proposal {
     private String owner;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JsonManagedReference
     @JoinColumn(name="coupon_id")
     private Coupon coupon;
 

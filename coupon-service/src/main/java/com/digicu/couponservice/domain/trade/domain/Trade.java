@@ -24,6 +24,7 @@ public class Trade {
     @Column(name="trade_id")
     private Long id;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name="coupon_id")
     private Coupon coupon;

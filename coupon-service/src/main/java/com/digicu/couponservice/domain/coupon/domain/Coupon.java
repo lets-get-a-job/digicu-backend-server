@@ -3,6 +3,7 @@ package com.digicu.couponservice.domain.coupon.domain;
 import com.digicu.couponservice.domain.coupon.exception.CouponAccumulateException;
 import com.digicu.couponservice.domain.coupon.exception.CouponExpireException;
 import com.digicu.couponservice.domain.coupon.exception.CouponStateException;
+import com.digicu.couponservice.domain.trade.domain.Trade;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -54,6 +55,11 @@ public class Coupon {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
+    @Setter
+    @OneToOne(mappedBy = "coupon", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name="trade_id")
+    private Trade trade;
+
 
     @Builder
     public Coupon(String name, String owner, String issuer, String type, int value, int goal, int count, LocalDate expirationDate) {
@@ -66,6 +72,7 @@ public class Coupon {
         this.goal = goal;
         this.count = count;
         this.expirationDate = expirationDate;
+        this.trade = null;
     }
 
     public void verifyExpiration(){
