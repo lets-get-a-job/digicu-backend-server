@@ -1,6 +1,7 @@
 import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import cors from 'cors'
 
 const port = process.env.PORT || 7777
 
@@ -33,6 +34,7 @@ io.on('connection', socket => {
 })
 
 app.use(express.static('client-test'))
+app.use(cors())
 
 httpServer.listen(port)
 

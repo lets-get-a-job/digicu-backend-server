@@ -43,6 +43,10 @@ then
   echo "posservice done..."
 fi
 
-if [ "${option}" == "up" ] ; then
-  docker-compose -f ./docker/docker-compose.yml up
+if [ "${service}" == "all" ] || [ "${service}" == "qrservice" ]
+then
+  echo "qrservice build..."
+  docker build -t ${group}/qrservice qr-service/.
+  echo "qrservice done..."
 fi
+
