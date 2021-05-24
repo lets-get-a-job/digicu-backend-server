@@ -69,19 +69,5 @@ public class CouponSpecApi {
         List<CouponSpec> specs = couponSpecFindDao.findAllByEmail(email);
         return new ResponseEntity<List<CouponSpec>>(specs, HttpStatus.OK);
     }
-
-    @PostMapping("/img")
-    public ResponseEntity<String> uploadImg(@RequestParam("file") MultipartFile multipartFile){
-        File targetFile = new File("coupon-service/upload/" + multipartFile.getOriginalFilename());
-        try {
-            InputStream fileStream = multipartFile.getInputStream();
-            FileUtils.copyInputStreamToFile(fileStream, targetFile);
-            return new ResponseEntity<String>(targetFile.getAbsolutePath(), HttpStatus.OK);
-        } catch (IOException e) {
-            FileUtils.deleteQuietly(targetFile);
-            e.printStackTrace();
-            return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }
 
