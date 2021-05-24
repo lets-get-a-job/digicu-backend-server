@@ -43,3 +43,11 @@ services:
       - DB_PASS=givven123
       - EUREKA_ENV=true
       - USER_SERVICE_URL=userservice
+
+  qrservice:
+    image: digicu/qrservice
+    ports:
+      - "5002:5002"
+    environment:
+      - DB_HOST=givven.cyucihz6valb.ap-northeast-2.rds.amazonaws.com
+      - PORT=5002
