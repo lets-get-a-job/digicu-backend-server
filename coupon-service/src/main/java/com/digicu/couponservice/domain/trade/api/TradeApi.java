@@ -48,6 +48,10 @@ public class TradeApi {
         if(params.containsKey("phone")){
             trades = tradeService.findAllByPhone(String.valueOf(params.get("phone")));
         }
+        else if(params.containsKey("coupon_id")){
+            Long couponId = Long.valueOf(String.valueOf(params.get("coupon_id")));
+            trades.add(tradeService.findByCouponId(couponId));
+        }
         return new ResponseEntity<List<Trade>>(trades, HttpStatus.OK);
     }
 }

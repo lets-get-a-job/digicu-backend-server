@@ -52,6 +52,12 @@ public class TradeService {
         return trade.get();
     }
 
+    public Trade findByCouponId(final Long couponId){
+        Optional<Trade> trade = tradeRepository.findByCouponId(couponId);
+        trade.orElseThrow(()->new TradeNotFoundException(couponId));
+        return trade.get();
+    }
+
     public List<Trade> findAllByPhone(final String phone){
         return tradeRepository.findAllByOwner(phone);
     }
