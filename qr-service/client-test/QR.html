@@ -20,7 +20,7 @@
       const idElement = document.querySelector('#company_id')
       /** @type { HTMLInputElement } */
       const couponElement = document.querySelector('#coupon_id')
-      const socket = io()
+      const socket = io('http://localhost:7777')
 
       socket.on('connect', () => {
         console.log('pos connected') // false

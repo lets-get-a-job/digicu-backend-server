@@ -19,7 +19,7 @@
       const idElement = document.querySelector('#company_id')
       /** @type { HTMLSpanElement } */
       const responseElement = document.querySelector('#response')
-      const socket = io()
+      const socket = io('http://localhost:7777')
 
       socket.on('dequeue', args => {
         console.log(args)

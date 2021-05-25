@@ -63,6 +63,8 @@ ex)
 whitelist=["http://localhost:3000", "http://localhost:4000"]
 ```
 
+io 연결 시 Socket Sever를 정확하게 지정해주세요.
+
 ## 참고
 
 클라이언트 구현시 client-test를 참고하시면 됩니다.
