@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "coupons")
@@ -76,8 +78,14 @@ public class Coupon {
        }
     }
 
-    public void verifyAspectState(final String aspect){
-        if(!this.state.equals(aspect)){
+    public void verifyAspectState(final List<String> aspects){
+        boolean satisfy = false;
+        for(String aspect : aspects){
+            if(this.state.equals(aspect)){
+                satisfy = true;
+            }
+        }
+        if(!satisfy){
             throw CouponStateException.of(this.state);
         }
     }
@@ -95,13 +103,13 @@ public class Coupon {
 
     public void use(){
         verifyExpiration();
-        verifyAspectState("DONE");
+        verifyAspectState(Arrays.asList("DONE"));
         this.state = "USED";
     }
 
     public void accumulate(final int numAcc){
         verifyExpiration();
-        verifyAspectState("NORMAL");
+        verifyAspectState(Arrays.asList("NORMAL"));
         verifyFull(numAcc);
         this.count += numAcc;
         if(this.count == this.goal){
@@ -112,10 +120,11 @@ public class Coupon {
     public void setTradeState(final String state){
         switch(state){
             case "DONE" :
-                verifyAspectState("TRADING");
+                verifyAspectState(Arrays.asList("TRADING","TRADING_REQ"));
                 break;
             case "TRADING" :
-                verifyAspectState("DONE");
+            case "TRADING_REQ" :
+                verifyAspectState(Arrays.asList("DONE"));
                 break;
         }
         this.state = state;

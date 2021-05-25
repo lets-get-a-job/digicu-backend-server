@@ -3,7 +3,6 @@ package com.digicu.couponservice.domain.trade.service;
 import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.trade.dao.ProposalRepository;
-import com.digicu.couponservice.domain.trade.dao.TradeRepository;
 import com.digicu.couponservice.domain.trade.domain.Proposal;
 import com.digicu.couponservice.domain.trade.domain.Trade;
 import com.digicu.couponservice.domain.trade.dto.TradeProposalRequest;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Transactional(rollbackFor=IOException.class)
@@ -32,7 +32,7 @@ public class ProposalService {
     public Proposal create(final TradeProposalRequest dto, final String phone) throws IOException {
         Coupon coupon = couponFindDao.findById(dto.getMyCouponId());
         if(phone.equals(coupon.getOwner())){
-            coupon.verifyAspectState("DONE");
+            coupon.verifyAspectState(Arrays.asList("DONE"));
             coupon.setTradeState("TRADING_REQ");
 
             Trade trade = tradeService.findById(dto.getTradeId());
