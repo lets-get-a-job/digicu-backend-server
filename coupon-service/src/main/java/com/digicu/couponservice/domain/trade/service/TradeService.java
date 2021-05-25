@@ -27,7 +27,7 @@ public class TradeService {
         if(phone.equals(coupon.getOwner())){
             coupon.setTradeState("TRADING");
             Trade trade = dto.toEntity(coupon, phone);
-            trade.getCoupon().setTrade(trade);
+            //trade.getCoupon().setTrade(trade);
             return tradeRepository.save(dto.toEntity(coupon, phone));
         } else {
             throw new AccessDeniedException(phone + "has not access for " + coupon.getId(), ErrorCode.ACCESS_DENIED);

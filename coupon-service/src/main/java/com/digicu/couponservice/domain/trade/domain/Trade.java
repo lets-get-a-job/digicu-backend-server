@@ -25,7 +25,7 @@ public class Trade {
     private Long id;
 
     @JsonBackReference
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="coupon_id")
     private Coupon coupon;
 
