@@ -25,10 +25,10 @@ public class TradeService {
     public Trade create(TradeRegistRequest dto, final String phone){
         Coupon coupon = couponFindDao.findById(dto.getCouponId());
         if(phone.equals(coupon.getOwner())){
+            Trade trade = tradeRepository.save(dto.toEntity(coupon, phone));
             coupon.setTradeState("TRADING");
-            Trade trade = dto.toEntity(coupon, phone);
-            //trade.getCoupon().setTrade(trade);
-            return tradeRepository.save(dto.toEntity(coupon, phone));
+            coupon.setTradeId(trade.getId());
+            return trade;
         } else {
             throw new AccessDeniedException(phone + "has not access for " + coupon.getId(), ErrorCode.ACCESS_DENIED);
         }
@@ -38,8 +38,8 @@ public class TradeService {
         Trade trade = findById(id);
         if (trade.getOwner().equals(phone)) {
             Coupon coupon = trade.getCoupon();
-            coupon.setTrade(null);
             coupon.setTradeState("DONE");
+            coupon.setTradeId(null);
             tradeRepository.delete(trade);
         } else {
             throw new AccessDeniedException(phone + "has not access for " + trade.getId(), ErrorCode.ACCESS_DENIED);

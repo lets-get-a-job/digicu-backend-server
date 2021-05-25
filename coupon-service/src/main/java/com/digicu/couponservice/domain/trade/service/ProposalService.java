@@ -26,7 +26,6 @@ import java.util.Optional;
 public class ProposalService {
     private final CouponFindDao couponFindDao;
     private final TradeService tradeService;
-    private final TradeRepository tradeRepository;
     private final FCMService fcmService;
     private final ProposalRepository proposalRepository;
 
@@ -34,7 +33,7 @@ public class ProposalService {
         Coupon coupon = couponFindDao.findById(dto.getMyCouponId());
         if(phone.equals(coupon.getOwner())){
             coupon.verifyAspectState("DONE");
-            coupon.setTradeState("TRADING");
+            coupon.setTradeState("TRADING_REQ");
 
             Trade trade = tradeService.findById(dto.getTradeId());
             Proposal proposal = Proposal.builder()
@@ -42,8 +41,6 @@ public class ProposalService {
                     .coupon(coupon)
                     .owner(phone)
                     .build();
-            trade.addProposal(proposal);
-            tradeRepository.save(trade);
 
             MessageData messageData = MessageData.builder()
                     .title("Digicu 알림!")
@@ -55,7 +52,7 @@ public class ProposalService {
             FcmMessage fcmMessage = fcmService.makeMessage(trade.getOwner(), messageData);
             fcmService.sendMessage(fcmMessage);
 
-            return proposal;
+            return proposalRepository.save(proposal);
         } else {
             throw new AccessDeniedException(phone + " has not access for " + coupon.getId(), ErrorCode.ACCESS_DENIED);
         }
