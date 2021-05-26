@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional(rollbackFor=IOException.class)
@@ -98,5 +99,9 @@ public class ProposalService {
         Optional<Proposal> proposal = proposalRepository.findById(proposalId);
         proposal.orElseThrow(()-> new ProposalNotFoundException(proposalId));
         return proposal.get();
+    }
+
+    public List<Proposal> findAllByCouponId(final Long couponId){
+        return proposalRepository.findAllByCouponId(couponId);
     }
 }
