@@ -68,3 +68,5 @@ io 연결 시 Socket Sever를 정확하게 지정해주세요.
 ## 참고
 
 클라이언트 구현시 client-test를 참고하시면 됩니다.
+
+cloud 배포된 서비스 이용시 gateway를 거치지 않게 http://aws-address:5002 로 연결
