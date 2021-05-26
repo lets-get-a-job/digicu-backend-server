@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -41,6 +43,13 @@ public class ProposalApi {
             @Valid @PathVariable(value = "id") Long proposalId){
         proposalService.delete(proposalId, phone);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Proposal>> getProposals(@RequestParam Map<String,String> params){
+        Long couponId = Long.valueOf(String.valueOf(params.get("coupon_id")));
+        List<Proposal> proposals = proposalService.findAllByCouponId(couponId);
+        return new ResponseEntity<List<Proposal>>(proposals, HttpStatus.OK);
     }
 
     @PostMapping("/{id}/accept")
