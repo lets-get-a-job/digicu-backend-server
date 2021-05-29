@@ -2,6 +2,7 @@ package com.digicu.couponservice.domain.trade.service;
 
 import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
+import com.digicu.couponservice.domain.coupon.domain.CouponState;
 import com.digicu.couponservice.domain.trade.dao.TradeRepository;
 import com.digicu.couponservice.domain.trade.domain.Trade;
 import com.digicu.couponservice.domain.trade.dto.TradeRegistRequest;
@@ -26,7 +27,7 @@ public class TradeService {
         Coupon coupon = couponFindDao.findById(dto.getCouponId());
         if(phone.equals(coupon.getOwner())){
             Trade trade = tradeRepository.save(dto.toEntity(coupon, phone));
-            coupon.setTradeState("TRADING");
+            coupon.setTradeState(CouponState.TRADING);
             coupon.setTradeId(trade.getId());
             return trade;
         } else {
@@ -38,7 +39,7 @@ public class TradeService {
         Trade trade = findById(id);
         if (trade.getOwner().equals(phone)) {
             Coupon coupon = trade.getCoupon();
-            coupon.setTradeState("DONE");
+            coupon.setTradeState(CouponState.DONE);
             coupon.setTradeId(null);
             tradeRepository.delete(trade);
         } else {

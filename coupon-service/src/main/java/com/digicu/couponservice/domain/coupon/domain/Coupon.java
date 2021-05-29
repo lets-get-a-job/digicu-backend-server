@@ -38,9 +38,9 @@ public class Coupon {
     @Column(name="value", nullable = false)
     private int value;
 
-    //USED, DONE, NORMAL, TRADING
+    @Enumerated(EnumType.STRING)
     @Column(name="state", nullable = false)
-    private String state;
+    private CouponState state;
 
     @Column(name="count", nullable = false)
     private int count;
@@ -64,7 +64,7 @@ public class Coupon {
         this.owner = owner;
         this.issuer = issuer;
         this.type = type;
-        this.state = "NORMAL";
+        this.state = CouponState.NORMAL;
         this.value = value;
         this.goal = goal;
         this.count = count;
@@ -78,10 +78,10 @@ public class Coupon {
        }
     }
 
-    public void verifyAspectState(final List<String> aspects){
+    public void verifyAspectState(final List<CouponState> aspects){
         boolean satisfy = false;
-        for(String aspect : aspects){
-            if(this.state.equals(aspect)){
+        for(CouponState aspect : aspects){
+            if(this.state == aspect){
                 satisfy = true;
             }
         }
@@ -89,8 +89,8 @@ public class Coupon {
             throw CouponStateException.of(this.state);
         }
     }
-    public void verifyAspectNotState(final String aspect){
-        if(this.state.equals(aspect)){
+    public void verifyAspectNotState(final CouponState aspect){
+        if(this.state == aspect){
             throw CouponStateException.of(this.state);
         }
     }
@@ -103,28 +103,28 @@ public class Coupon {
 
     public void use(){
         verifyExpiration();
-        verifyAspectState(Arrays.asList("DONE"));
-        this.state = "USED";
+        verifyAspectState(Arrays.asList(CouponState.DONE));
+        this.state = CouponState.USED;
     }
 
     public void accumulate(final int numAcc){
         verifyExpiration();
-        verifyAspectState(Arrays.asList("NORMAL"));
+        verifyAspectState(Arrays.asList(CouponState.NORMAL));
         verifyFull(numAcc);
         this.count += numAcc;
         if(this.count == this.goal){
-            this.state = "DONE";
+            this.state = CouponState.NORMAL;
         }
     }
 
-    public void setTradeState(final String state){
+    public void setTradeState(final CouponState state){
         switch(state){
-            case "DONE" :
-                verifyAspectState(Arrays.asList("TRADING","TRADING_REQ"));
+            case DONE :
+                verifyAspectState(Arrays.asList(CouponState.TRADING, CouponState.TRADING_REQ));
                 break;
-            case "TRADING" :
-            case "TRADING_REQ" :
-                verifyAspectState(Arrays.asList("DONE"));
+            case TRADING :
+            case TRADING_REQ :
+                verifyAspectState(Arrays.asList(CouponState.DONE));
                 break;
         }
         this.state = state;
