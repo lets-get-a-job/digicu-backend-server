@@ -16,12 +16,7 @@ public class TestApi {
 
     @PostMapping("/fcm/{phone}")
     public String fcmEcho(@PathVariable String phone) throws IOException{
-        MessageData msgData = MessageData.builder()
-                .title("DIgicu")
-                .body("test message")
-                .action("TEST")
-                .build();
-        fcmService.sendMessage(fcmService.makeMessage(phone, msgData));
+        fcmService.sendMessage(fcmService.makeMessage(phone, MessageData.Action.TEST, "TEST COUPON"));
         return "OK";
     }
 

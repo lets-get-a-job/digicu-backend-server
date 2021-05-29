@@ -8,8 +8,8 @@ import com.digicu.couponservice.domain.couponspec.dao.CouponSpecFindDao;
 import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
 import com.digicu.couponservice.global.error.exception.AccessDeniedException;
 import com.digicu.couponservice.global.error.exception.ErrorCode;
+import com.digicu.couponservice.global.util.fcm.FCM;
 import com.digicu.couponservice.global.util.fcm.FCMService;
-import com.digicu.couponservice.global.util.fcm.FcmMessage;
 import com.digicu.couponservice.global.util.fcm.MessageData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,13 +31,8 @@ public class CouponService {
         CouponSpec spec = couponSpecFindDao.findById(dto.getCouponSpecId());
         if(email.equals(spec.getOwner())){
             Coupon created = couponRepository.save(dto.toEntity(spec, email));
-            MessageData messageData = MessageData.builder()
-                    .title("Digicu 쿠폰 알림!")
-                    .body(created.getName() + "이 발급돼었습니다.")
-                    .action("CREATION")
-                    .subject(String.valueOf(created.getId()))
-                    .build();
-            fcmService.sendMessage(fcmService.makeMessage(created.getOwner(), messageData));
+            FCM fcm = fcmService.makeMessage(created.getOwner(), MessageData.Action.CREATION, created.getName());
+            fcmService.sendMessage(fcm);
             return created;
         } else {
             throw new AccessDeniedException(email + " has not access for couponspec: " + spec.getId(), ErrorCode.ACCESS_DENIED);
@@ -70,14 +65,8 @@ public class CouponService {
         Coupon coupon = couponFindDao.findById(couponId);
         if(email.equals(coupon.getIssuer())){
             coupon.accumulate(numAcc);
-            MessageData messageData = MessageData.builder()
-                    .title("Digicu 쿠폰 알림!")
-                    .body(coupon.getName() + "이 적립돼었습니다.")
-                    .action("ACCUMULATION")
-                    .subject(String.valueOf(coupon.getId()))
-                    .build();
-
-            fcmService.sendMessage(fcmService.makeMessage(coupon.getOwner(),messageData));
+            FCM fcm = fcmService.makeMessage(coupon.getOwner(), MessageData.Action.ACCUMULATION, coupon.getName());
+            fcmService.sendMessage(fcm);
             return coupon;
         } else {
             throw new AccessDeniedException(email + " has not access for coupon:" + couponId,

@@ -1,8 +1,6 @@
 package com.digicu.couponservice.global.util.fcm;
 
-import com.digicu.couponservice.global.util.resttemplate.userservice.SocialResponse;
 import com.digicu.couponservice.global.util.resttemplate.userservice.UserServiceClient;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +21,7 @@ public class FCMService {
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
 
-    public void sendMessage(FcmMessage message) throws IOException {
+    public void sendMessage(FCM message) throws IOException {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://fcm.googleapis.com")
                 .path("/v1/projects/digicu/messages:send")
@@ -55,19 +53,11 @@ public class FCMService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-    public FcmMessage makeMessage(final String phone, MessageData msgData){
+    public FCM makeMessage(final String phone, MessageData.Action action, final String couponName){
         final String email = userServiceClient.findEmailByPhone(phone);
         final String targetToken = userServiceClient.findFcmTokenByEmail(email);
 
-        FcmMessage.Message message = FcmMessage.Message.builder()
-                .token(targetToken)
-                .data(msgData)
-                .build();
-        FcmMessage fcmMessage = FcmMessage.builder()
-                .message(message)
-                .validate_only(false)
-                .build();
-        System.out.println(fcmMessage.toString());
-        return fcmMessage;
+        FCM.Message message = new FCM.Message(targetToken, MessageData.of(action, couponName));
+        return new FCM(false, message);
     }
 }

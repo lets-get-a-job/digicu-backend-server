@@ -9,8 +9,8 @@ import com.digicu.couponservice.domain.trade.dto.TradeProposalRequest;
 import com.digicu.couponservice.domain.trade.exception.ProposalNotFoundException;
 import com.digicu.couponservice.global.error.exception.AccessDeniedException;
 import com.digicu.couponservice.global.error.exception.ErrorCode;
+import com.digicu.couponservice.global.util.fcm.FCM;
 import com.digicu.couponservice.global.util.fcm.FCMService;
-import com.digicu.couponservice.global.util.fcm.FcmMessage;
 import com.digicu.couponservice.global.util.fcm.MessageData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,15 +43,10 @@ public class ProposalService {
                     .owner(phone)
                     .build();
 
-            MessageData messageData = MessageData.builder()
-                    .title("Digicu 알림!")
-                    .body(trade.getCoupon().getName() + "에 대한 교환 제시가 도착했습니다.")
-                    .action("TRADE_PROPOSAL")
-                    .proposal(String.valueOf(coupon.getId()))
-                    .subject(String.valueOf(trade.getCoupon().getId()))
-                    .build();
-            FcmMessage fcmMessage = fcmService.makeMessage(trade.getOwner(), messageData);
-            fcmService.sendMessage(fcmMessage);
+            FCM fcm = fcmService.makeMessage(trade.getOwner(),
+                    MessageData.Action.TRADE_PROPOSAL,
+                    trade.getCoupon().getName());
+            fcmService.sendMessage(fcm);
 
             return proposalRepository.save(proposal);
         } else {
@@ -82,13 +77,8 @@ public class ProposalService {
             tradeCoupon.setOwner(proposal.getOwner());
             proposalCoupon.setOwner(trade.getOwner());
 
-            MessageData messageData = MessageData.builder()
-                    .title("Digicu 교환 알림!")
-                    .body(tradeCoupon.getName() + "에 대한 교환 요청이 수락됐습니다.")
-                    .action("TRADE_DONE")
-                    .build();
-            FcmMessage fcmToProposal = fcmService.makeMessage(proposal.getOwner(), messageData);
-            FcmMessage fcmToTrade = fcmService.makeMessage(trade.getOwner(), messageData);
+            FCM fcmToProposal = fcmService.makeMessage(proposal.getOwner(), MessageData.Action.TRADE_DONE, proposal.getCoupon().getName());
+            FCM fcmToTrade = fcmService.makeMessage(trade.getOwner(), MessageData.Action.TRADE_DONE, trade.getCoupon().getName());
             fcmService.sendMessage(fcmToProposal);
             fcmService.sendMessage(fcmToTrade);
         }
