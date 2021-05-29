@@ -2,6 +2,7 @@ package com.digicu.couponservice.domain.trade.service;
 
 import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
+import com.digicu.couponservice.domain.coupon.domain.CouponState;
 import com.digicu.couponservice.domain.trade.dao.ProposalRepository;
 import com.digicu.couponservice.domain.trade.domain.Proposal;
 import com.digicu.couponservice.domain.trade.domain.Trade;
@@ -33,8 +34,8 @@ public class ProposalService {
     public Proposal create(final TradeProposalRequest dto, final String phone) throws IOException {
         Coupon coupon = couponFindDao.findById(dto.getMyCouponId());
         if(phone.equals(coupon.getOwner())){
-            coupon.verifyAspectState(Arrays.asList("DONE"));
-            coupon.setTradeState("TRADING_REQ");
+            coupon.verifyAspectState(Arrays.asList(CouponState.DONE));
+            coupon.setTradeState(CouponState.TRADING_REQ);
 
             Trade trade = tradeService.findById(dto.getTradeId());
             Proposal proposal = Proposal.builder()
@@ -62,7 +63,7 @@ public class ProposalService {
     public void delete(final Long proposalId, final String phone){
         Proposal proposal = findById(proposalId);
         if(proposal.getOwner().equals(phone)){
-            proposal.getCoupon().setTradeState("DONE");
+            proposal.getCoupon().setTradeState(CouponState.DONE);
             proposalRepository.delete(proposal);
         } else {
             throw new AccessDeniedException(phone + " has not access for " + proposal.getId(), ErrorCode.ACCESS_DENIED);
@@ -76,8 +77,8 @@ public class ProposalService {
             Coupon tradeCoupon = trade.getCoupon();
             Coupon proposalCoupon = proposal.getCoupon();
 
-            tradeCoupon.setTradeState("DONE");
-            proposalCoupon.setTradeState("DONE");
+            tradeCoupon.setTradeState(CouponState.DONE);
+            proposalCoupon.setTradeState(CouponState.DONE);
 
             tradeCoupon.setOwner(proposal.getOwner());
             proposalCoupon.setOwner(trade.getOwner());

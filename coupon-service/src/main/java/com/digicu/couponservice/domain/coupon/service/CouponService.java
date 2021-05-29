@@ -3,6 +3,7 @@ package com.digicu.couponservice.domain.coupon.service;
 import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.dao.CouponRepository;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
+import com.digicu.couponservice.domain.coupon.domain.CouponState;
 import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
 import com.digicu.couponservice.domain.couponspec.dao.CouponSpecFindDao;
 import com.digicu.couponservice.domain.couponspec.domain.CouponSpec;
@@ -47,7 +48,7 @@ public class CouponService {
     public void delete(final Long couponId, final String phone){
         Coupon coupon = couponFindDao.findById(couponId);
         if(phone.equals(coupon.getOwner())){
-            coupon.verifyAspectNotState("TRADING");
+            coupon.verifyAspectNotState(CouponState.TRADING);
             couponRepository.delete(coupon);
         } else {
             throw new AccessDeniedException(phone + " has not access for coupon:" + couponId,
