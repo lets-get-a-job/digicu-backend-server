@@ -1,6 +1,6 @@
 package com.digicu.couponservice.domain.trade.service;
 
-import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
+import com.digicu.couponservice.domain.coupon.service.CouponFindService;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.coupon.domain.CouponState;
 import com.digicu.couponservice.domain.trade.dao.TradeRepository;
@@ -20,11 +20,11 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class TradeService {
-    private final CouponFindDao couponFindDao;
+    private final CouponFindService couponFindService;
     private final TradeRepository tradeRepository;
 
     public Trade create(TradeRegistRequest dto, final String phone){
-        Coupon coupon = couponFindDao.findById(dto.getCouponId());
+        Coupon coupon = couponFindService.findById(dto.getCouponId());
         if(phone.equals(coupon.getOwner())){
             Trade trade = tradeRepository.save(dto.toEntity(coupon, phone));
             coupon.setTradeState(CouponState.TRADING);

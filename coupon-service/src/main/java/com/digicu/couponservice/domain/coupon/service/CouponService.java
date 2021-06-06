@@ -1,6 +1,5 @@
 package com.digicu.couponservice.domain.coupon.service;
 
-import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
 import com.digicu.couponservice.domain.coupon.dao.CouponRepository;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.coupon.domain.CouponState;
@@ -25,7 +24,7 @@ public class CouponService {
 
     private final CouponRepository couponRepository;
     private final CouponSpecFindDao couponSpecFindDao;
-    private final CouponFindDao couponFindDao;
+    private final CouponFindService couponFindService;
     private final FCMService fcmService;
 
     public Coupon create(final CouponCreateRequest dto, final String email) throws IOException{
@@ -41,7 +40,7 @@ public class CouponService {
     }
 
     public void delete(final Long couponId, final String phone){
-        Coupon coupon = couponFindDao.findById(couponId);
+        Coupon coupon = couponFindService.findById(couponId);
         if(phone.equals(coupon.getOwner())){
             coupon.verifyAspectNotState(CouponState.TRADING);
             couponRepository.delete(coupon);
@@ -52,7 +51,7 @@ public class CouponService {
     }
 
     public Coupon use(final Long couponId, final String email) {
-        Coupon coupon = couponFindDao.findById(couponId);
+        Coupon coupon = couponFindService.findById(couponId);
         if (email.equals(coupon.getIssuer())) {
             coupon.use();
             return coupon;
@@ -63,7 +62,7 @@ public class CouponService {
     }
 
     public Coupon accumulate(final Long couponId, final String email, final int numAcc) throws IOException {
-        Coupon coupon = couponFindDao.findById(couponId);
+        Coupon coupon = couponFindService.findById(couponId);
         if(email.equals(coupon.getIssuer())){
             coupon.accumulate(numAcc);
             FCM fcm = fcmService.makeMessage(coupon.getOwner(), MessageData.Action.ACCUMULATION, coupon.getName());

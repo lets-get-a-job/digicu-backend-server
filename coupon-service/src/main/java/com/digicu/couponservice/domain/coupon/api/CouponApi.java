@@ -1,12 +1,11 @@
 package com.digicu.couponservice.domain.coupon.api;
 
-import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
+import com.digicu.couponservice.domain.coupon.domain.CouponState;
+import com.digicu.couponservice.domain.coupon.service.CouponFindService;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.coupon.dto.CouponAccumulateRequest;
 import com.digicu.couponservice.domain.coupon.dto.CouponCreateRequest;
 import com.digicu.couponservice.domain.coupon.service.CouponService;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ import java.util.List;
 public class CouponApi {
 
     final private CouponService couponService;
-    final private CouponFindDao couponFindDao;
+    final private CouponFindService couponFindService;
 
     @PostMapping
     public ResponseEntity<Coupon> createCoupon(
@@ -64,7 +63,7 @@ public class CouponApi {
     @GetMapping("/{id}")
     public ResponseEntity<Coupon> getCoupon(
             @Valid @PathVariable(name = "id") Long couponId){
-        Coupon coupon = couponFindDao.findById(couponId);
+        Coupon coupon = couponFindService.findById(couponId);
         return new ResponseEntity<Coupon>(coupon, HttpStatus.OK);
     }
 
@@ -76,30 +75,27 @@ public class CouponApi {
             @RequestParam HashMap<String, Object> params){
 
         List<Coupon> coupons = new ArrayList<>();
-
+        CouponState state = CouponState.valueOf(String.valueOf(params.get("state")).toUpperCase());
         //pos에서 접근 한 것
         if(type.equals("ROLE_COMPANY")){
             if(params.containsKey("phone")) {
                 String identifier = String.valueOf(params.get("phone"));
-                String state = String.valueOf(params.get("state")).toUpperCase();
-                coupons = couponFindDao.findAllByPhoneAndStateAndCompany(identifier, state, email);
+                coupons = couponFindService.findAllByPhoneAndStateAndCompany(identifier, state, email);
             }
         }
         //app에서 접근
         else if(type.equals("ROLE_SOCIAL")){
             if(params.containsKey("email")) {
                 String identifier = String.valueOf(params.get("email"));  //TODO email->phone
-                String state = String.valueOf(params.get("state")).toUpperCase();
-                coupons = couponFindDao.findAllByPhoneAndState(identifier, state);
+                coupons = couponFindService.findAllByPhoneAndState(identifier, state);
             }
             else if(params.containsKey("phone")) {
                 String identifier = String.valueOf(params.get("phone"));
-                String state = String.valueOf(params.get("state")).toUpperCase();
-                coupons = couponFindDao.findAllByPhoneAndState(identifier, state);
+                coupons = couponFindService.findAllByPhoneAndState(identifier, state);
             }
             // 전체 trading
             else if(!params.containsKey("phone") && !params.containsKey("email")){
-                coupons = couponFindDao.findAllTrading();
+                coupons = couponFindService.findAllTrading();
             }
         }
         return new ResponseEntity<List<Coupon>>(coupons, HttpStatus.OK);
