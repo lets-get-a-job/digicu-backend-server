@@ -102,7 +102,7 @@ public class Coupon {
     }
 
     public void use(){
-        verifyExpiration();
+//        verifyExpiration();
         verifyAspectState(Arrays.asList(CouponState.DONE));
         this.state = CouponState.USED;
     }

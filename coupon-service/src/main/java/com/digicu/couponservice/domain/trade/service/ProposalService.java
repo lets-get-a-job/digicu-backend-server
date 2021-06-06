@@ -1,6 +1,6 @@
 package com.digicu.couponservice.domain.trade.service;
 
-import com.digicu.couponservice.domain.coupon.dao.CouponFindDao;
+import com.digicu.couponservice.domain.coupon.service.CouponFindService;
 import com.digicu.couponservice.domain.coupon.domain.Coupon;
 import com.digicu.couponservice.domain.coupon.domain.CouponState;
 import com.digicu.couponservice.domain.trade.dao.ProposalRepository;
@@ -26,13 +26,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class ProposalService {
-    private final CouponFindDao couponFindDao;
+    private final CouponFindService couponFindService;
     private final TradeService tradeService;
     private final FCMService fcmService;
     private final ProposalRepository proposalRepository;
 
     public Proposal create(final TradeProposalRequest dto, final String phone) throws IOException {
-        Coupon coupon = couponFindDao.findById(dto.getMyCouponId());
+        Coupon coupon = couponFindService.findById(dto.getMyCouponId());
         if(phone.equals(coupon.getOwner())){
             coupon.verifyAspectState(Arrays.asList(CouponState.DONE));
             coupon.setTradeState(CouponState.TRADING_REQ);
