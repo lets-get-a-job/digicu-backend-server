@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -38,9 +40,15 @@ public class FCMService {
         System.out.println(req.getBody().toString());
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> res = restTemplate.exchange(req, String.class);
-        System.out.println(res.getStatusCode());
-        System.out.println(res.getBody());
+        try{
+            ResponseEntity<String> res = restTemplate.exchange(req, String.class);
+            System.out.println(res.getStatusCode());
+            System.out.println(res.getBody());
+        } catch (HttpClientErrorException e) {
+            switch(e.getStatusCode()) {
+                case NOT_FOUND: throw new TargetUserFcmTokenExpired();
+            }
+        }
     }
 
     private String getAccessToken() throws IOException {

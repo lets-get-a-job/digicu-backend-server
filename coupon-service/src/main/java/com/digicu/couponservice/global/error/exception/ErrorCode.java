@@ -20,6 +20,9 @@ public enum ErrorCode {
     PROPOSAL_NOT_FOUND(400, "존재하지 않는 교환 요청 입니다."),
 
 
+    //FCM
+    FCM_TOKEN_EXPIRED(400, "오랜시간 접속하지 않아 활동이 임시정지된 유저입니다."),
+
     //AUTHORIZATION
     ACCESS_DENIED(403, "접근할 수 없는 자원입니다."),
 
