@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum CouponState {
     TRADING,
     TRADING_REQ,
-    EXPIRED,
+//    EXPIRED,
     NORMAL,
     USED,
     DONE

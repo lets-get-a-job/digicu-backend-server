@@ -108,7 +108,7 @@ public class Coupon {
     }
 
     public void accumulate(final int numAcc){
-        verifyExpiration();
+//        verifyExpiration();
         verifyAspectState(Arrays.asList(CouponState.NORMAL));
         verifyFull(numAcc);
         this.count += numAcc;
