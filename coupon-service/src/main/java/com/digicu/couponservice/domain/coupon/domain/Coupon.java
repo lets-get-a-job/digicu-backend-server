@@ -113,7 +113,7 @@ public class Coupon {
         verifyFull(numAcc);
         this.count += numAcc;
         if(this.count == this.goal){
-            this.state = CouponState.NORMAL;
+            this.state = CouponState.DONE;
         }
     }
 
